@@ -32,7 +32,7 @@ function AboutPage() {
     <div>
       <section className="border-b-2 border-ink bg-cream">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <p className="label-xs text-forest">About us</p>
+          <p className="label-xs text-forest-deep">About us</p>
           <h1 className="mt-4 max-w-3xl text-4xl leading-[1.05] sm:text-5xl lg:text-6xl">
             An independent home for South African culture, criticism and creative work.
           </h1>
@@ -108,7 +108,7 @@ function AboutPage() {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="grid h-full place-items-center font-display text-5xl text-forest">
+                    <div className="grid h-full place-items-center font-display text-5xl text-forest-deep">
                       {initials(person.name)}
                     </div>
                   )}

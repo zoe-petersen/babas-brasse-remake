@@ -71,7 +71,7 @@ function ContentPage() {
           {stats.map((stat) => (
             <div key={stat.label} className="border-b border-ink/20 px-6 py-8 sm:border-b-0 sm:border-r sm:last:border-r-0">
               <div className="flex items-center justify-between gap-4">
-                <span className="font-display text-4xl text-forest">
+                <span className="font-display text-4xl text-forest-deep">
                   {String(stat.value).padStart(2, "0")}
                 </span>
                 <span className="label-xs max-w-[8rem] text-right">{stat.label}</span>
@@ -116,7 +116,7 @@ function ContentPage() {
                 </span>
               </div>
               <div className="flex flex-1 flex-col p-5">
-                <p className="label-xs text-forest">{article.categories?.name}</p>
+                <p className="label-xs text-forest-deep">{article.categories?.name}</p>
                 <h3 className="mt-3 text-2xl leading-tight">{article.title}</h3>
                 <p className="label-xs mt-3 opacity-60">
                   {article.contributors?.name} &middot; {formatDate(article.published_at)}

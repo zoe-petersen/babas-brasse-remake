@@ -179,7 +179,7 @@ function ArticlePage() {
                   />
                 )}
                 <div className="flex flex-1 flex-col p-5">
-                  <p className="label-xs text-forest">{item.categories?.name}</p>
+                  <p className="label-xs text-forest-deep">{item.categories?.name}</p>
                   <h3 className="mt-2 text-xl leading-tight">{item.title}</h3>
                   <p className="label-xs mt-3 opacity-60">
                     {item.contributors?.name} &middot; {formatDate(item.published_at)}
@@ -256,7 +256,7 @@ function Comments({ articleId, onSubmitted }: { articleId: string; onSubmitted: 
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-      <p className="label-xs text-forest">Reader conversation</p>
+      <p className="label-xs text-forest-deep">Reader conversation</p>
       <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 border-b-2 border-magenta pb-3">
         <h2 className="text-3xl sm:text-4xl">Comments</h2>
         <span className="label-xs opacity-60">{comments.length} approved</span>

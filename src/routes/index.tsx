@@ -144,7 +144,7 @@ function HomePage() {
               />
             )}
             <div className="flex flex-col justify-center border-t-2 border-ink p-8 md:border-l-2 md:border-t-0">
-              <p className="label-xs text-forest">{editorsPick.categories?.name}</p>
+              <p className="label-xs text-forest-deep">{editorsPick.categories?.name}</p>
               <h3 className="mt-4 text-3xl leading-tight lg:text-4xl">{editorsPick.title}</h3>
               <p className="mt-4 text-sm text-muted-foreground">{editorsPick.excerpt}</p>
               <p className="label-xs mt-8">
@@ -168,7 +168,7 @@ function HomePage() {
               original South African voices.
             </p>
           </div>
-          <ActionLink to="/contact" variant="outline" label="Submit your work" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-forest" />
+          <ActionLink to="/contact" variant="outline" label="Submit your work" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-forest-deep" />
         </div>
       </section>
     </div>

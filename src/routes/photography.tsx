@@ -31,7 +31,7 @@ function PhotographyPage() {
       <section className="border-b-2 border-ink">
         <div className="mx-auto grid max-w-7xl gap-6 px-4 py-14 sm:px-6 lg:grid-cols-[1.4fr_auto] lg:items-end lg:px-8">
           <div>
-            <p className="label-xs text-forest">Photography &amp; art</p>
+            <p className="label-xs text-forest-deep">Photography &amp; art</p>
             <h1 className="mt-3 text-5xl leading-none sm:text-6xl lg:text-7xl">Mood board</h1>
             <p className="mt-5 max-w-xl text-base text-muted-foreground">
               Pinned, taped and stacked — images from photographers and artists documenting the

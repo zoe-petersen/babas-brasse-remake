@@ -72,7 +72,7 @@ function ContributorPage() {
                 className="aspect-[4/5] w-full object-cover"
               />
             ) : (
-              <div className="grid aspect-[4/5] place-items-center font-display text-7xl text-forest">
+              <div className="grid aspect-[4/5] place-items-center font-display text-7xl text-forest-deep">
                 {initials(person.name)}
               </div>
             )}
@@ -107,7 +107,7 @@ function ContributorPage() {
                 to="/contributors"
                 variant="outline"
                 label="All contributors"
-                className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-forest"
+                className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-forest-deep"
               />
             </div>
           </div>
@@ -133,7 +133,7 @@ function ContributorPage() {
                 className="grid gap-4 p-6 transition-colors hover:bg-cream sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
               >
                 <div className="min-w-0">
-                  <p className="label-xs text-forest">{article.categories?.name}</p>
+                  <p className="label-xs text-forest-deep">{article.categories?.name}</p>
                   <h3 className="mt-2 text-2xl leading-tight">{article.title}</h3>
                   <p className="mt-2 text-sm text-muted-foreground">{article.excerpt}</p>
                 </div>

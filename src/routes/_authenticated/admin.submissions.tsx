@@ -65,7 +65,7 @@ function SubmissionsPage() {
                 </p>
                 <a
                   href={`mailto:${submission.email}`}
-                  className="label-xs mt-1 inline-flex items-center gap-2 text-forest"
+                  className="label-xs mt-1 inline-flex items-center gap-2 text-forest-deep"
                 >
                   <Mail className="h-3.5 w-3.5" />
                   {submission.email}
