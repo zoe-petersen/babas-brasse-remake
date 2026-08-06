@@ -63,7 +63,7 @@ function ArticlePage() {
       <div className="mx-auto max-w-5xl px-4 pt-8 sm:px-6">
         <div className="label-xs flex items-center gap-3 opacity-70">
           <Link to="/content" className="hover:underline">
-            ← Visceral Mag
+            ← Babas &amp; Brasse
           </Link>
           <span>/</span>
           <span>{article.categories?.name}</span>

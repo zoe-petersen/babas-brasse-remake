@@ -42,7 +42,7 @@ function HomePage() {
 
   return (
     <div>
-      <section className="border-b-2 border-ink">
+      <section className="relative border-b-2 border-ink">
         <img
           src={heroBanner}
           alt="Babas and Brasse — South African arts and culture"
@@ -50,6 +50,16 @@ function HomePage() {
           height={912}
           className="h-[38vw] max-h-[520px] min-h-[220px] w-full object-cover"
         />
+        <div className="absolute inset-0 grid place-items-center px-6 text-center">
+          <div>
+            <h1 className="font-display text-[9vw] leading-[0.85] text-cream drop-shadow-[3px_3px_0_var(--ink)] sm:text-6xl lg:text-7xl">
+              Babas &amp; Brasse
+            </h1>
+            <p className="label-xs mt-4 text-cream drop-shadow-[2px_2px_0_var(--ink)]">
+              Arts &middot; Culture &middot; Criticism
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
