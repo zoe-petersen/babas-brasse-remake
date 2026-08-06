@@ -5,6 +5,30 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
+ * Babas & Brasse design system
+ * Ink black, forest green, electric magenta, cream paper.
+ */
+
+@theme {
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "Source Serif 4", Georgia, serif;
+  --font-label: "Archivo", "Helvetica Neue", sans-serif;
+}
+
+@utility label-xs {
+  font-family: var(--font-label);
+  font-weight: 700;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+@utility edge-line {
+  border-top: 2px solid var(--ink);
+}
+
+/*
  * Design system definition.
  *
  * The @theme inline block maps CSS custom properties to Tailwind utility
@@ -20,6 +44,11 @@
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
+  --color-ink: var(--ink);
+  --color-forest: var(--forest);
+  --color-forest-deep: var(--forest-deep);
+  --color-magenta: var(--magenta);
+  --color-cream: var(--cream);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
@@ -62,26 +91,33 @@
 }
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0rem;
+
+  --ink: oklch(0.13 0.005 250);
+  --forest: oklch(0.315 0.055 150);
+  --forest-deep: oklch(0.24 0.05 152);
+  --magenta: oklch(0.66 0.31 328);
+  --cream: oklch(0.958 0.008 95);
+
   --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  --foreground: var(--ink);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
+  --card-foreground: var(--ink);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
+  --popover-foreground: var(--ink);
+  --primary: var(--forest);
+  --primary-foreground: oklch(0.98 0.005 95);
+  --secondary: var(--cream);
+  --secondary-foreground: var(--ink);
+  --muted: var(--cream);
+  --muted-foreground: oklch(0.45 0.01 250);
+  --accent: var(--magenta);
+  --accent-foreground: var(--ink);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --border: oklch(0.86 0.008 250);
+  --input: oklch(0.8 0.008 250);
+  --ring: var(--forest);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -140,5 +176,29 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
   }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+}
+
+@utility gradient-forest {
+  background-image: linear-gradient(
+    145deg,
+    var(--forest) 0%,
+    var(--forest-deep) 55%,
+    oklch(0.18 0.04 152) 100%
+  );
+}
+
+@utility hard-shadow {
+  box-shadow: 8px 8px 0 0 var(--ink);
 }
