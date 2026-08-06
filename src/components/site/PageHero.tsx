@@ -6,7 +6,7 @@ export function PageHero({
   children,
 }: {
   title: ReactNode;
-  intro?: string;
+  intro?: string | undefined;
   children?: ReactNode;
 }) {
   return (
