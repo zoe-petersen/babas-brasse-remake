@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Menu, X } from "lucide-react";
 import logo from "@/assets/logo.png";
@@ -18,7 +18,10 @@ const NAV = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
-  const { data: categories = [] } = useQuery(categoriesQuery());
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+  const { data } = useQuery(categoriesQuery());
+  const categories = hydrated ? (data ?? []) : [];
 
   return (
     <header className="sticky top-0 z-50 border-b-2 border-ink bg-background">
