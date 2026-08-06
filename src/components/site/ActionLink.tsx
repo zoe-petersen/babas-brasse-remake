@@ -12,12 +12,19 @@ const VARIANTS: Record<Variant, string> = {
   underline: "border-b-2 border-ink pb-1",
 };
 
+type ActionLinkProps = Omit<ComponentProps<typeof Link>, "children"> & {
+  variant?: Variant;
+  label: string;
+  showArrow?: boolean;
+};
+
 export function ActionLink({
   variant = "magenta",
   className,
-  children,
+  label,
+  showArrow = true,
   ...props
-}: ComponentProps<typeof Link> & { variant?: Variant }) {
+}: ActionLinkProps) {
   return (
     <Link
       {...props}
@@ -27,8 +34,8 @@ export function ActionLink({
         className,
       )}
     >
-      {children}
-      <ArrowRight className="h-3.5 w-3.5" />
+      {label}
+      {showArrow && <ArrowRight className="h-3.5 w-3.5" />}
     </Link>
   );
 }
