@@ -1,5 +1,4 @@
-import { Link } from "@tanstack/react-router";
-import type { ComponentProps } from "react";
+import { Link, type LinkComponentProps } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -12,7 +11,7 @@ const VARIANTS: Record<Variant, string> = {
   underline: "border-b-2 border-ink pb-1",
 };
 
-type ActionLinkProps = Omit<ComponentProps<typeof Link>, "children"> & {
+type ActionLinkProps = Omit<LinkComponentProps<"a">, "children"> & {
   variant?: Variant;
   label: string;
   showArrow?: boolean;

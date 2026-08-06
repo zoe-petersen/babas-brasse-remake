@@ -50,7 +50,8 @@ function CategoryPage() {
   const { category } = Route.useLoaderData();
   const { data: articles } = useSuspenseQuery(articlesQuery());
   const items = articles.filter((article) => article.categories?.slug === category.slug);
-  const [lead, ...rest] = items;
+  const lead = items[0]!;
+  const rest = items.slice(1);
 
   return (
     <div>
