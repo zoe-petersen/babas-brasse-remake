@@ -94,8 +94,9 @@
   --radius: 0rem;
 
   --ink: oklch(0.13 0.005 250);
-  --forest: oklch(0.315 0.055 150);
-  --forest-deep: oklch(0.24 0.05 152);
+  /* Brand lime #89E900 */
+  --forest: oklch(0.845 0.245 131);
+  --forest-deep: oklch(0.46 0.135 131);
   --magenta: oklch(0.66 0.31 328);
   --cream: oklch(0.958 0.008 95);
 
@@ -106,7 +107,7 @@
   --popover: oklch(1 0 0);
   --popover-foreground: var(--ink);
   --primary: var(--forest);
-  --primary-foreground: oklch(0.98 0.005 95);
+  --primary-foreground: var(--ink);
   --secondary: var(--cream);
   --secondary-foreground: var(--ink);
   --muted: var(--cream);
@@ -194,8 +195,8 @@
   background-image: linear-gradient(
     145deg,
     var(--forest) 0%,
-    var(--forest-deep) 55%,
-    oklch(0.18 0.04 152) 100%
+    oklch(0.8 0.23 131) 55%,
+    oklch(0.74 0.21 133) 100%
   );
 }
 
