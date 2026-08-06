@@ -67,7 +67,7 @@ function DashboardPage() {
           <ul className="mt-3 divide-y divide-border">
             {pending.slice(0, 5).map((comment) => (
               <li key={comment.id} className="py-3">
-                <p className="label-xs text-forest">{comment.author_name}</p>
+                <p className="label-xs text-forest-deep">{comment.author_name}</p>
                 <p className="mt-1 line-clamp-2 text-sm">{comment.body}</p>
               </li>
             ))}

@@ -30,7 +30,7 @@ export function AdminCard({ className, children }: { className?: string; childre
 export function StatCard({ label, value, hint }: { label: string; value: number | string; hint?: string }) {
   return (
     <AdminCard>
-      <p className="label-xs text-forest">{label}</p>
+      <p className="label-xs text-forest-deep">{label}</p>
       <p className="mt-3 font-display text-4xl leading-none">{value}</p>
       {hint && <p className="mt-2 text-xs text-muted-foreground">{hint}</p>}
     </AdminCard>

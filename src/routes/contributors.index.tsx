@@ -70,7 +70,7 @@ function ContributorsPage() {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="grid h-full place-items-center font-display text-5xl text-forest">
+                    <div className="grid h-full place-items-center font-display text-5xl text-forest-deep">
                       {initials(person.name)}
                     </div>
                   )}

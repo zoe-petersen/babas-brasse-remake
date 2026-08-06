@@ -88,7 +88,7 @@ function ModerationPage() {
                 <p className="label-xs mt-1 text-muted-foreground">
                   {comment.author_email} · {formatDate(comment.created_at)}
                 </p>
-                <p className="label-xs mt-1 text-forest">
+                <p className="label-xs mt-1 text-forest-deep">
                   On: {comment.articles?.title ?? "Unknown article"}
                 </p>
               </div>

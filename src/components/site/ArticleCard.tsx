@@ -37,7 +37,7 @@ export function ArticleCard({
         </div>
       )}
       <div className="flex flex-1 flex-col p-5">
-        <p className="label-xs text-forest">{article.categories?.name}</p>
+        <p className="label-xs text-forest-deep">{article.categories?.name}</p>
         <h3 className="mt-3 text-xl leading-tight sm:text-2xl">{article.title}</h3>
         {article.excerpt && (
           <p className="mt-3 text-sm text-muted-foreground">{article.excerpt}</p>

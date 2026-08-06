@@ -36,8 +36,8 @@ export function SiteHeader() {
               <div key={item.to} className="group relative">
                 <Link
                   to={item.to}
-                  className="label-xs rounded-full px-3 py-2 transition-colors hover:text-forest"
-                  activeProps={{ className: "bg-cream text-forest" }}
+                  className="label-xs rounded-full px-3 py-2 transition-colors hover:text-forest-deep"
+                  activeProps={{ className: "bg-cream text-forest-deep" }}
                   activeOptions={{ exact: item.to === "/" }}
                 >
                   {item.label}

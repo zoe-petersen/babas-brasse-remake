@@ -48,7 +48,7 @@ function ContactPage() {
     <div>
       <section className="border-b-2 border-ink bg-cream">
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-          <p className="label-xs text-forest">Get in touch</p>
+          <p className="label-xs text-forest-deep">Get in touch</p>
           <h1 className="mt-3 text-4xl leading-[1.05] sm:text-5xl lg:text-6xl">Contact us</h1>
           <p className="mt-5 max-w-xl text-base text-muted-foreground">
             Have a pitch, a photo essay, a correction or a strong opinion? Send it through.

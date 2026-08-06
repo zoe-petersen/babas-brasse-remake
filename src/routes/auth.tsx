@@ -46,7 +46,7 @@ function AuthPage() {
   return (
     <div className="grid min-h-screen place-items-center bg-cream px-4 py-16">
       <div className="w-full max-w-md border-2 border-ink bg-background p-6 hard-shadow sm:p-8">
-        <p className="label-xs text-forest">Babas &amp; Brasse</p>
+        <p className="label-xs text-forest-deep">Babas &amp; Brasse</p>
         <h1 className="mt-2 text-3xl">Admin sign in</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Editorial access only. Use your admin credentials.
