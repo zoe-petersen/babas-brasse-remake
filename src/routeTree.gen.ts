@@ -10,6 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as PhotographyRouteImport } from './routes/photography'
 import { Route as ArticleSlugRouteImport } from './routes/article.$slug'
 import { Route as ContentIndexRouteImport } from './routes/content.index'
 import { Route as ContentSlugRouteImport } from './routes/content.$slug'
@@ -19,6 +22,21 @@ import { Route as ContributorsSlugRouteImport } from './routes/contributors.$slu
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PhotographyRoute = PhotographyRouteImport.update({
+  id: '/photography',
+  path: '/photography',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArticleSlugRoute = ArticleSlugRouteImport.update({
@@ -49,6 +67,9 @@ const ContributorsSlugRoute = ContributorsSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/photography': typeof PhotographyRoute
   '/article/$slug': typeof ArticleSlugRoute
   '/content/$slug': typeof ContentSlugRoute
   '/contributors/$slug': typeof ContributorsSlugRoute
@@ -57,6 +78,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/photography': typeof PhotographyRoute
   '/article/$slug': typeof ArticleSlugRoute
   '/content/$slug': typeof ContentSlugRoute
   '/contributors/$slug': typeof ContributorsSlugRoute
@@ -66,6 +90,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/photography': typeof PhotographyRoute
   '/article/$slug': typeof ArticleSlugRoute
   '/content/$slug': typeof ContentSlugRoute
   '/contributors/$slug': typeof ContributorsSlugRoute
@@ -76,6 +103,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
+    | '/contact'
+    | '/photography'
     | '/article/$slug'
     | '/content/$slug'
     | '/contributors/$slug'
@@ -84,6 +114,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
+    | '/contact'
+    | '/photography'
     | '/article/$slug'
     | '/content/$slug'
     | '/contributors/$slug'
@@ -92,6 +125,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/about'
+    | '/contact'
+    | '/photography'
     | '/article/$slug'
     | '/content/$slug'
     | '/contributors/$slug'
@@ -101,6 +137,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  ContactRoute: typeof ContactRoute
+  PhotographyRoute: typeof PhotographyRoute
   ArticleSlugRoute: typeof ArticleSlugRoute
   ContentSlugRoute: typeof ContentSlugRoute
   ContributorsSlugRoute: typeof ContributorsSlugRoute
@@ -115,6 +154,27 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/photography': {
+      id: '/photography'
+      path: '/photography'
+      fullPath: '/photography'
+      preLoaderRoute: typeof PhotographyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/article/$slug': {
@@ -157,6 +217,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  ContactRoute: ContactRoute,
+  PhotographyRoute: PhotographyRoute,
   ArticleSlugRoute: ArticleSlugRoute,
   ContentSlugRoute: ContentSlugRoute,
   ContributorsSlugRoute: ContributorsSlugRoute,
