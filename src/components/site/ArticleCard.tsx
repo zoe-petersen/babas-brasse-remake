@@ -25,7 +25,7 @@ export function ArticleCard({
         aria-hidden
       />
       {article.cover_image_url && (
-        <div className="aspect-[16/10] overflow-hidden border-b-2 border-ink">
+        <div className="aspect-16/10 overflow-hidden border-b-2 border-ink">
           <img
             src={article.cover_image_url}
             alt={article.title}

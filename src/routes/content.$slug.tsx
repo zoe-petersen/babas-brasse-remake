@@ -18,7 +18,7 @@ export const Route = createFileRoute("/content/$slug")({
     if (!loaderData) {
       return { meta: [{ title: "Section unavailable" }, { name: "robots", content: "noindex" }] };
     }
-    const title = `${loaderData.category.name} — Babas & Brasse`;
+    const title = `${loaderData.category.name} | Babas & Brasse`;
     const description =
       loaderData.category.description ?? "Stories from the Babas & Brasse magazine.";
     return {
@@ -93,7 +93,7 @@ function CategoryPage() {
                     loading="lazy"
                     width={1200}
                     height={800}
-                    className="h-full max-h-[380px] w-full border-b-2 border-ink object-cover md:border-b-0 md:border-r-2"
+                    className="h-full max-h-95 w-full border-b-2 border-ink object-cover md:border-b-0 md:border-r-2"
                   />
                 )}
                 <div className="flex flex-col p-8">
@@ -126,7 +126,7 @@ function CategoryPage() {
                       loading="lazy"
                       width={1200}
                       height={800}
-                      className="aspect-[16/9] w-full border-b-2 border-ink object-cover"
+                      className="aspect-video w-full border-b-2 border-ink object-cover"
                     />
                   )}
                   <div className="flex flex-1 flex-col p-6">

@@ -9,13 +9,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/content/")({
   head: () => ({
     meta: [
-      { title: "Content — Babas & Brasse" },
+      { title: "Content | Babas & Brasse" },
       {
         name: "description",
         content:
           "Browse essays, reviews, interviews and fiction across every section of the Babas & Brasse magazine.",
       },
-      { property: "og:title", content: "Content — Babas & Brasse" },
+      { property: "og:title", content: "Content | Babas & Brasse" },
       {
         property: "og:description",
         content: "Bold essays, sharp reviews, intimate fiction and the voices shaping SA culture.",
@@ -74,7 +74,7 @@ function ContentPage() {
                 <span className="font-display text-4xl text-forest-deep">
                   {String(stat.value).padStart(2, "0")}
                 </span>
-                <span className="label-xs max-w-[8rem] text-right">{stat.label}</span>
+                <span className="label-xs max-w-32 text-right">{stat.label}</span>
               </div>
             </div>
           ))}
@@ -103,7 +103,7 @@ function ContentPage() {
                     loading="lazy"
                     width={1200}
                     height={800}
-                    className="aspect-[16/10] w-full border-b-2 border-ink object-cover"
+                    className="aspect-16/10 w-full border-b-2 border-ink object-cover"
                   />
                 )}
                 <span

@@ -234,7 +234,7 @@ function ArticlesPage() {
                 <label key={key} className="label-xs flex items-center gap-2">
                   <input
                     type="checkbox"
-                    className="h-4 w-4 accent-[var(--forest)]"
+                    className="h-4 w-4 accent-forest"
                     checked={values[key]}
                     onChange={(e) => update(key, e.target.checked)}
                   />
@@ -269,7 +269,7 @@ function ArticlesPage() {
 
       <AdminCard className="p-0 sm:p-0">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[720px] text-left text-sm">
+          <table className="w-full min-w-180 text-left text-sm">
             <thead className="border-b-2 border-ink bg-cream">
               <tr>
                 <th className="label-xs px-4 py-3">Title</th>

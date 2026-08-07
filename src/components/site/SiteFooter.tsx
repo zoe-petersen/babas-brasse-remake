@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import logoAsset from "@/assets/logo-real.png.asset.json";
+import logoAsset from "@/assets/logo.png";
 import { SocialRow } from "./SocialRow";
 
 const EXPLORE = [
@@ -26,7 +26,7 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-7xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.2fr_1fr_1fr_1.3fr] lg:px-8">
         <div>
           <img
-            src={logoAsset.url}
+            src={logoAsset}
             alt="Babas and Brasse"
             loading="lazy"
             width={500}

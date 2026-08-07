@@ -11,13 +11,13 @@ import { EmptyState } from "@/components/site/EmptyState";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Babas & Brasse — Independent Arts & Culture Magazine" },
+      { title: "Babas & Brasse | Independent Arts & Culture Magazine" },
       {
         name: "description",
         content:
           "Reviews, essays, interviews, photography and art from South African writers, critics and creatives.",
       },
-      { property: "og:title", content: "Babas & Brasse — Independent Arts & Culture Magazine" },
+      { property: "og:title", content: "Babas & Brasse | Independent Arts & Culture Magazine" },
       {
         property: "og:description",
         content: "Culture, criticism, and creative work made with nerve, care, and a point of view.",
@@ -122,7 +122,7 @@ function HomePage() {
                 loading="lazy"
                 width={1200}
                 height={800}
-                className="h-full max-h-[420px] w-full object-cover"
+                className="h-full max-h-105 w-full object-cover"
               />
             )}
             <div className="flex flex-col justify-center border-t-2 border-ink p-8 md:border-l-2 md:border-t-0">

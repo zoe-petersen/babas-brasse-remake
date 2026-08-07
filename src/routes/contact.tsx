@@ -7,13 +7,13 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact Us — Babas & Brasse" },
+      { title: "Contact Us | Babas & Brasse" },
       {
         name: "description",
         content:
           "Pitch a story, submit photography, or send a letter to the editors of Babas & Brasse.",
       },
-      { property: "og:title", content: "Contact Us — Babas & Brasse" },
+      { property: "og:title", content: "Contact Us | Babas & Brasse" },
       { property: "og:description", content: "Send your submission or pitch to the editors." },
     ],
   }),
@@ -23,9 +23,9 @@ export const Route = createFileRoute("/contact")({
 const EMPTY = { name: "", email: "", subject: "", message: "" };
 
 const GUIDELINES = [
-  "Pitches should be a short paragraph — the idea, why now, and why you.",
-  "Reviews run 600–1200 words. Essays can stretch further if the argument earns it.",
-  "Photography submissions: 5–10 images, high resolution, with captions and credits.",
+  "Pitches should be a short paragraph - the idea, why now, and why you.",
+  "Reviews run 600-1200 words. Essays can stretch further if the argument earns it.",
+  "Photography submissions: 5-10 images, high resolution, with captions and credits.",
   "We respond to everything we can within two weeks.",
 ];
 
@@ -38,7 +38,7 @@ function ContactPage() {
       if (error) throw new Error(error.message);
     },
     onSuccess: () => {
-      toast.success("Thanks — your submission is with the editors.");
+      toast.success("Thanks - your submission is with the editors.");
       setForm(EMPTY);
     },
     onError: (error: Error) => toast.error(error.message),

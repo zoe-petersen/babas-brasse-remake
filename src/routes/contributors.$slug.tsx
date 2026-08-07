@@ -21,7 +21,7 @@ export const Route = createFileRoute("/contributors/$slug")({
     if (!loaderData) {
       return { meta: [{ title: "Profile unavailable" }, { name: "robots", content: "noindex" }] };
     }
-    const title = `${loaderData.name} — Babas & Brasse`;
+    const title = `${loaderData.name} | Babas & Brasse`;
     const description = loaderData.bio ?? `${loaderData.name}, ${loaderData.role ?? "contributor"}.`;
     return {
       meta: [
@@ -74,10 +74,10 @@ function ContributorPage() {
                 alt={person.name}
                 width={900}
                 height={1100}
-                className="aspect-[4/5] w-full object-cover"
+                className="aspect-4/5 w-full object-cover"
               />
             ) : (
-              <div className="grid aspect-[4/5] place-items-center font-display text-6xl text-forest-deep">
+              <div className="grid aspect-4/5 place-items-center font-display text-6xl text-forest-deep">
                 {initials(person.name)}
               </div>
             )}

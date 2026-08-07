@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import logoAsset from "@/assets/logo-real.png.asset.json";
+import logoAsset from "@/assets/logo.png";
 import { contributorsQuery, initials } from "@/lib/magazine";
 import { ActionLink } from "@/components/site/ActionLink";
 import { SectionHeading } from "@/components/site/SectionHeading";
@@ -8,13 +8,13 @@ import { SectionHeading } from "@/components/site/SectionHeading";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About Us — Babas & Brasse" },
+      { title: "About Us | Babas & Brasse" },
       {
         name: "description",
         content:
           "Babas & Brasse is an independent South African arts and culture magazine publishing reviews, essays, photography and art.",
       },
-      { property: "og:title", content: "About Us — Babas & Brasse" },
+      { property: "og:title", content: "About Us | Babas & Brasse" },
       {
         property: "og:description",
         content: "Who we are, what the name means, and the creative team behind the magazine.",
@@ -110,12 +110,12 @@ function AboutPage() {
             </div>
             <div className="hard-shadow mt-8 hidden place-items-center border-2 border-ink bg-cream p-8 lg:grid">
               <img
-                src={logoAsset.url}
+                src={logoAsset}
                 alt="Babas & Brasse logo"
                 loading="lazy"
                 width={500}
                 height={500}
-                className="w-full max-w-[220px]"
+                className="w-full max-w-55"
               />
             </div>
           </div>
@@ -157,12 +157,12 @@ function AboutPage() {
             </div>
             <div className="hard-shadow grid place-items-center border-2 border-ink bg-cream p-8 sm:col-span-2 lg:hidden">
               <img
-                src={logoAsset.url}
+                src={logoAsset}
                 alt="Babas & Brasse logo"
                 loading="lazy"
                 width={500}
                 height={500}
-                className="w-full max-w-[220px]"
+                className="w-full max-w-55"
               />
             </div>
           </div>
@@ -178,7 +178,7 @@ function AboutPage() {
           <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {team.map((person) => (
               <div key={person.id} className="border-2 border-ink bg-background">
-                <div className="aspect-[4/5] border-b-2 border-ink">
+                <div className="aspect-4/5 border-b-2 border-ink">
                   {person.image_url ? (
                     <img
                       src={person.image_url}

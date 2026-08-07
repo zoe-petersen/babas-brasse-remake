@@ -7,10 +7,10 @@ export const Route = createFileRoute("/auth")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Admin Sign In — Babas & Brasse" },
+      { title: "Admin Sign In | Babas & Brasse" },
       { name: "description", content: "Sign in to the Babas & Brasse editorial admin console." },
       { name: "robots", content: "noindex" },
-      { property: "og:title", content: "Admin Sign In — Babas & Brasse" },
+      { property: "og:title", content: "Admin Sign In | Babas & Brasse" },
       { property: "og:description", content: "Editorial team access to the Babas & Brasse admin." },
     ],
   }),

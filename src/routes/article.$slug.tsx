@@ -29,7 +29,7 @@ export const Route = createFileRoute("/article/$slug")({
     const description = loaderData.excerpt ?? "A story from Babas & Brasse.";
     return {
       meta: [
-        { title: `${loaderData.title} — Babas & Brasse` },
+        { title: `${loaderData.title} | Babas & Brasse` },
         { name: "description", content: description },
         { property: "og:title", content: loaderData.title },
         { property: "og:description", content: description },
@@ -63,7 +63,7 @@ function ArticlePage() {
       <div className="mx-auto max-w-5xl px-4 pt-8 sm:px-6">
         <div className="label-xs flex items-center gap-3 opacity-70">
           <Link to="/content" className="hover:underline">
-            ← Babas &amp; Brasse
+            ← Go Back
           </Link>
           <span>/</span>
           <span>{article.categories?.name}</span>
@@ -175,7 +175,7 @@ function ArticlePage() {
                     loading="lazy"
                     width={1200}
                     height={800}
-                    className="aspect-[16/10] w-full border-b-2 border-ink object-cover"
+                    className="aspect-16/10 w-full border-b-2 border-ink object-cover"
                   />
                 )}
                 <div className="flex flex-1 flex-col p-5">

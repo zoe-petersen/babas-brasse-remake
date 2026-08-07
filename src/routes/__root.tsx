@@ -81,14 +81,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Babas & Brasse — Arts & Culture Magazine" },
+      { title: "Babas & Brasse | Arts & Culture Magazine" },
       {
         name: "description",
         content:
           "An independent South African magazine of reviews, essays, interviews, photography and art.",
       },
       { name: "author", content: "Babas & Brasse" },
-      { property: "og:title", content: "Babas & Brasse — Arts & Culture Magazine" },
+      { property: "og:title", content: "Babas & Brasse | Arts & Culture Magazine" },
       {
         property: "og:description",
         content: "Reviews, essays, interviews, photography and art from South African voices.",
@@ -107,7 +107,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.png", type: "image/png" },
+      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
   shellComponent: RootShell,

@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Menu, X } from "lucide-react";
-import logoAsset from "@/assets/logo-real.png.asset.json";
+import logoAsset from "@/assets/logo.png";
 import { categoriesQuery } from "@/lib/magazine";
 import { SocialRow } from "./SocialRow";
 import { cn } from "@/lib/utils";
@@ -28,7 +28,7 @@ export function SiteHeader() {
       <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr] items-center gap-4 px-4 py-1.5 sm:px-6 lg:px-8">
         <Link to="/" className="shrink-0">
           <img
-            src={logoAsset.url}
+            src={logoAsset}
             alt="Babas and Brasse"
             className="h-16 w-auto"
             width={500}

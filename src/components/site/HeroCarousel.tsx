@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import slide1 from "@/assets/hero-1.jpeg.asset.json";
-import slide2 from "@/assets/hero-2.webp.asset.json";
-import slide3 from "@/assets/hero-3.webp.asset.json";
+import slide1 from "@/assets/hero1.jpeg";
+import slide2 from "@/assets/hero2.webp";
+import slide3 from "@/assets/hero3.webp";
 import { cn } from "@/lib/utils";
 
 type Slide = {
@@ -15,20 +15,18 @@ type Slide = {
 
 const SLIDES: Slide[] = [
   {
-    src: slide1.url,
-    alt: "Babas and Brasse — South African arts and culture collage",
+    src: slide1,
+    alt: "Babas and Brasse - South African arts and culture collage",
   },
   {
-    src: slide2.url,
+    src: slide2,
     alt: "Musicians, makers and street artists at work in the city",
-    eyebrow: "Arts · Culture · Criticism",
     title: "The city makes the culture",
-    copy: "Jazz rooms, sewing tables, walls turned into canvases — we cover the people making it happen.",
+    copy: "Jazz rooms, sewing tables, walls turned into canvases, we cover the people making it happen.",
   },
   {
-    src: slide3.url,
+    src: slide3,
     alt: "A dancer performing on an open-air stage below Table Mountain",
-    eyebrow: "Theatre · Books · Performance",
     title: "Stories told out loud",
     copy: "Theatre reviews, readings and performance writing from stages across South Africa.",
   },
@@ -55,7 +53,7 @@ export function HeroCarousel() {
     <section
       aria-roledescription="carousel"
       aria-label="Babas & Brasse highlights"
-      className="relative h-[calc(100svh-4rem)] min-h-[520px] w-full overflow-hidden border-b-2 border-ink bg-ink"
+      className="relative h-[calc(100svh-4rem)] min-h-130 w-full overflow-hidden border-b-2 border-ink bg-ink"
     >
       {SLIDES.map((slide, i) => (
         <div
@@ -77,9 +75,6 @@ export function HeroCarousel() {
               <div className="absolute inset-0 bg-ink/55" />
               <div className="absolute inset-0 grid place-items-center px-6">
                 <div className="max-w-3xl text-center">
-                  <p className="label-xs inline-block bg-magenta px-4 py-2 text-ink">
-                    {slide.eyebrow}
-                  </p>
                   <h2 className="mt-6 font-display text-4xl leading-[0.95] text-cream drop-shadow-[3px_3px_0_var(--ink)] sm:text-6xl lg:text-7xl">
                     {slide.title}
                   </h2>
@@ -89,13 +84,7 @@ export function HeroCarousel() {
                 </div>
               </div>
             </>
-          ) : (
-            <div className="absolute inset-x-0 bottom-24 grid place-items-center px-6 text-center">
-              <p className="label-xs bg-ink/70 px-4 py-2 text-cream">
-                Arts &middot; Culture &middot; Criticism
-              </p>
-            </div>
-          )}
+          ) : null}
         </div>
       ))}
 

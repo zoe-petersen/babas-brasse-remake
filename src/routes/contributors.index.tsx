@@ -8,13 +8,13 @@ import { EmptyState } from "@/components/site/EmptyState";
 export const Route = createFileRoute("/contributors/")({
   head: () => ({
     meta: [
-      { title: "Contributors — Babas & Brasse" },
+      { title: "Contributors | Babas & Brasse" },
       {
         name: "description",
         content:
           "Meet the writers, reviewers, essayists and cultural voices behind Babas & Brasse.",
       },
-      { property: "og:title", content: "Contributors — Babas & Brasse" },
+      { property: "og:title", content: "Contributors | Babas & Brasse" },
       {
         property: "og:description",
         content: "Writers, reviewers, essayists, and cultural voices of the magazine.",
@@ -47,7 +47,7 @@ function ContributorsPage() {
             cultural voices.
           </>
         }
-        intro="The people who make the magazine — critics, photographers, poets and editors writing from across South Africa."
+        intro="The people who make the magazine - critics, photographers, poets and editors writing from across South Africa."
       >
         <ActionLink to="/contact" label="Write for us" />
       </PageHero>
@@ -59,7 +59,7 @@ function ContributorsPage() {
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {people.map((person) => (
               <article key={person.id} className="flex flex-col border-2 border-ink bg-background">
-                <div className="aspect-[16/10] overflow-hidden border-b-2 border-ink bg-cream">
+                <div className="aspect-16/10 overflow-hidden border-b-2 border-ink bg-cream">
                   {person.image_url ? (
                     <img
                       src={person.image_url}
