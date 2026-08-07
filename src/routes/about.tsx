@@ -96,29 +96,75 @@ function AboutPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid items-center gap-10 lg:grid-cols-[1.3fr_1fr]">
+        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
-            <h2 className="text-3xl sm:text-4xl">What&rsquo;s in the name?</h2>
-            <div className="mt-5 space-y-5 text-base leading-relaxed text-muted-foreground">
-              <p>
-                &ldquo;Babas&rdquo; and &ldquo;brasse&rdquo; are how people here greet each other —
-                familiar, warm, a little cheeky. It is the language of the stoep, the taxi rank and
-                the theatre foyer.
-              </p>
-              <p>
-                We wanted a name that sounded like a conversation rather than an institution.
-                That is the tone we aim for on every page.
-              </p>
+            <p className="label-xs text-magenta">02 &mdash; What&rsquo;s in the name</p>
+            <h2 className="mt-4 text-3xl leading-[1.05] sm:text-4xl lg:text-5xl">
+              A greeting,
+              <br />
+              not an institution.
+            </h2>
+            <div className="mt-6 flex items-center gap-3">
+              <span className="h-1 w-16 bg-forest" />
+              <span className="h-1 w-6 bg-magenta" />
+            </div>
+            <div className="hard-shadow mt-8 hidden place-items-center border-2 border-ink bg-cream p-8 lg:grid">
+              <img
+                src={logoAsset.url}
+                alt="Babas & Brasse logo"
+                loading="lazy"
+                width={500}
+                height={500}
+                className="w-full max-w-[220px]"
+              />
             </div>
           </div>
-          <div className="hard-shadow grid place-items-center border-2 border-ink bg-cream p-10">
-            <img
-              src={logoAsset.url}
-              alt="Babas & Brasse logo"
-              width={500}
-              height={500}
-              className="w-full max-w-[260px]"
-            />
+
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div className="hard-shadow border-2 border-ink bg-cream p-6">
+              <p className="font-display text-4xl text-forest-deep">Babas</p>
+              <p className="mt-3 text-base leading-relaxed">
+                The familiar hello — warm, a little cheeky. The language of the stoep, the taxi
+                rank and the theatre foyer.
+              </p>
+            </div>
+            <div className="hard-shadow border-2 border-ink bg-forest p-6 text-primary-foreground">
+              <p className="font-display text-4xl">Brasse</p>
+              <p className="mt-3 text-base leading-relaxed">
+                Your people. The ones you argue with about a play at midnight and still call in the
+                morning.
+              </p>
+            </div>
+            <div className="border-2 border-ink bg-background p-6 sm:col-span-2">
+              <p className="text-base leading-relaxed">
+                Together they sound like a conversation rather than an institution &mdash; and that
+                is the tone we aim for on every page we publish.
+              </p>
+              <div className="mt-6 grid grid-cols-3 gap-4 border-t-2 border-ink pt-6">
+                {[
+                  { value: "Kaaps", label: "Rooted in" },
+                  { value: "Talk", label: "Not lecture" },
+                  { value: "Ours", label: "Every page" },
+                ].map((item) => (
+                  <div key={item.label} className="min-w-0">
+                    <p className="font-display text-2xl text-forest-deep sm:text-3xl">
+                      {item.value}
+                    </p>
+                    <p className="label-xs mt-2 opacity-70">{item.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="hard-shadow grid place-items-center border-2 border-ink bg-cream p-8 sm:col-span-2 lg:hidden">
+              <img
+                src={logoAsset.url}
+                alt="Babas & Brasse logo"
+                loading="lazy"
+                width={500}
+                height={500}
+                className="w-full max-w-[220px]"
+              />
+            </div>
           </div>
         </div>
       </section>

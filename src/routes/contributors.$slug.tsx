@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Facebook, Instagram, Music2 } from "lucide-react";
+import { Facebook, Instagram, Music2, Twitter } from "lucide-react";
 import {
   articlesQuery,
   contributorQuery,
@@ -55,6 +55,11 @@ function ContributorPage() {
   const socials = [
     { href: person.facebook_url, Icon: Facebook, label: "Facebook" },
     { href: person.instagram_url, Icon: Instagram, label: "Instagram" },
+    {
+      href: (person as { twitter_url?: string | null }).twitter_url,
+      Icon: Twitter,
+      label: "Twitter",
+    },
     { href: person.tiktok_url, Icon: Music2, label: "TikTok" },
   ].filter((item) => item.href);
 
@@ -88,33 +93,32 @@ function ContributorPage() {
               <span className="h-px flex-1 bg-primary-foreground/25" />
             </div>
 
-            {socials.length > 0 && (
-              <div className="mt-6">
-                <p className="label-xs opacity-70">Follow</p>
-                <div className="mt-3 flex justify-center gap-3">
-                  {socials.map(({ href, Icon, label }) => (
-                    <a
-                      key={label}
-                      href={href!}
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label={`${person.name} on ${label}`}
-                      className="grid h-10 w-10 place-items-center rounded-full border border-primary-foreground/50 transition-colors hover:bg-magenta hover:text-ink"
-                    >
-                      <Icon className="h-4 w-4" />
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="mt-8">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
               <ActionLink
                 to="/contributors"
                 variant="outline"
                 label="All contributors"
                 className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-forest-deep"
               />
+              {socials.length > 0 && (
+                <>
+                  <span className="hidden h-8 w-px bg-primary-foreground/30 sm:block" />
+                  <div className="flex items-center gap-2">
+                    {socials.map(({ href, Icon, label }) => (
+                      <a
+                        key={label}
+                        href={href!}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={`${person.name} on ${label}`}
+                        className="grid h-9 w-9 place-items-center rounded-full border border-primary-foreground/50 transition-colors hover:bg-magenta hover:text-ink"
+                      >
+                        <Icon className="h-4 w-4" />
+                      </a>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

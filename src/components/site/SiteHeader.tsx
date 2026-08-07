@@ -25,12 +25,12 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 border-b-2 border-ink bg-background">
-      <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr] items-center gap-4 px-4 py-3 sm:px-6 lg:px-8">
+      <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr] items-center gap-4 px-4 py-1.5 sm:px-6 lg:px-8">
         <Link to="/" className="shrink-0">
           <img
             src={logoAsset.url}
             alt="Babas and Brasse"
-            className="h-11 w-auto"
+            className="h-16 w-auto"
             width={500}
             height={500}
           />
