@@ -61,7 +61,7 @@ function ContributorPage() {
   return (
     <div>
       <section className="border-b-2 border-ink">
-        <div className="mx-auto grid max-w-7xl gap-0 px-4 py-12 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:px-8">
+        <div className="mx-auto grid max-w-5xl gap-0 px-4 py-12 sm:px-6 lg:grid-cols-[0.75fr_1fr] lg:px-8">
           <div className="border-2 border-ink bg-cream">
             {person.image_url ? (
               <img
@@ -72,20 +72,26 @@ function ContributorPage() {
                 className="aspect-[4/5] w-full object-cover"
               />
             ) : (
-              <div className="grid aspect-[4/5] place-items-center font-display text-7xl text-forest-deep">
+              <div className="grid aspect-[4/5] place-items-center font-display text-6xl text-forest-deep">
                 {initials(person.name)}
               </div>
             )}
           </div>
-          <div className="border-2 border-t-0 border-ink bg-forest p-8 text-primary-foreground lg:border-l-0 lg:border-t-2">
+          <div className="flex flex-col items-center justify-center border-2 border-t-0 border-ink bg-forest p-8 text-center text-primary-foreground lg:border-l-0 lg:border-t-2">
             <p className="label-xs text-magenta">{person.role_title}</p>
-            <h1 className="mt-3 text-4xl sm:text-5xl">{person.name}</h1>
-            <p className="mt-5 text-sm opacity-90">{person.bio}</p>
+            <h1 className="mt-3 text-3xl sm:text-4xl">{person.name}</h1>
+            <p className="mt-5 max-w-md text-sm opacity-90">{person.bio}</p>
+
+            <div className="mt-8 flex w-full max-w-sm items-center gap-3">
+              <span className="h-px flex-1 bg-primary-foreground/25" />
+              <span className="h-2 w-2 rotate-45 bg-magenta" />
+              <span className="h-px flex-1 bg-primary-foreground/25" />
+            </div>
 
             {socials.length > 0 && (
-              <div className="mt-8 border-t border-primary-foreground/20 pt-6">
+              <div className="mt-6">
                 <p className="label-xs opacity-70">Follow</p>
-                <div className="mt-3 flex gap-3">
+                <div className="mt-3 flex justify-center gap-3">
                   {socials.map(({ href, Icon, label }) => (
                     <a
                       key={label}

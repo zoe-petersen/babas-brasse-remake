@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowUpRight } from "lucide-react";
-import heroBanner from "@/assets/hero-banner.jpg";
 import { articlesQuery, categoriesQuery, formatDate } from "@/lib/magazine";
+import { HeroCarousel } from "@/components/site/HeroCarousel";
 import { ArticleCard } from "@/components/site/ArticleCard";
 import { SectionHeading } from "@/components/site/SectionHeading";
 import { ActionLink } from "@/components/site/ActionLink";
@@ -42,25 +42,7 @@ function HomePage() {
 
   return (
     <div>
-      <section className="relative border-b-2 border-ink">
-        <img
-          src={heroBanner}
-          alt="Babas and Brasse — South African arts and culture"
-          width={1920}
-          height={912}
-          className="h-[38vw] max-h-[520px] min-h-[220px] w-full object-cover"
-        />
-        <div className="absolute inset-0 grid place-items-center px-6 text-center">
-          <div>
-            <h1 className="font-display text-[9vw] leading-[0.85] text-cream drop-shadow-[3px_3px_0_var(--ink)] sm:text-6xl lg:text-7xl">
-              Babas &amp; Brasse
-            </h1>
-            <p className="label-xs mt-4 text-cream drop-shadow-[2px_2px_0_var(--ink)]">
-              Arts &middot; Culture &middot; Criticism
-            </p>
-          </div>
-        </div>
-      </section>
+      <HeroCarousel />
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <SectionHeading
@@ -157,7 +139,7 @@ function HomePage() {
         </section>
       )}
 
-      <section className="relative overflow-hidden border-y-2 border-ink bg-forest text-primary-foreground">
+      <section className="relative mb-20 overflow-hidden border-y-2 border-ink bg-forest text-primary-foreground">
         <div className="absolute -right-16 -top-10 hidden h-80 w-80 rounded-full bg-magenta lg:block" />
         <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-16 sm:px-6 lg:grid-cols-[1.5fr_auto] lg:items-center lg:px-8">
           <div>
