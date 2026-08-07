@@ -46,32 +46,34 @@ function PhotographyPage() {
         {photographs.length === 0 ? (
           <EmptyState message="No photographs have been published yet." />
         ) : (
-          <div className="grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-x-10 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
             {photographs.map((photo, index) => (
               <figure
                 key={photo.id}
-                className={`group relative bg-cream p-3 pb-10 shadow-[10px_12px_0_0_var(--ink)] transition-transform duration-300 hover:rotate-0 ${TILTS[index % TILTS.length]}`}
+                style={{ rotate: TILTS[index % TILTS.length] }}
+                className="group relative border-2 border-ink bg-[linear-gradient(135deg,#fffdf8_0%,#efe2c8_100%)] p-3 shadow-[2px_4px_15px_rgba(0,0,0,0.14),8px_8px_0_0_var(--ink)] transition-[rotate,scale,box-shadow] duration-300 hover:z-20 hover:scale-[1.035] hover:shadow-[5px_15px_30px_rgba(0,0,0,0.2),8px_8px_0_0_var(--magenta)] sm:hover:!rotate-0"
               >
                 <span
                   aria-hidden
-                  className={`absolute -top-4 left-1/2 h-8 w-24 -translate-x-1/2 border border-ink/20 bg-cream/80 backdrop-blur-[1px] ${TAPE_TILTS[index % TAPE_TILTS.length]}`}
+                  className="pointer-events-none absolute -top-3 left-1/2 z-10 h-[26px] w-[88px] -translate-x-1/2 -rotate-2 bg-[rgba(230,215,185,0.88)] mix-blend-multiply shadow-[0_1px_3px_rgba(0,0,0,0.18)]"
                 />
-                <div className="relative overflow-hidden">
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute -right-[22px] bottom-6 z-10 hidden h-[26px] w-[88px] -rotate-45 bg-[rgba(230,215,185,0.88)] mix-blend-multiply shadow-[0_1px_3px_rgba(0,0,0,0.18)] sm:block"
+                />
+                <div className="relative">
                   <img
                     src={photo.image_url}
                     alt={photo.caption ?? "Photograph"}
                     loading="lazy"
                     width={900}
                     height={700}
-                    className="aspect-[4/3] w-full object-cover"
+                    className="block aspect-[4/3] w-full border-[3px] border-ink object-cover"
                   />
-                  <figcaption className="absolute inset-0 flex translate-y-2 flex-col justify-end bg-ink/80 p-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                    <span className="block h-1 w-10 bg-forest" aria-hidden />
-                    <p className="mt-3 font-display text-lg leading-snug text-cream">
-                      {photo.caption}
-                    </p>
+                  <figcaption className="absolute inset-x-3 bottom-3 z-20 grid translate-y-2 gap-2 border-2 border-ink bg-[linear-gradient(180deg,color-mix(in_oklab,var(--forest)_92%,transparent),color-mix(in_oklab,var(--ink)_96%,transparent))] p-4 opacity-0 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.16)] transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100">
+                    <p className="font-display text-lg leading-snug text-cream">{photo.caption}</p>
                     {photo.credit && (
-                      <p className="label-xs mt-2 text-cream/70">{photo.credit}</p>
+                      <p className="label-xs text-cream/75">{photo.credit}</p>
                     )}
                   </figcaption>
                 </div>
