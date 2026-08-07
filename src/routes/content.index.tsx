@@ -144,7 +144,7 @@ function ContentPage() {
                 <div
                   key={category.id}
                   className={cn(
-                    "hard-shadow flex flex-col border-2 border-ink p-6",
+                    "hard-shadow flex flex-col border-2 border-ink p-6 transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[12px_12px_0_0_var(--magenta)]",
                     dark ? "bg-ink text-cream" : "bg-cream",
                   )}
                 >
