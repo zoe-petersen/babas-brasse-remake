@@ -59,7 +59,7 @@ function ContributorsPage() {
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {people.map((person) => (
               <article key={person.id} className="flex flex-col border-2 border-ink bg-background">
-                <div className="aspect-[4/5] overflow-hidden border-b-2 border-ink bg-cream">
+                <div className="aspect-[16/10] overflow-hidden border-b-2 border-ink bg-cream">
                   {person.image_url ? (
                     <img
                       src={person.image_url}
@@ -70,16 +70,16 @@ function ContributorsPage() {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="grid h-full place-items-center font-display text-5xl text-forest-deep">
+                    <div className="grid h-full place-items-center font-display text-4xl text-forest-deep">
                       {initials(person.name)}
                     </div>
                   )}
                 </div>
-                <div className="flex flex-1 flex-col p-6">
+                <div className="flex flex-1 flex-col p-5">
                   <p className="label-xs text-magenta">{person.role_title}</p>
-                  <h2 className="mt-2 text-2xl">{person.name}</h2>
-                  <p className="mt-3 text-sm text-muted-foreground">{person.bio}</p>
-                  <div className="mt-auto pt-6">
+                  <h2 className="mt-1.5 text-xl">{person.name}</h2>
+                  <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">{person.bio}</p>
+                  <div className="mt-auto pt-4">
                     <Link
                       to="/contributors/$slug"
                       params={{ slug: person.slug }}
