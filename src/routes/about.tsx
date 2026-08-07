@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import logo from "@/assets/logo.png";
+import logoAsset from "@/assets/logo-real.png.asset.json";
 import { contributorsQuery, initials } from "@/lib/magazine";
 import { ActionLink } from "@/components/site/ActionLink";
 import { SectionHeading } from "@/components/site/SectionHeading";
@@ -40,18 +40,47 @@ function AboutPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-[1fr_1.3fr]">
-          <h2 className="text-3xl sm:text-4xl">Who we are</h2>
-          <div className="space-y-5 text-base leading-relaxed text-muted-foreground">
-            <p>
-              Babas &amp; Brasse is an independent magazine covering theatre, film, books, music,
-              photography and the arguments happening around them. We publish the reviews and
-              essays that bigger outlets skip.
-            </p>
-            <p>
-              We are writers, critics, photographers and editors who believe local work deserves
-              serious, unhurried attention — and readers who deserve more than a press release.
-            </p>
+        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+          <div>
+            <p className="label-xs text-magenta">01 &mdash; Who we are</p>
+            <h2 className="mt-4 text-3xl leading-[1.05] sm:text-4xl lg:text-5xl">
+              A magazine built
+              <br />
+              on nerve and care.
+            </h2>
+            <div className="mt-6 flex items-center gap-3">
+              <span className="h-1 w-16 bg-magenta" />
+              <span className="h-1 w-6 bg-forest" />
+            </div>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div className="hard-shadow border-2 border-ink bg-cream p-6">
+              <p className="text-base leading-relaxed">
+                Babas &amp; Brasse is an independent magazine covering theatre, film, books, music,
+                photography and the arguments happening around them. We publish the reviews and
+                essays that bigger outlets skip.
+              </p>
+            </div>
+            <div className="hard-shadow border-2 border-ink bg-forest p-6 text-primary-foreground">
+              <p className="text-base leading-relaxed">
+                We are writers, critics, photographers and editors who believe local work deserves
+                serious, unhurried attention &mdash; and readers who deserve more than a press
+                release.
+              </p>
+            </div>
+            <div className="grid grid-cols-3 gap-4 border-2 border-ink bg-background p-6 sm:col-span-2">
+              {[
+                { value: "100%", label: "Independent" },
+                { value: "SA", label: "Voices first" },
+                { value: "Always", label: "Open to pitches" },
+              ].map((item) => (
+                <div key={item.label} className="min-w-0">
+                  <p className="font-display text-2xl text-forest-deep sm:text-3xl">{item.value}</p>
+                  <p className="label-xs mt-2 opacity-70">{item.label}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -83,7 +112,13 @@ function AboutPage() {
             </div>
           </div>
           <div className="hard-shadow grid place-items-center border-2 border-ink bg-cream p-10">
-            <img src={logo} alt="Babas & Brasse logo" width={420} height={420} className="w-full max-w-[240px]" />
+            <img
+              src={logoAsset.url}
+              alt="Babas & Brasse logo"
+              width={500}
+              height={500}
+              className="w-full max-w-[260px]"
+            />
           </div>
         </div>
       </section>
