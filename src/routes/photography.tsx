@@ -4,8 +4,7 @@ import { photographsQuery } from "@/lib/magazine";
 import { ActionLink } from "@/components/site/ActionLink";
 import { EmptyState } from "@/components/site/EmptyState";
 
-const TILTS = ["-rotate-3", "rotate-2", "-rotate-1", "rotate-3", "-rotate-2", "rotate-1"];
-const TAPE_TILTS = ["rotate-2", "-rotate-3", "rotate-1", "-rotate-2", "rotate-3", "-rotate-1"];
+const TILTS = ["-2deg", "3deg", "-1deg", "4deg", "-3deg", "2deg"];
 
 export const Route = createFileRoute("/photography")({
   head: () => ({
