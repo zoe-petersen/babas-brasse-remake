@@ -5,6 +5,7 @@ import { ActionLink } from "@/components/site/ActionLink";
 import { EmptyState } from "@/components/site/EmptyState";
 
 const TILTS = ["-rotate-3", "rotate-2", "-rotate-1", "rotate-3", "-rotate-2", "rotate-1"];
+const TAPE_TILTS = ["rotate-2", "-rotate-3", "rotate-1", "-rotate-2", "rotate-3", "-rotate-1"];
 
 export const Route = createFileRoute("/photography")({
   head: () => ({
@@ -46,24 +47,35 @@ function PhotographyPage() {
         {photographs.length === 0 ? (
           <EmptyState message="No photographs have been published yet." />
         ) : (
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
             {photographs.map((photo, index) => (
               <figure
                 key={photo.id}
-                className={`hard-shadow border-2 border-ink bg-background p-3 transition-transform duration-300 hover:rotate-0 ${TILTS[index % TILTS.length]}`}
+                className={`group relative bg-cream p-3 pb-10 shadow-[10px_12px_0_0_var(--ink)] transition-transform duration-300 hover:rotate-0 ${TILTS[index % TILTS.length]}`}
               >
-                <img
-                  src={photo.image_url}
-                  alt={photo.caption ?? "Photograph"}
-                  loading="lazy"
-                  width={900}
-                  height={900}
-                  className="aspect-square w-full border border-ink object-cover"
+                <span
+                  aria-hidden
+                  className={`absolute -top-4 left-1/2 h-8 w-24 -translate-x-1/2 border border-ink/20 bg-cream/80 backdrop-blur-[1px] ${TAPE_TILTS[index % TAPE_TILTS.length]}`}
                 />
-                <figcaption className="px-1 pb-1 pt-3">
-                  <p className="text-sm font-semibold">{photo.caption}</p>
-                  {photo.credit && <p className="label-xs mt-1 opacity-60">{photo.credit}</p>}
-                </figcaption>
+                <div className="relative overflow-hidden">
+                  <img
+                    src={photo.image_url}
+                    alt={photo.caption ?? "Photograph"}
+                    loading="lazy"
+                    width={900}
+                    height={700}
+                    className="aspect-[4/3] w-full object-cover"
+                  />
+                  <figcaption className="absolute inset-0 flex translate-y-2 flex-col justify-end bg-ink/80 p-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                    <span className="block h-1 w-10 bg-forest" aria-hidden />
+                    <p className="mt-3 font-display text-lg leading-snug text-cream">
+                      {photo.caption}
+                    </p>
+                    {photo.credit && (
+                      <p className="label-xs mt-2 text-cream/70">{photo.credit}</p>
+                    )}
+                  </figcaption>
+                </div>
               </figure>
             ))}
           </div>
