@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import logo from "@/assets/logo.png";
+import logoAsset from "@/assets/logo-real.png.asset.json";
 import { SocialRow } from "./SocialRow";
 
 const EXPLORE = [
@@ -26,12 +26,12 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-7xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.2fr_1fr_1fr_1.3fr] lg:px-8">
         <div>
           <img
-            src={logo}
+            src={logoAsset.url}
             alt="Babas and Brasse"
             loading="lazy"
-            width={1088}
-            height={624}
-            className="h-14 w-auto brightness-0 invert"
+            width={500}
+            height={500}
+            className="h-20 w-auto brightness-0 invert"
           />
           <p className="mt-6 max-w-xs text-sm opacity-90">
             Culture, criticism, and creative work made with nerve, care, and a point of view.
