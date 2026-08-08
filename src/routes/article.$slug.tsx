@@ -1,15 +1,17 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { CalendarDays, Clock, MessageCircle, Tag } from "lucide-react";
+import { CalendarDays, Clock, Eye, MessageCircle, Tag } from "lucide-react";
 import { toast } from "sonner";
 import {
   articleQuery,
   articlesQuery,
+  articleViewsQuery,
   commentsQuery,
   formatDate,
   formatLongDate,
   initials,
+  registerArticleView,
 } from "@/lib/magazine";
 import { supabase } from "@/integrations/supabase/client";
 import { ActionLink } from "@/components/site/ActionLink";
@@ -99,6 +101,7 @@ function ArticlePage() {
                 value={`${article.read_minutes} min read`}
               />
               <CommentCount articleId={article.id} />
+              <ViewCount articleId={article.id} />
             </dl>
           </aside>
         </div>
@@ -153,6 +156,8 @@ function ArticlePage() {
         )}
       </article>
 
+      <Comments articleId={article.id} onSubmitted={() => queryClient.invalidateQueries({ queryKey: ["comments", article.id] })} />
+
       <section className="border-y-2 border-ink bg-cream">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <SectionHeading
@@ -191,8 +196,6 @@ function ArticlePage() {
           </div>
         </div>
       </section>
-
-      <Comments articleId={article.id} onSubmitted={() => queryClient.invalidateQueries({ queryKey: ["comments", article.id] })} />
     </div>
   );
 }
@@ -212,6 +215,27 @@ function CommentCount({ articleId }: { articleId: string }) {
     <Meta
       icon={<MessageCircle className="h-3.5 w-3.5" />}
       value={`${data.length} ${data.length === 1 ? "comment" : "comments"}`}
+    />
+  );
+}
+
+function ViewCount({ articleId }: { articleId: string }) {
+  const queryClient = useQueryClient();
+  const { data = 0 } = useQuery(articleViewsQuery(articleId));
+
+  useEffect(() => {
+    const key = `viewed:${articleId}`;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+    registerArticleView(articleId)
+      .then((views) => queryClient.setQueryData(["article-views", articleId], views))
+      .catch(() => undefined);
+  }, [articleId, queryClient]);
+
+  return (
+    <Meta
+      icon={<Eye className="h-3.5 w-3.5" />}
+      value={`${data} ${data === 1 ? "view" : "views"}`}
     />
   );
 }
@@ -263,7 +287,7 @@ function Comments({ articleId, onSubmitted }: { articleId: string; onSubmitted: 
       </div>
 
       <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_1.4fr]">
-        <div className="space-y-4">
+        <div className="max-h-[26rem] space-y-4 overflow-y-auto pr-2">
           {comments.length === 0 ? (
             <div className="border-2 border-ink bg-forest p-6 text-primary-foreground">
               <MessageCircle className="h-5 w-5 text-magenta" />

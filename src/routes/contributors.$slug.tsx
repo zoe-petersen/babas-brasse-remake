@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Facebook, Instagram, Music2, Twitter } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Mail, Music2, Twitter } from "lucide-react";
 import {
   articlesQuery,
   contributorQuery,
@@ -53,20 +53,18 @@ function ContributorPage() {
   const theirs = articles.filter((article) => article.contributors?.slug === person.slug);
 
   const socials = [
-    { href: person.facebook_url, Icon: Facebook, label: "Facebook" },
     { href: person.instagram_url, Icon: Instagram, label: "Instagram" },
-    {
-      href: (person as { twitter_url?: string | null }).twitter_url,
-      Icon: Twitter,
-      label: "Twitter",
-    },
+    { href: person.facebook_url, Icon: Facebook, label: "Facebook" },
+    { href: person.twitter_url, Icon: Twitter, label: "Twitter" },
     { href: person.tiktok_url, Icon: Music2, label: "TikTok" },
+    { href: person.linkedin_url, Icon: Linkedin, label: "LinkedIn" },
+    { href: person.email ? `mailto:${person.email}` : null, Icon: Mail, label: "Email" },
   ].filter((item) => item.href);
 
   return (
     <div>
       <section className="border-b-2 border-ink">
-        <div className="mx-auto grid max-w-5xl gap-0 px-4 py-12 sm:px-6 lg:grid-cols-[0.75fr_1fr] lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-0 px-4 py-12 sm:px-6 lg:grid-cols-[0.85fr_1.15fr] lg:px-8">
           <div className="border-2 border-ink bg-cream">
             {person.image_url ? (
               <img
@@ -85,30 +83,24 @@ function ContributorPage() {
           <div className="flex flex-col items-center justify-center border-2 border-t-0 border-ink bg-forest p-8 text-center text-primary-foreground lg:border-l-0 lg:border-t-2">
             <p className="label-xs text-magenta">{person.role_title}</p>
             <h1 className="mt-3 text-3xl sm:text-4xl">{person.name}</h1>
-            <p className="mt-5 max-w-md text-sm opacity-90">{person.bio}</p>
+            <p className="mt-5 max-w-2xl text-base leading-relaxed opacity-90">{person.bio}</p>
 
-            <div className="mt-8 flex w-full max-w-sm items-center gap-3">
+            <div className="mt-8 flex w-full max-w-md items-center gap-3">
               <span className="h-px flex-1 bg-primary-foreground/25" />
               <span className="h-2 w-2 rotate-45 bg-magenta" />
               <span className="h-px flex-1 bg-primary-foreground/25" />
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-              <ActionLink
-                to="/contributors"
-                variant="outline"
-                label="All contributors"
-                className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-forest-deep"
-              />
+            <div className="mt-8 flex flex-col items-center gap-5">
               {socials.length > 0 && (
-                <>
-                  <span className="hidden h-8 w-px bg-primary-foreground/30 sm:block" />
-                  <div className="flex items-center gap-2">
+                <div className="flex flex-col items-center gap-3">
+                  <p className="label-xs text-magenta">Follow</p>
+                  <div className="flex flex-wrap items-center justify-center gap-2">
                     {socials.map(({ href, Icon, label }) => (
                       <a
                         key={label}
                         href={href!}
-                        target="_blank"
+                        target={href!.startsWith("mailto:") ? undefined : "_blank"}
                         rel="noreferrer"
                         aria-label={`${person.name} on ${label}`}
                         className="grid h-9 w-9 place-items-center rounded-full border border-primary-foreground/50 transition-colors hover:bg-magenta hover:text-ink"
@@ -117,8 +109,23 @@ function ContributorPage() {
                       </a>
                     ))}
                   </div>
-                </>
+                </div>
               )}
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <ActionLink
+                  to="/contributors"
+                  variant="outline"
+                  label="All contributors"
+                  className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-forest-deep"
+                />
+                <ActionLink
+                  to="/contact"
+                  variant="outline"
+                  showArrow={false}
+                  label="Submit your work"
+                  className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-forest-deep"
+                />
+              </div>
             </div>
           </div>
         </div>
