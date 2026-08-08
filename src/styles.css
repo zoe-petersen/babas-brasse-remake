@@ -24,6 +24,10 @@
   line-height: 1.2;
 }
 
+@utility font-sabon {
+  font-family: "Sabon", "Sabon LT Std", var(--font-body);
+}
+
 @utility edge-line {
   border-top: 2px solid var(--ink);
 }

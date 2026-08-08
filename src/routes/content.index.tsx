@@ -65,14 +65,22 @@ function ContentPage() {
           >
             Browse the archive →
           </a>
-          <ActionLink to="/contributors" variant="outline" label="Meet the voices" showArrow={false} />
+          <ActionLink
+            to="/contributors"
+            variant="outline"
+            label="Meet the voices"
+            showArrow={false}
+          />
         </div>
       </PageHero>
 
       <div className="border-b-2 border-ink">
         <div className="mx-auto grid max-w-7xl sm:grid-cols-3">
           {stats.map((stat) => (
-            <div key={stat.label} className="border-b border-ink/20 px-6 py-8 sm:border-b-0 sm:border-r sm:last:border-r-0">
+            <div
+              key={stat.label}
+              className="border-b border-ink/20 px-6 py-8 sm:border-b-0 sm:border-r sm:last:border-r-0"
+            >
               <div className="flex items-center justify-between gap-4">
                 <span className="font-display text-4xl text-forest-deep">
                   {String(stat.value).padStart(2, "0")}
@@ -96,27 +104,29 @@ function ContentPage() {
                   className="hard-shadow flex flex-col border-2 border-ink bg-cream p-6 transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[12px_12px_0_0_var(--magenta)]"
                 >
                   <div className="flex items-start justify-between gap-4">
-                    <span className="label-xs opacity-70">
-                      {items.length} {items.length === 1 ? "piece" : "pieces"}
-                    </span>
+                    <span className="label-xs text-forest-deep">Magazine section</span>
                     <span className="font-display text-2xl text-magenta">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                   </div>
                   <h3 className="mt-2 text-2xl">{category.name}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    {category.description}
-                  </p>
+                  <p className="mt-2 text-sm text-muted-foreground">{category.description}</p>
                   <ul className="mt-5 space-y-2 text-sm">
                     {items.slice(0, 3).map((item) => (
                       <li key={item.id} className="border-t border-current/20 pt-2 font-semibold">
-                        <Link to="/article/$slug" params={{ slug: item.slug }} className="hover:underline">
+                        <Link
+                          to="/article/$slug"
+                          params={{ slug: item.slug }}
+                          className="hover:underline"
+                        >
                           {item.title}
                         </Link>
                       </li>
                     ))}
                     {items.length === 0 && (
-                      <li className="pt-2 text-sm opacity-70">No published pieces in this section yet.</li>
+                      <li className="pt-2 text-sm opacity-70">
+                        No published pieces in this section yet.
+                      </li>
                     )}
                   </ul>
                   <div className="mt-6 pt-2">

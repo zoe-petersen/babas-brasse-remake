@@ -23,18 +23,21 @@ export const Route = createFileRoute("/contact")({
 const EMPTY = { name: "", email: "", subject: "", message: "" };
 
 const SUBJECTS = [
-  "Article Submission",
-  "Photography Submission",
-  "Poetry Submission",
-  "Short Story Submission",
-  "Collaboration",
   "General Enquiry",
-  "Other",
+  "Literature",
+  "Opinion",
+  "Interviews",
+  "Short Stories",
+  "Theatre",
+  "Fashion",
+  "Music",
+  "Art",
+  "Articles",
 ];
 
 const GUIDELINES = [
   "Pitches should be a short paragraph - the idea, why now, and why you.",
-  "Reviews run 600-1200 words. Essays can stretch further if the argument earns it.",
+  "Articles generally run 600-1200 words. Essays can stretch further if the argument earns it.",
   "Photography submissions: 5-10 images, high resolution, with captions and credits.",
   "We respond to everything we can within two weeks.",
 ];
@@ -71,7 +74,9 @@ function ContactPage() {
                   key={item}
                   className="flex gap-3 border-t border-primary-foreground/20 pt-4 font-body text-base opacity-90"
                 >
-                  <span className="label-xs text-magenta">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="label-xs text-magenta">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
                   {item}
                 </li>
               ))}
@@ -101,13 +106,15 @@ function ContactPage() {
               />
             </div>
             <div className="mt-5">
-              <label className="block font-body text-base font-semibold">
+              <label className="font-sabon block text-[17px] font-semibold">
                 Subject
                 <select
                   required
                   value={form.subject}
-                  onChange={(event) => setForm((prev) => ({ ...prev, subject: event.target.value }))}
-                  className="mt-2 w-full border-2 border-ink bg-cream p-3 font-body text-base outline-none focus:border-magenta"
+                  onChange={(event) =>
+                    setForm((prev) => ({ ...prev, subject: event.target.value }))
+                  }
+                  className="font-sabon mt-2 w-full border-2 border-ink bg-cream p-3 text-[17px] font-normal outline-none focus:border-magenta"
                 >
                   <option value="" disabled>
                     Select a subject
@@ -120,14 +127,14 @@ function ContactPage() {
                 </select>
               </label>
             </div>
-            <label className="mt-5 block font-body text-base font-semibold">
+            <label className="font-sabon mt-5 block text-[17px] font-semibold">
               Message
               <textarea
                 required
                 rows={7}
                 value={form.message}
                 onChange={(event) => setForm((prev) => ({ ...prev, message: event.target.value }))}
-                className="mt-2 w-full border-2 border-ink bg-cream p-3 font-body text-base font-normal outline-none focus:border-magenta"
+                className="font-sabon mt-2 w-full border-2 border-ink bg-cream p-3 text-[17px] font-normal outline-none focus:border-magenta"
               />
             </label>
             <button
@@ -156,14 +163,14 @@ function Field({
   type?: string;
 }) {
   return (
-    <label className="block font-body text-base font-semibold">
+    <label className="font-sabon block text-[17px] font-semibold">
       {label}
       <input
         required
         type={type}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-2 w-full border-2 border-ink bg-cream p-3 font-body text-base font-normal outline-none focus:border-magenta"
+        className="font-sabon mt-2 w-full border-2 border-ink bg-cream p-3 text-[17px] font-normal outline-none focus:border-magenta"
       />
     </label>
   );

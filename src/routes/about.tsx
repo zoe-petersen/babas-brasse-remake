@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import logoAsset from "@/assets/logo.png";
 import { contributorsQuery, initials } from "@/lib/magazine";
-import { ActionLink } from "@/components/site/ActionLink";
 import { SectionHeading } from "@/components/site/SectionHeading";
 
 export const Route = createFileRoute("/about")({
@@ -134,8 +133,8 @@ function AboutPage() {
             <div className="hard-shadow border-2 border-ink bg-cream p-6">
               <p className="font-display text-4xl text-forest-deep">Babas</p>
               <p className="mt-3 text-base leading-relaxed">
-                The familiar hello — warm, a little cheeky. The language of the stoep, the taxi
-                rank and the theatre foyer.
+                The familiar hello — warm, a little cheeky. The language of the stoep, the taxi rank
+                and the theatre foyer.
               </p>
             </div>
             <div className="hard-shadow border-2 border-ink bg-forest p-6 text-primary-foreground">
@@ -174,7 +173,6 @@ function AboutPage() {
           <SectionHeading
             title="Meet the creative team"
             description="Tap a face to read their full bio and find them online."
-            action={<ActionLink to="/contributors" variant="underline" label="All contributors" />}
           />
           <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {team.map((person) => (

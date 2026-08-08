@@ -125,7 +125,12 @@ function ArticlePage() {
 
         <div className="mx-auto mt-12 max-w-2xl space-y-6 text-center text-lg leading-relaxed">
           {(article.body ?? "").split("\n\n").map((paragraph, index) => (
-            <p key={index} className={index === 0 ? "text-2xl leading-snug" : "border-t border-border pt-6 text-base"}>
+            <p
+              key={index}
+              className={
+                index === 0 ? "text-2xl leading-snug" : "border-t border-border pt-6 text-base"
+              }
+            >
               {paragraph}
             </p>
           ))}
@@ -156,7 +161,10 @@ function ArticlePage() {
         )}
       </article>
 
-      <Comments articleId={article.id} onSubmitted={() => queryClient.invalidateQueries({ queryKey: ["comments", article.id] })} />
+      <Comments
+        articleId={article.id}
+        onSubmitted={() => queryClient.invalidateQueries({ queryKey: ["comments", article.id] })}
+      />
 
       <section className="border-y-2 border-ink bg-cream">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -286,8 +294,11 @@ function Comments({ articleId, onSubmitted }: { articleId: string; onSubmitted: 
         <span className="label-xs opacity-60">{comments.length} approved</span>
       </div>
 
-      <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_1.4fr]">
-        <div className="max-h-[26rem] space-y-4 overflow-y-auto pr-2">
+      <div className="mt-10 space-y-8">
+        <div
+          className="max-h-[26rem] space-y-4 overflow-y-auto border-2 border-ink bg-background p-4 pr-3 sm:p-6 sm:pr-4"
+          aria-label="Approved comments"
+        >
           {comments.length === 0 ? (
             <div className="border-2 border-ink bg-forest p-6 text-primary-foreground">
               <MessageCircle className="h-5 w-5 text-magenta" />

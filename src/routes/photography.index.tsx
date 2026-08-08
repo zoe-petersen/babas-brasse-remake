@@ -17,7 +17,10 @@ export const Route = createFileRoute("/photography/")({
           "A mood board of photography and visual art submitted by South African image-makers.",
       },
       { property: "og:title", content: "Photography | Babas & Brasse" },
-      { property: "og:description", content: "A scattered mood board of images from our contributors." },
+      {
+        property: "og:description",
+        content: "A scattered mood board of images from our contributors.",
+      },
     ],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(photographsQuery()),
@@ -47,7 +50,7 @@ function PhotographyPage() {
         {photographs.length === 0 ? (
           <EmptyState message="No photographs have been published yet." />
         ) : (
-          <div className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-8 sm:gap-y-14 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-x-0 gap-y-4 sm:gap-y-8 lg:grid-cols-3">
             {photographs.map((photo, index) => (
               <Link
                 key={photo.id}
@@ -57,7 +60,7 @@ function PhotographyPage() {
                   rotate: TILTS[index % TILTS.length],
                   marginTop: OFFSETS[index % OFFSETS.length],
                 }}
-                className="group relative border-2 border-ink bg-[linear-gradient(135deg,#fffdf8_0%,#efe2c8_100%)] p-3 shadow-[2px_4px_15px_rgba(0,0,0,0.14),8px_8px_0_0_var(--ink)] transition-[rotate,scale,box-shadow] duration-300 hover:z-20 hover:scale-[1.035] hover:shadow-[5px_15px_30px_rgba(0,0,0,0.2),8px_8px_0_0_var(--magenta)] sm:hover:rotate-0!"
+                className="group relative -mx-1 border-2 border-ink bg-[linear-gradient(135deg,#fffdf8_0%,#efe2c8_100%)] p-2 shadow-[2px_4px_15px_rgba(0,0,0,0.14),8px_8px_0_0_var(--ink)] transition-[rotate,scale,box-shadow] duration-300 odd:z-10 hover:z-20 hover:scale-[1.035] hover:shadow-[5px_15px_30px_rgba(0,0,0,0.2),8px_8px_0_0_var(--magenta)] sm:-mx-3 sm:p-3 sm:hover:rotate-0!"
               >
                 <span
                   aria-hidden
@@ -80,9 +83,7 @@ function PhotographyPage() {
                     <p className="font-display text-base leading-snug text-cream sm:text-lg">
                       {photo.title ?? photo.caption}
                     </p>
-                    {photo.credit && (
-                      <p className="label-xs text-cream/75">{photo.credit}</p>
-                    )}
+                    {photo.credit && <p className="label-xs text-cream/75">{photo.credit}</p>}
                   </div>
                 </div>
               </Link>
