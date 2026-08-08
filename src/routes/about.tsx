@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import logoAsset from "@/assets/logo.png";
 import { contributorsQuery, initials } from "@/lib/magazine";
@@ -33,7 +33,7 @@ function AboutPage() {
       <section className="border-b-2 border-ink bg-cream">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <p className="label-xs text-forest-deep">About us</p>
-          <h1 className="mt-4 max-w-3xl text-4xl leading-[1.05] sm:text-5xl lg:text-6xl">
+          <h1 className="mt-4 max-w-4xl text-5xl leading-[1.02] sm:text-6xl lg:text-7xl">
             An independent home for South African culture, criticism and creative work.
           </h1>
         </div>
@@ -43,7 +43,7 @@ function AboutPage() {
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
             <p className="label-xs text-magenta">01 &mdash; Who we are</p>
-            <h2 className="mt-4 text-3xl leading-[1.05] sm:text-4xl lg:text-5xl">
+            <h2 className="mt-4 text-4xl leading-[1.02] sm:text-5xl lg:text-6xl">
               A magazine built
               <br />
               on nerve and care.
@@ -99,11 +99,21 @@ function AboutPage() {
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
             <p className="label-xs text-magenta">02 &mdash; What&rsquo;s in the name</p>
-            <h2 className="mt-4 text-3xl leading-[1.05] sm:text-4xl lg:text-5xl">
-              A greeting,
-              <br />
-              not an institution.
-            </h2>
+            <div className="mt-4 flex items-center gap-4">
+              <h2 className="text-4xl leading-[1.02] sm:text-5xl lg:text-6xl">
+                A greeting,
+                <br />
+                not an institution.
+              </h2>
+              <img
+                src={logoAsset}
+                alt="Babas & Brasse logo"
+                loading="lazy"
+                width={200}
+                height={200}
+                className="h-20 w-20 shrink-0 object-contain sm:h-28 sm:w-28 lg:hidden"
+              />
+            </div>
             <div className="mt-6 flex items-center gap-3">
               <span className="h-1 w-16 bg-forest" />
               <span className="h-1 w-6 bg-magenta" />
@@ -155,16 +165,6 @@ function AboutPage() {
                 ))}
               </div>
             </div>
-            <div className="hard-shadow grid place-items-center border-2 border-ink bg-cream p-8 sm:col-span-2 lg:hidden">
-              <img
-                src={logoAsset}
-                alt="Babas & Brasse logo"
-                loading="lazy"
-                width={500}
-                height={500}
-                className="w-full max-w-55"
-              />
-            </div>
           </div>
         </div>
       </section>
@@ -173,11 +173,17 @@ function AboutPage() {
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <SectionHeading
             title="Meet the creative team"
+            description="Tap a face to read their full bio and find them online."
             action={<ActionLink to="/contributors" variant="underline" label="All contributors" />}
           />
           <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {team.map((person) => (
-              <div key={person.id} className="border-2 border-ink bg-background">
+              <Link
+                key={person.id}
+                to="/contributors/$slug"
+                params={{ slug: person.slug }}
+                className="group border-2 border-ink bg-background transition-transform hover:-translate-y-1"
+              >
                 <div className="aspect-4/5 border-b-2 border-ink">
                   {person.image_url ? (
                     <img
@@ -197,9 +203,12 @@ function AboutPage() {
                 <div className="p-5">
                   <h3 className="text-xl">{person.name}</h3>
                   <p className="label-xs mt-1 text-magenta">{person.role_title}</p>
-                  <p className="mt-3 text-sm text-muted-foreground">{person.bio}</p>
+                  <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">{person.bio}</p>
+                  <span className="label-xs mt-4 inline-block underline-offset-4 group-hover:underline">
+                    Read bio →
+                  </span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
