@@ -21,6 +21,7 @@ import { Route as ContentSlugRouteImport } from './routes/content.$slug'
 import { Route as ContributorsIndexRouteImport } from './routes/contributors.index'
 import { Route as ContributorsSlugRouteImport } from './routes/contributors.$slug'
 import { Route as PhotographyIndexRouteImport } from './routes/photography.index'
+import { Route as PhotographyIdRouteImport } from './routes/photography.$id'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminArticlesRouteImport } from './routes/_authenticated/admin.articles'
 import { Route as AuthenticatedAdminModerationRouteImport } from './routes/_authenticated/admin.moderation'
@@ -85,6 +86,11 @@ const PhotographyIndexRoute = PhotographyIndexRouteImport.update({
   path: '/photography/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PhotographyIdRoute = PhotographyIdRouteImport.update({
+  id: '/photography/$id',
+  path: '/photography/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -118,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/article/$slug': typeof ArticleSlugRoute
   '/content/$slug': typeof ContentSlugRoute
   '/contributors/$slug': typeof ContributorsSlugRoute
+  '/photography/$id': typeof PhotographyIdRoute
   '/content/': typeof ContentIndexRoute
   '/contributors/': typeof ContributorsIndexRoute
   '/photography/': typeof PhotographyIndexRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByTo {
   '/article/$slug': typeof ArticleSlugRoute
   '/content/$slug': typeof ContentSlugRoute
   '/contributors/$slug': typeof ContributorsSlugRoute
+  '/photography/$id': typeof PhotographyIdRoute
   '/content': typeof ContentIndexRoute
   '/contributors': typeof ContributorsIndexRoute
   '/photography': typeof PhotographyIndexRoute
@@ -153,6 +161,7 @@ export interface FileRoutesById {
   '/article/$slug': typeof ArticleSlugRoute
   '/content/$slug': typeof ContentSlugRoute
   '/contributors/$slug': typeof ContributorsSlugRoute
+  '/photography/$id': typeof PhotographyIdRoute
   '/content/': typeof ContentIndexRoute
   '/contributors/': typeof ContributorsIndexRoute
   '/photography/': typeof PhotographyIndexRoute
@@ -172,6 +181,7 @@ export interface FileRouteTypes {
     | '/article/$slug'
     | '/content/$slug'
     | '/contributors/$slug'
+    | '/photography/$id'
     | '/content/'
     | '/contributors/'
     | '/photography/'
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/article/$slug'
     | '/content/$slug'
     | '/contributors/$slug'
+    | '/photography/$id'
     | '/content'
     | '/contributors'
     | '/photography'
@@ -206,6 +217,7 @@ export interface FileRouteTypes {
     | '/article/$slug'
     | '/content/$slug'
     | '/contributors/$slug'
+    | '/photography/$id'
     | '/content/'
     | '/contributors/'
     | '/photography/'
@@ -224,6 +236,7 @@ export interface RootRouteChildren {
   ArticleSlugRoute: typeof ArticleSlugRoute
   ContentSlugRoute: typeof ContentSlugRoute
   ContributorsSlugRoute: typeof ContributorsSlugRoute
+  PhotographyIdRoute: typeof PhotographyIdRoute
   ContentIndexRoute: typeof ContentIndexRoute
   ContributorsIndexRoute: typeof ContributorsIndexRoute
   PhotographyIndexRoute: typeof PhotographyIndexRoute
@@ -315,6 +328,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PhotographyIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/photography/$id': {
+      id: '/photography/$id'
+      path: '/photography/$id'
+      fullPath: '/photography/$id'
+      preLoaderRoute: typeof PhotographyIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
       path: '/'
@@ -383,6 +403,7 @@ const rootRouteChildren: RootRouteChildren = {
   ArticleSlugRoute: ArticleSlugRoute,
   ContentSlugRoute: ContentSlugRoute,
   ContributorsSlugRoute: ContributorsSlugRoute,
+  PhotographyIdRoute: PhotographyIdRoute,
   ContentIndexRoute: ContentIndexRoute,
   ContributorsIndexRoute: ContributorsIndexRoute,
   PhotographyIndexRoute: PhotographyIndexRoute,

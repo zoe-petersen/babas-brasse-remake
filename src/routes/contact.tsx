@@ -22,6 +22,16 @@ export const Route = createFileRoute("/contact")({
 
 const EMPTY = { name: "", email: "", subject: "", message: "" };
 
+const SUBJECTS = [
+  "Article Submission",
+  "Photography Submission",
+  "Poetry Submission",
+  "Short Story Submission",
+  "Collaboration",
+  "General Enquiry",
+  "Other",
+];
+
 const GUIDELINES = [
   "Pitches should be a short paragraph - the idea, why now, and why you.",
   "Reviews run 600-1200 words. Essays can stretch further if the argument earns it.",
@@ -46,18 +56,29 @@ function ContactPage() {
 
   return (
     <div>
-      <section className="border-b-2 border-ink bg-cream">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-          <p className="label-xs text-forest-deep">Get in touch</p>
-          <h1 className="mt-3 text-4xl leading-[1.05] sm:text-5xl lg:text-6xl">Contact us</h1>
-          <p className="mt-5 max-w-xl text-base text-muted-foreground">
-            Have a pitch, a photo essay, a correction or a strong opinion? Send it through.
-          </p>
-        </div>
-      </section>
-
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-[1.3fr_1fr]">
+        <div className="grid gap-10 lg:grid-cols-[1fr_1.3fr]">
+          <aside className="border-2 border-ink bg-forest p-8 text-primary-foreground">
+            <p className="label-xs text-magenta">Get in touch</p>
+            <h1 className="mt-3 font-display text-4xl leading-[1.05] sm:text-5xl">Contact us</h1>
+            <p className="mt-5 font-body text-base opacity-90">
+              Have a pitch, a photo essay, a correction or a strong opinion? Send it through.
+            </p>
+            <h2 className="mt-10 font-display text-2xl">Submission guidelines</h2>
+            <ul className="mt-6 space-y-4">
+              {GUIDELINES.map((item, index) => (
+                <li
+                  key={item}
+                  className="flex gap-3 border-t border-primary-foreground/20 pt-4 font-body text-base opacity-90"
+                >
+                  <span className="label-xs text-magenta">{String(index + 1).padStart(2, "0")}</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <p className="label-xs mt-8 text-magenta">hello@babasenbrasse.co.za</p>
+          </aside>
+
           <form
             onSubmit={(event) => {
               event.preventDefault();
@@ -65,7 +86,7 @@ function ContactPage() {
             }}
             className="border-2 border-ink bg-background p-6 sm:p-8"
           >
-            <h2 className="text-3xl">Send your submission</h2>
+            <h2 className="font-display text-3xl sm:text-4xl">Send your submission</h2>
             <div className="mt-8 grid gap-5 sm:grid-cols-2">
               <Field
                 label="Name"
@@ -80,20 +101,33 @@ function ContactPage() {
               />
             </div>
             <div className="mt-5">
-              <Field
-                label="Subject"
-                value={form.subject}
-                onChange={(value) => setForm((prev) => ({ ...prev, subject: value }))}
-              />
+              <label className="block font-body text-base font-semibold">
+                Subject
+                <select
+                  required
+                  value={form.subject}
+                  onChange={(event) => setForm((prev) => ({ ...prev, subject: event.target.value }))}
+                  className="mt-2 w-full border-2 border-ink bg-cream p-3 font-body text-base outline-none focus:border-magenta"
+                >
+                  <option value="" disabled>
+                    Select a subject
+                  </option>
+                  {SUBJECTS.map((subject) => (
+                    <option key={subject} value={subject}>
+                      {subject}
+                    </option>
+                  ))}
+                </select>
+              </label>
             </div>
-            <label className="label-xs mt-5 block">
+            <label className="mt-5 block font-body text-base font-semibold">
               Message
               <textarea
                 required
                 rows={7}
                 value={form.message}
                 onChange={(event) => setForm((prev) => ({ ...prev, message: event.target.value }))}
-                className="mt-2 w-full border-2 border-ink bg-cream p-3 font-body text-sm font-normal normal-case tracking-normal outline-none focus:border-magenta"
+                className="mt-2 w-full border-2 border-ink bg-cream p-3 font-body text-base font-normal outline-none focus:border-magenta"
               />
             </label>
             <button
@@ -104,19 +138,6 @@ function ContactPage() {
               {mutation.isPending ? "Sending..." : "Send submission"}
             </button>
           </form>
-
-          <aside className="border-2 border-ink bg-forest p-8 text-primary-foreground">
-            <h2 className="font-display text-3xl">Submission guidelines</h2>
-            <ul className="mt-6 space-y-4">
-              {GUIDELINES.map((item, index) => (
-                <li key={item} className="flex gap-3 border-t border-primary-foreground/20 pt-4 text-sm opacity-90">
-                  <span className="label-xs text-magenta">{String(index + 1).padStart(2, "0")}</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <p className="label-xs mt-8 text-magenta">hello@babasenbrasse.co.za</p>
-          </aside>
         </div>
       </section>
     </div>
@@ -135,14 +156,14 @@ function Field({
   type?: string;
 }) {
   return (
-    <label className="label-xs block">
+    <label className="block font-body text-base font-semibold">
       {label}
       <input
         required
         type={type}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-2 w-full border-2 border-ink bg-cream p-3 font-body text-sm font-normal normal-case tracking-normal outline-none focus:border-magenta"
+        className="mt-2 w-full border-2 border-ink bg-cream p-3 font-body text-base font-normal outline-none focus:border-magenta"
       />
     </label>
   );
