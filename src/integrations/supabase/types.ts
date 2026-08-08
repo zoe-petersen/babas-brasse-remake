@@ -14,6 +14,32 @@ export type Database = {
   }
   public: {
     Tables: {
+      article_views: {
+        Row: {
+          article_id: string
+          updated_at: string
+          views: number
+        }
+        Insert: {
+          article_id: string
+          updated_at?: string
+          views?: number
+        }
+        Update: {
+          article_id?: string
+          updated_at?: string
+          views?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "article_views_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: true
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       articles: {
         Row: {
           body: string | null
@@ -191,46 +217,55 @@ export type Database = {
         Row: {
           bio: string | null
           created_at: string
+          email: string | null
           facebook_url: string | null
           id: string
           image_url: string | null
           instagram_url: string | null
           is_team: boolean
+          linkedin_url: string | null
           name: string
           role_title: string | null
           slug: string
           sort_order: number
           tiktok_url: string | null
+          twitter_url: string | null
           updated_at: string
         }
         Insert: {
           bio?: string | null
           created_at?: string
+          email?: string | null
           facebook_url?: string | null
           id?: string
           image_url?: string | null
           instagram_url?: string | null
           is_team?: boolean
+          linkedin_url?: string | null
           name: string
           role_title?: string | null
           slug: string
           sort_order?: number
           tiktok_url?: string | null
+          twitter_url?: string | null
           updated_at?: string
         }
         Update: {
           bio?: string | null
           created_at?: string
+          email?: string | null
           facebook_url?: string | null
           id?: string
           image_url?: string | null
           instagram_url?: string | null
           is_team?: boolean
+          linkedin_url?: string | null
           name?: string
           role_title?: string | null
           slug?: string
           sort_order?: number
           tiktok_url?: string | null
+          twitter_url?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -244,6 +279,8 @@ export type Database = {
           image_url: string
           is_published: boolean
           sort_order: number
+          taken_on: string | null
+          title: string | null
           updated_at: string
         }
         Insert: {
@@ -254,6 +291,8 @@ export type Database = {
           image_url: string
           is_published?: boolean
           sort_order?: number
+          taken_on?: string | null
+          title?: string | null
           updated_at?: string
         }
         Update: {
@@ -264,6 +303,8 @@ export type Database = {
           image_url?: string
           is_published?: boolean
           sort_order?: number
+          taken_on?: string | null
+          title?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -332,6 +373,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_article_view: { Args: { _article_id: string }; Returns: number }
       is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
