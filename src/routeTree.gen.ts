@@ -14,13 +14,13 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
-import { Route as PhotographyRouteImport } from './routes/photography'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ArticleSlugRouteImport } from './routes/article.$slug'
 import { Route as ContentIndexRouteImport } from './routes/content.index'
 import { Route as ContentSlugRouteImport } from './routes/content.$slug'
 import { Route as ContributorsIndexRouteImport } from './routes/contributors.index'
 import { Route as ContributorsSlugRouteImport } from './routes/contributors.$slug'
+import { Route as PhotographyIndexRouteImport } from './routes/photography.index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminArticlesRouteImport } from './routes/_authenticated/admin.articles'
 import { Route as AuthenticatedAdminModerationRouteImport } from './routes/_authenticated/admin.moderation'
@@ -48,11 +48,6 @@ const AuthRoute = AuthRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PhotographyRoute = PhotographyRouteImport.update({
-  id: '/photography',
-  path: '/photography',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -85,6 +80,11 @@ const ContributorsSlugRoute = ContributorsSlugRouteImport.update({
   path: '/contributors/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PhotographyIndexRoute = PhotographyIndexRouteImport.update({
+  id: '/photography/',
+  path: '/photography/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -114,13 +114,13 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
-  '/photography': typeof PhotographyRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/article/$slug': typeof ArticleSlugRoute
   '/content/$slug': typeof ContentSlugRoute
   '/contributors/$slug': typeof ContributorsSlugRoute
   '/content/': typeof ContentIndexRoute
   '/contributors/': typeof ContributorsIndexRoute
+  '/photography/': typeof PhotographyIndexRoute
   '/admin/articles': typeof AuthenticatedAdminArticlesRoute
   '/admin/moderation': typeof AuthenticatedAdminModerationRoute
   '/admin/submissions': typeof AuthenticatedAdminSubmissionsRoute
@@ -131,12 +131,12 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
-  '/photography': typeof PhotographyRoute
   '/article/$slug': typeof ArticleSlugRoute
   '/content/$slug': typeof ContentSlugRoute
   '/contributors/$slug': typeof ContributorsSlugRoute
   '/content': typeof ContentIndexRoute
   '/contributors': typeof ContributorsIndexRoute
+  '/photography': typeof PhotographyIndexRoute
   '/admin/articles': typeof AuthenticatedAdminArticlesRoute
   '/admin/moderation': typeof AuthenticatedAdminModerationRoute
   '/admin/submissions': typeof AuthenticatedAdminSubmissionsRoute
@@ -149,13 +149,13 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
-  '/photography': typeof PhotographyRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/article/$slug': typeof ArticleSlugRoute
   '/content/$slug': typeof ContentSlugRoute
   '/contributors/$slug': typeof ContributorsSlugRoute
   '/content/': typeof ContentIndexRoute
   '/contributors/': typeof ContributorsIndexRoute
+  '/photography/': typeof PhotographyIndexRoute
   '/_authenticated/admin/articles': typeof AuthenticatedAdminArticlesRoute
   '/_authenticated/admin/moderation': typeof AuthenticatedAdminModerationRoute
   '/_authenticated/admin/submissions': typeof AuthenticatedAdminSubmissionsRoute
@@ -168,13 +168,13 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
-    | '/photography'
     | '/admin'
     | '/article/$slug'
     | '/content/$slug'
     | '/contributors/$slug'
     | '/content/'
     | '/contributors/'
+    | '/photography/'
     | '/admin/articles'
     | '/admin/moderation'
     | '/admin/submissions'
@@ -185,12 +185,12 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
-    | '/photography'
     | '/article/$slug'
     | '/content/$slug'
     | '/contributors/$slug'
     | '/content'
     | '/contributors'
+    | '/photography'
     | '/admin/articles'
     | '/admin/moderation'
     | '/admin/submissions'
@@ -202,13 +202,13 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
-    | '/photography'
     | '/_authenticated/admin'
     | '/article/$slug'
     | '/content/$slug'
     | '/contributors/$slug'
     | '/content/'
     | '/contributors/'
+    | '/photography/'
     | '/_authenticated/admin/articles'
     | '/_authenticated/admin/moderation'
     | '/_authenticated/admin/submissions'
@@ -221,12 +221,12 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
-  PhotographyRoute: typeof PhotographyRoute
   ArticleSlugRoute: typeof ArticleSlugRoute
   ContentSlugRoute: typeof ContentSlugRoute
   ContributorsSlugRoute: typeof ContributorsSlugRoute
   ContentIndexRoute: typeof ContentIndexRoute
   ContributorsIndexRoute: typeof ContributorsIndexRoute
+  PhotographyIndexRoute: typeof PhotographyIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -264,13 +264,6 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/photography': {
-      id: '/photography'
-      path: '/photography'
-      fullPath: '/photography'
-      preLoaderRoute: typeof PhotographyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -313,6 +306,13 @@ declare module '@tanstack/react-router' {
       path: '/contributors/$slug'
       fullPath: '/contributors/$slug'
       preLoaderRoute: typeof ContributorsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/photography/': {
+      id: '/photography/'
+      path: '/photography'
+      fullPath: '/photography/'
+      preLoaderRoute: typeof PhotographyIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
@@ -380,12 +380,12 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
-  PhotographyRoute: PhotographyRoute,
   ArticleSlugRoute: ArticleSlugRoute,
   ContentSlugRoute: ContentSlugRoute,
   ContributorsSlugRoute: ContributorsSlugRoute,
   ContentIndexRoute: ContentIndexRoute,
   ContributorsIndexRoute: ContributorsIndexRoute,
+  PhotographyIndexRoute: PhotographyIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
