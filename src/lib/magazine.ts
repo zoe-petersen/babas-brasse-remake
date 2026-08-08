@@ -19,6 +19,9 @@ export type Contributor = {
   facebook_url: string | null;
   instagram_url: string | null;
   tiktok_url: string | null;
+  linkedin_url: string | null;
+  twitter_url: string | null;
+  email: string | null;
   is_team: boolean;
   sort_order: number;
 };
@@ -42,8 +45,11 @@ export type Article = {
 export type Photograph = {
   id: string;
   image_url: string;
+  title: string | null;
   caption: string | null;
   credit: string | null;
+  taken_on: string | null;
+  created_at?: string | null;
 };
 
 export type ApprovedComment = {
@@ -119,11 +125,40 @@ export async function fetchContributor(slug: string) {
 export async function fetchPhotographs() {
   const { data, error } = await supabase
     .from("photographs")
-    .select("id, image_url, caption, credit")
+    .select("id, image_url, title, caption, credit, taken_on, created_at")
     .eq("is_published", true)
     .order("sort_order");
   if (error) throw new Error(error.message);
   return (data ?? []) as Photograph[];
+}
+
+export async function fetchPhotograph(id: string) {
+  const { data, error } = await supabase
+    .from("photographs")
+    .select("id, image_url, title, caption, credit, taken_on, created_at")
+    .eq("id", id)
+    .eq("is_published", true)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return (data as Photograph | null) ?? null;
+}
+
+export async function fetchArticleViews(articleId: string) {
+  const { data, error } = await supabase
+    .from("article_views")
+    .select("views")
+    .eq("article_id", articleId)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return Number((data as { views: number } | null)?.views ?? 0);
+}
+
+export async function registerArticleView(articleId: string) {
+  const { data, error } = await supabase.rpc("increment_article_view", {
+    _article_id: articleId,
+  });
+  if (error) throw new Error(error.message);
+  return Number(data ?? 0);
 }
 
 export async function fetchApprovedComments(articleId: string) {
@@ -156,6 +191,15 @@ export const contributorQuery = (slug: string) =>
 
 export const photographsQuery = () =>
   queryOptions({ queryKey: ["photographs"], queryFn: fetchPhotographs });
+
+export const photographQuery = (id: string) =>
+  queryOptions({ queryKey: ["photograph", id], queryFn: () => fetchPhotograph(id) });
+
+export const articleViewsQuery = (articleId: string) =>
+  queryOptions({
+    queryKey: ["article-views", articleId],
+    queryFn: () => fetchArticleViews(articleId),
+  });
 
 export const commentsQuery = (articleId: string) =>
   queryOptions({
