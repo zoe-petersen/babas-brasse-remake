@@ -53,7 +53,7 @@ export function HeroCarousel() {
     <section
       aria-roledescription="carousel"
       aria-label="Babas & Brasse highlights"
-      className="relative h-[calc(100svh-4rem)] min-h-130 w-full overflow-hidden border-b-2 border-ink bg-ink"
+      className="relative aspect-9/16 max-h-[70svh] w-full overflow-hidden border-b-2 border-ink bg-ink sm:aspect-auto sm:h-[calc(100svh-4rem)] sm:max-h-none sm:min-h-130"
     >
       {SLIDES.map((slide, i) => (
         <div
@@ -75,10 +75,10 @@ export function HeroCarousel() {
               <div className="absolute inset-0 bg-ink/55" />
               <div className="absolute inset-0 grid place-items-center px-6">
                 <div className="max-w-3xl text-center">
-                  <h2 className="mt-6 font-display text-4xl leading-[0.95] text-cream drop-shadow-[3px_3px_0_var(--ink)] sm:text-6xl lg:text-7xl">
+                  <h2 className="mt-6 font-display text-3xl leading-[0.95] text-cream drop-shadow-[3px_3px_0_var(--ink)] sm:text-6xl lg:text-7xl">
                     {slide.title}
                   </h2>
-                  <p className="mx-auto mt-6 max-w-xl text-base text-cream/90 sm:text-lg">
+                  <p className="mx-auto mt-4 max-w-xl text-sm text-cream/90 sm:mt-6 sm:text-lg">
                     {slide.copy}
                   </p>
                 </div>
@@ -94,20 +94,20 @@ export function HeroCarousel() {
         type="button"
         aria-label="Previous slide"
         onClick={() => go(-1)}
-        className="absolute left-4 top-1/2 z-10 grid h-12 w-12 -translate-y-1/2 place-items-center border-2 border-ink bg-cream text-ink transition-colors hover:bg-magenta sm:left-8 sm:h-14 sm:w-14"
+        className="absolute left-2 top-1/2 z-10 grid h-8 w-8 -translate-y-1/2 place-items-center border-2 border-ink bg-cream text-ink transition-colors hover:bg-magenta sm:left-8 sm:h-14 sm:w-14"
       >
-        <ChevronLeft className="h-6 w-6" />
+        <ChevronLeft className="h-4 w-4 sm:h-6 sm:w-6" />
       </button>
       <button
         type="button"
         aria-label="Next slide"
         onClick={() => go(1)}
-        className="absolute right-4 top-1/2 z-10 grid h-12 w-12 -translate-y-1/2 place-items-center border-2 border-ink bg-cream text-ink transition-colors hover:bg-magenta sm:right-8 sm:h-14 sm:w-14"
+        className="absolute right-2 top-1/2 z-10 grid h-8 w-8 -translate-y-1/2 place-items-center border-2 border-ink bg-cream text-ink transition-colors hover:bg-magenta sm:right-8 sm:h-14 sm:w-14"
       >
-        <ChevronRight className="h-6 w-6" />
+        <ChevronRight className="h-4 w-4 sm:h-6 sm:w-6" />
       </button>
 
-      <div className="absolute inset-x-0 bottom-6 z-10 flex items-center justify-center gap-3">
+      <div className="absolute inset-x-0 bottom-3 z-10 flex items-center justify-center gap-3 sm:bottom-6">
         {SLIDES.map((slide, i) => (
           <button
             key={slide.src}
