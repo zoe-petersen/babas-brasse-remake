@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import logoAsset from "@/assets/logo.png";
 import { categoriesQuery } from "@/lib/magazine";
 import { SocialRow } from "./SocialRow";
@@ -18,6 +18,7 @@ const NAV = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const [sectionsOpen, setSectionsOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
   const { data } = useQuery(categoriesQuery());
@@ -93,18 +94,39 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          <div className="flex flex-wrap gap-2 px-5 py-4">
-            {categories.map((category) => (
-              <Link
-                key={category.id}
-                to="/content/$slug"
-                params={{ slug: category.slug }}
-                onClick={() => setOpen(false)}
-                className="label-xs border border-ink px-3 py-2"
-              >
-                {category.name}
-              </Link>
-            ))}
+          <div className="border-b border-border">
+            <button
+              type="button"
+              aria-expanded={sectionsOpen}
+              onClick={() => setSectionsOpen((value) => !value)}
+              className="label-xs flex w-full items-center justify-between px-5 py-4"
+            >
+              Sections
+              <ChevronDown
+                className={cn(
+                  "h-4 w-4 transition-transform",
+                  sectionsOpen && "rotate-180",
+                )}
+              />
+            </button>
+            {sectionsOpen && (
+              <div className="flex flex-col bg-cream">
+                {categories.map((category) => (
+                  <Link
+                    key={category.id}
+                    to="/content/$slug"
+                    params={{ slug: category.slug }}
+                    onClick={() => {
+                      setOpen(false);
+                      setSectionsOpen(false);
+                    }}
+                    className="label-xs border-t border-border px-8 py-3"
+                  >
+                    {category.name}
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </nav>
       </div>
