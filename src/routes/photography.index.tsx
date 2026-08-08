@@ -7,7 +7,7 @@ import { EmptyState } from "@/components/site/EmptyState";
 const TILTS = ["-3deg", "2.5deg", "-1.5deg", "4deg", "-2deg", "3.5deg"];
 const OFFSETS = ["0rem", "2.5rem", "-1.5rem", "1.5rem", "-2rem", "3rem"];
 
-export const Route = createFileRoute("/photography")({
+export const Route = createFileRoute("/photography/")({
   head: () => ({
     meta: [
       { title: "Photography | Babas & Brasse" },
