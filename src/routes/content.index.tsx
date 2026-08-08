@@ -1,10 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { articlesQuery, categoriesQuery, contributorsQuery, formatDate } from "@/lib/magazine";
+import { articlesQuery, categoriesQuery, contributorsQuery } from "@/lib/magazine";
 import { PageHero } from "@/components/site/PageHero";
 import { SectionHeading } from "@/components/site/SectionHeading";
 import { ActionLink } from "@/components/site/ActionLink";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/content/")({
   head: () => ({
