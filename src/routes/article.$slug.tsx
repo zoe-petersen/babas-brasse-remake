@@ -170,8 +170,8 @@ function ArticlePage() {
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <SectionHeading
             title="Keep reading"
-            description="More stories from across the magazine."
-            action={<ActionLink to="/content" variant="underline" label="All articles" />}
+            description="More pieces from across the magazine."
+            action={<ActionLink to="/content" variant="underline" label="All pieces" />}
           />
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {keepReading.map((item) => (
@@ -197,7 +197,7 @@ function ArticlePage() {
                   <p className="label-xs mt-3 opacity-60">
                     {item.contributors?.name} &middot; {formatDate(item.published_at)}
                   </p>
-                  <span className="label-xs mt-auto pt-6">Read story →</span>
+                  <span className="label-xs mt-auto pt-6">Read piece →</span>
                 </div>
               </Link>
             ))}

@@ -133,7 +133,7 @@ function ContributorPage() {
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 border-b-2 border-ink pb-4">
-          <h2 className="text-3xl sm:text-4xl">Articles &amp; media</h2>
+          <h2 className="text-3xl sm:text-4xl">Pieces &amp; media</h2>
           <span className="label-xs opacity-60">{theirs.length} published</span>
         </div>
         {theirs.length === 0 ? (

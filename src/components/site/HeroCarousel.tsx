@@ -94,7 +94,7 @@ export function HeroCarousel() {
         type="button"
         aria-label="Previous slide"
         onClick={() => go(-1)}
-        className="absolute left-2 top-1/2 z-10 grid h-8 w-8 -translate-y-1/2 place-items-center border-2 border-ink bg-cream text-ink transition-colors hover:bg-magenta sm:left-8 sm:h-14 sm:w-14"
+        className="absolute left-2 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 place-items-center border-2 border-ink bg-cream text-ink transition-colors hover:bg-magenta sm:left-8 sm:grid sm:h-14 sm:w-14"
       >
         <ChevronLeft className="h-4 w-4 sm:h-6 sm:w-6" />
       </button>
@@ -102,7 +102,7 @@ export function HeroCarousel() {
         type="button"
         aria-label="Next slide"
         onClick={() => go(1)}
-        className="absolute right-2 top-1/2 z-10 grid h-8 w-8 -translate-y-1/2 place-items-center border-2 border-ink bg-cream text-ink transition-colors hover:bg-magenta sm:right-8 sm:h-14 sm:w-14"
+        className="absolute right-2 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 place-items-center border-2 border-ink bg-cream text-ink transition-colors hover:bg-magenta sm:right-8 sm:grid sm:h-14 sm:w-14"
       >
         <ChevronRight className="h-4 w-4 sm:h-6 sm:w-6" />
       </button>

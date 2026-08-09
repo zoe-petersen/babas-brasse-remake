@@ -105,7 +105,7 @@ function CategoryPage() {
                 </div>
               </div>
               <div className="label-xs flex items-center justify-between border-t-2 border-ink bg-forest px-6 py-4 text-primary-foreground">
-                Read article <ArrowRight className="h-4 w-4" />
+                Read piece <ArrowRight className="h-4 w-4" />
               </div>
             </Link>
 
@@ -137,7 +137,7 @@ function CategoryPage() {
                     </p>
                   </div>
                   <div className="label-xs flex items-center justify-between border-t-2 border-ink bg-forest px-6 py-4 text-primary-foreground">
-                    Read article <ArrowRight className="h-4 w-4" />
+                    Read piece <ArrowRight className="h-4 w-4" />
                   </div>
                 </Link>
               ))}
