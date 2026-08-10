@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
+import { Extension } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
 import { TextStyle } from "@tiptap/extension-text-style";
@@ -30,6 +31,33 @@ const FONTS = [
   { label: "Sans", value: "ui-sans-serif, system-ui, sans-serif" },
   { label: "Mono", value: "ui-monospace, SFMono-Regular, monospace" },
 ];
+
+const MAX_INDENT = 6;
+
+const Indentation = Extension.create({
+  name: "indentation",
+  addGlobalAttributes() {
+    return [
+      {
+        types: ["paragraph", "heading", "blockquote"],
+        attributes: {
+          indent: {
+            default: 0,
+            parseHTML: (element) => Number(element.getAttribute("data-indent")) || 0,
+            renderHTML: (attributes) => {
+              const level = Number(attributes["indent"]) || 0;
+              if (!level) return {};
+              return {
+                "data-indent": level,
+                style: `margin-left:${level * 2}rem`,
+              };
+            },
+          },
+        },
+      },
+    ];
+  },
+});
 
 function ToolButton({
   active,
@@ -71,6 +99,7 @@ export function RichTextEditor({
       StarterKit,
       TextStyle,
       FontFamily,
+      Indentation,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
     ],
     content: value || "",
@@ -92,20 +121,17 @@ export function RichTextEditor({
   if (!editor) return <div className="mt-2 border-2 border-ink p-4 text-sm">Loading editor…</div>;
 
   const indent = (direction: 1 | -1) => {
-    const style = direction === 1 ? "2rem" : "";
-    editor.chain().focus().run();
     const { state, view } = editor;
     const { from, to } = state.selection;
     const tr = state.tr;
     state.doc.nodesBetween(from, to, (node, pos) => {
-      if (node.type.name !== "paragraph" && node.type.name !== "heading") return;
-      const current = parseFloat(String(node.attrs["data-indent"] ?? 0)) || 0;
-      const next = Math.max(0, current + direction);
-      tr.setNodeMarkup(pos, undefined, { ...node.attrs, "data-indent": next });
-      void style;
-      void next;
+      if (!["paragraph", "heading", "blockquote"].includes(node.type.name)) return;
+      const current = Number(node.attrs["indent"]) || 0;
+      const next = Math.min(MAX_INDENT, Math.max(0, current + direction));
+      if (next !== current) tr.setNodeMarkup(pos, undefined, { ...node.attrs, indent: next });
     });
-    view.dispatch(tr);
+    if (tr.docChanged) view.dispatch(tr);
+    editor.commands.focus();
   };
 
   return (
