@@ -147,6 +147,7 @@ export type Database = {
           article_id: string
           author_email: string
           author_name: string
+          author_surname: string | null
           body: string
           created_at: string
           id: string
@@ -157,6 +158,7 @@ export type Database = {
           article_id: string
           author_email: string
           author_name: string
+          author_surname?: string | null
           body: string
           created_at?: string
           id?: string
@@ -167,6 +169,7 @@ export type Database = {
           article_id?: string
           author_email?: string
           author_name?: string
+          author_surname?: string | null
           body?: string
           created_at?: string
           id?: string
