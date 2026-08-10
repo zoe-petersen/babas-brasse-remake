@@ -16,6 +16,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { ActionLink } from "@/components/site/ActionLink";
 import { SectionHeading } from "@/components/site/SectionHeading";
+import { ArticleBody } from "@/components/site/ArticleBody";
 
 export const Route = createFileRoute("/article/$slug")({
   loader: async ({ context, params }) => {
@@ -123,18 +124,7 @@ function ArticlePage() {
           </figure>
         )}
 
-        <div className="mx-auto mt-12 max-w-2xl space-y-6 text-center text-lg leading-relaxed">
-          {(article.body ?? "").split("\n\n").map((paragraph, index) => (
-            <p
-              key={index}
-              className={
-                index === 0 ? "text-2xl leading-snug" : "border-t border-border pt-6 text-base"
-              }
-            >
-              {paragraph}
-            </p>
-          ))}
-        </div>
+        <ArticleBody body={article.body} />
 
         {article.contributors && (
           <div className="mt-14 grid border-2 border-ink md:grid-cols-[1fr_1.2fr]">
@@ -250,7 +240,12 @@ function ViewCount({ articleId }: { articleId: string }) {
 
 function Comments({ articleId, onSubmitted }: { articleId: string; onSubmitted: () => void }) {
   const { data: comments = [] } = useQuery(commentsQuery(articleId));
-  const [form, setForm] = useState({ author_name: "", author_email: "", body: "" });
+  const [form, setForm] = useState({
+    author_name: "",
+    author_surname: "",
+    author_email: "",
+    body: "",
+  });
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -272,6 +267,7 @@ function Comments({ articleId, onSubmitted }: { articleId: string; onSubmitted: 
       const { error } = await supabase.from("comments").insert({
         article_id: articleId,
         author_name: form.author_name,
+        author_surname: form.author_surname.trim() || null,
         author_email: form.author_email,
         body: form.body,
         status: "pending",
@@ -280,7 +276,7 @@ function Comments({ articleId, onSubmitted }: { articleId: string; onSubmitted: 
     },
     onSuccess: () => {
       toast.success("Thanks! Your comment is with our editors for review.");
-      setForm({ author_name: "", author_email: "", body: "" });
+      setForm({ author_name: "", author_surname: "", author_email: "", body: "" });
       onSubmitted();
     },
     onError: (error: Error) => toast.error(error.message),
@@ -331,9 +327,14 @@ function Comments({ articleId, onSubmitted }: { articleId: string; onSubmitted: 
           </p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <Field
-              label="Name"
+              label="First name"
               value={form.author_name}
               onChange={(value) => setForm((prev) => ({ ...prev, author_name: value }))}
+            />
+            <Field
+              label="Surname"
+              value={form.author_surname}
+              onChange={(value) => setForm((prev) => ({ ...prev, author_surname: value }))}
             />
             <Field
               label="Email"
