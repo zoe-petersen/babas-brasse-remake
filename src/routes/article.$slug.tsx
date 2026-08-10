@@ -123,18 +123,7 @@ function ArticlePage() {
           </figure>
         )}
 
-        <div className="mx-auto mt-12 max-w-2xl space-y-6 text-center text-lg leading-relaxed">
-          {(article.body ?? "").split("\n\n").map((paragraph, index) => (
-            <p
-              key={index}
-              className={
-                index === 0 ? "text-2xl leading-snug" : "border-t border-border pt-6 text-base"
-              }
-            >
-              {paragraph}
-            </p>
-          ))}
-        </div>
+        <ArticleBody body={article.body} />
 
         {article.contributors && (
           <div className="mt-14 grid border-2 border-ink md:grid-cols-[1fr_1.2fr]">
