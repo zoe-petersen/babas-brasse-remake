@@ -67,9 +67,13 @@ function CategoryPage() {
       />
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 border-b-2 border-ink pb-4">
+        <div className="flex flex-col gap-4 border-b-2 border-ink pb-4 sm:flex-row sm:items-end sm:justify-between">
           <h2 className="text-3xl sm:text-4xl">Latest in {category.name}</h2>
-          <ActionLink to="/content" label="Browse all sections" />
+          <ActionLink
+            to="/content"
+            label="Browse all sections"
+            className="self-start sm:self-auto"
+          />
         </div>
 
         {items.length === 0 ? (

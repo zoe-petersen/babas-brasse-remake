@@ -29,7 +29,15 @@ export function AdminCard({ className, children }: { className?: string; childre
   );
 }
 
-export function StatCard({ label, value, hint }: { label: string; value: number | string; hint?: string }) {
+export function StatCard({
+  label,
+  value,
+  hint,
+}: {
+  label: string;
+  value: number | string;
+  hint?: string;
+}) {
   return (
     <AdminCard>
       <p className="label-xs text-forest-deep">{label}</p>
@@ -39,7 +47,13 @@ export function StatCard({ label, value, hint }: { label: string; value: number 
   );
 }
 
-export function Pill({ tone, children }: { tone: "green" | "amber" | "red" | "grey"; children: ReactNode }) {
+export function Pill({
+  tone,
+  children,
+}: {
+  tone: "green" | "amber" | "red" | "grey";
+  children: ReactNode;
+}) {
   const tones = {
     green: "bg-forest text-primary-foreground border-ink",
     amber: "bg-magenta text-ink border-ink",
@@ -114,6 +128,56 @@ export function AdminModal({
         </div>
         <div className="p-5">{children}</div>
       </div>
+    </div>
+  );
+}
+
+export type PublicationFilter = "all" | "live" | "draft";
+
+export function AdminPublicationFilter({
+  value,
+  onChange,
+  records,
+}: {
+  value: PublicationFilter;
+  onChange: (value: PublicationFilter) => void;
+  records: ReadonlyArray<{ is_published: boolean }>;
+}) {
+  const counts: Record<PublicationFilter, number> = {
+    all: records.length,
+    live: records.filter((record) => record.is_published).length,
+    draft: records.filter((record) => !record.is_published).length,
+  };
+
+  const options: Array<{ value: PublicationFilter; label: string }> = [
+    { value: "all", label: "All" },
+    { value: "live", label: "Live" },
+    { value: "draft", label: "Drafts" },
+  ];
+
+  return (
+    <div
+      className="flex flex-wrap gap-2 border-b-2 border-ink pb-4"
+      role="group"
+      aria-label="Filter by publication status"
+    >
+      {options.map((option) => (
+        <button
+          key={option.value}
+          type="button"
+          aria-pressed={value === option.value}
+          onClick={() => onChange(option.value)}
+          className={cn(
+            "label-xs inline-flex items-center gap-2 border-2 border-ink px-4 py-2 transition-colors",
+            value === option.value ? "bg-ink text-background" : "bg-background hover:bg-cream",
+          )}
+        >
+          {option.label}
+          <span className="font-body text-xs font-normal tracking-normal">
+            {counts[option.value]}
+          </span>
+        </button>
+      ))}
     </div>
   );
 }

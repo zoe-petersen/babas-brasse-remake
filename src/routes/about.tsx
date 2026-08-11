@@ -33,7 +33,7 @@ function AboutPage() {
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <p className="label-xs text-forest-deep">About us</p>
           <h1 className="mt-4 max-w-4xl text-5xl leading-[1.02] sm:text-6xl lg:text-7xl">
-            An independent home for South African culture, criticism and creative work.
+            An independent home for South African culture.
           </h1>
         </div>
       </section>
@@ -64,8 +64,7 @@ function AboutPage() {
             <div className="hard-shadow border-2 border-ink bg-forest p-6 text-primary-foreground">
               <p className="text-base leading-relaxed">
                 We are writers, critics, photographers and editors who believe local work deserves
-                serious, unhurried attention &mdash; and readers who deserve more than a press
-                release.
+                serious, unhurried attention and readers who deserve more than a press release.
               </p>
             </div>
             <div className="grid grid-cols-3 gap-4 border-2 border-ink bg-background p-6 sm:col-span-2">
@@ -98,7 +97,7 @@ function AboutPage() {
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
             <p className="label-xs text-magenta">02 &mdash; What&rsquo;s in the name</p>
-            <div className="mt-4 flex items-center gap-4">
+            <div className="mt-4 flex items-center gap-1 sm:gap-4">
               <h2 className="text-4xl leading-[1.02] sm:text-5xl lg:text-6xl">
                 A greeting,
                 <br />
@@ -110,7 +109,7 @@ function AboutPage() {
                 loading="lazy"
                 width={200}
                 height={200}
-                className="h-20 w-20 shrink-0 object-contain sm:h-28 sm:w-28 lg:hidden"
+                className="-ml-2 h-28 w-28 shrink-0 object-contain sm:ml-0 sm:h-32 sm:w-32 lg:hidden"
               />
             </div>
             <div className="mt-6 flex items-center gap-3">
@@ -133,7 +132,7 @@ function AboutPage() {
             <div className="hard-shadow border-2 border-ink bg-cream p-6">
               <p className="font-display text-4xl text-forest-deep">Babas</p>
               <p className="mt-3 text-base leading-relaxed">
-                The familiar hello — warm, a little cheeky. The language of the stoep, the taxi rank
+                The familiar hello, warm, a little cheeky. The language of the stoep, the taxi rank
                 and the theatre foyer.
               </p>
             </div>
@@ -146,8 +145,8 @@ function AboutPage() {
             </div>
             <div className="border-2 border-ink bg-background p-6 sm:col-span-2">
               <p className="text-base leading-relaxed">
-                Together they sound like a conversation rather than an institution &mdash; and that
-                is the tone we aim for on every page we publish.
+                Together they sound like a conversation rather than an institution, and that is the
+                tone we aim on every page we publish.
               </p>
               <div className="mt-6 grid grid-cols-3 gap-4 border-t-2 border-ink pt-6">
                 {[

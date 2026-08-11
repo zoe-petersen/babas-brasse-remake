@@ -19,8 +19,10 @@ import {
   AdminEmpty,
   AdminHeading,
   AdminModal,
+  AdminPublicationFilter,
   Pill,
   adminInputClass as inputClass,
+  type PublicationFilter,
 } from "@/components/admin/AdminUI";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 
@@ -33,6 +35,10 @@ function MoodBoardAdminPage() {
   const { data: photos = [], isLoading } = useQuery(adminPhotographsQuery());
   const [editing, setEditing] = useState<AdminPhotograph | null>(null);
   const [values, setValues] = useState<PhotographFormValues | null>(null);
+  const [filter, setFilter] = useState<PublicationFilter>("all");
+  const visiblePhotos = photos.filter((photo) =>
+    filter === "all" ? true : filter === "live" ? photo.is_published : !photo.is_published,
+  );
 
   function close() {
     setValues(null);
@@ -110,7 +116,9 @@ function MoodBoardAdminPage() {
             </div>
 
             <div>
-              <label className="label-xs" htmlFor="title">Title</label>
+              <label className="label-xs" htmlFor="title">
+                Title
+              </label>
               <input
                 id="title"
                 className={inputClass}
@@ -120,7 +128,9 @@ function MoodBoardAdminPage() {
             </div>
 
             <div>
-              <label className="label-xs" htmlFor="taken">Date</label>
+              <label className="label-xs" htmlFor="taken">
+                Date
+              </label>
               <input
                 id="taken"
                 type="date"
@@ -131,7 +141,9 @@ function MoodBoardAdminPage() {
             </div>
 
             <div>
-              <label className="label-xs" htmlFor="credit">Photographer / credits</label>
+              <label className="label-xs" htmlFor="credit">
+                Photographer / credits
+              </label>
               <input
                 id="credit"
                 className={inputClass}
@@ -141,7 +153,9 @@ function MoodBoardAdminPage() {
             </div>
 
             <div>
-              <label className="label-xs" htmlFor="order">Sort order</label>
+              <label className="label-xs" htmlFor="order">
+                Sort order
+              </label>
               <input
                 id="order"
                 type="number"
@@ -152,7 +166,9 @@ function MoodBoardAdminPage() {
             </div>
 
             <div className="sm:col-span-2">
-              <label className="label-xs" htmlFor="caption">Caption</label>
+              <label className="label-xs" htmlFor="caption">
+                Caption
+              </label>
               <textarea
                 id="caption"
                 rows={3}
@@ -181,7 +197,11 @@ function MoodBoardAdminPage() {
                 {save.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                 Save
               </button>
-              <button type="button" onClick={close} className="label-xs border-2 border-ink px-5 py-3">
+              <button
+                type="button"
+                onClick={close}
+                className="label-xs border-2 border-ink px-5 py-3"
+              >
                 Cancel
               </button>
             </div>
@@ -189,8 +209,10 @@ function MoodBoardAdminPage() {
         </AdminModal>
       )}
 
+      <AdminPublicationFilter value={filter} onChange={setFilter} records={photos} />
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {photos.map((photo) => (
+        {visiblePhotos.map((photo) => (
           <AdminCard key={photo.id} className="p-0 sm:p-0">
             <div className="aspect-4/3 border-b-2 border-ink bg-cream">
               <img
@@ -202,12 +224,12 @@ function MoodBoardAdminPage() {
             <div className="p-4">
               <p className="truncate font-semibold">{photo.title ?? "Untitled"}</p>
               <p className="label-xs mt-1 text-muted-foreground">
-                {photo.credit ?? "—"}
+                {photo.credit ?? "-"}
                 {photo.taken_on ? ` · ${formatDate(photo.taken_on)}` : ""}
               </p>
               <div className="mt-3 flex items-center justify-between gap-2">
                 <Pill tone={photo.is_published ? "green" : "grey"}>
-                  {photo.is_published ? "Live" : "Hidden"}
+                  {photo.is_published ? "Live" : "Draft"}
                 </Pill>
                 <div className="flex gap-2">
                   <button
@@ -237,7 +259,9 @@ function MoodBoardAdminPage() {
           </AdminCard>
         ))}
       </div>
-      {!isLoading && photos.length === 0 && <AdminEmpty message="No photographs yet." />}
+      {!isLoading && visiblePhotos.length === 0 && (
+        <AdminEmpty message={`No ${filter === "all" ? "" : `${filter} `}photographs.`} />
+      )}
     </div>
   );
 }

@@ -137,7 +137,6 @@ export type ArticleFormValues = {
   image_credit: string;
   category_id: string | null;
   contributor_id: string | null;
-  contributor_name: string;
   read_minutes: number;
   published_on: string;
   is_published: boolean;
@@ -154,7 +153,6 @@ export function emptyArticle(): ArticleFormValues {
     image_credit: "",
     category_id: null,
     contributor_id: null,
-    contributor_name: "",
     read_minutes: 4,
     published_on: new Date().toISOString().slice(0, 10),
     is_published: false,
@@ -172,7 +170,6 @@ export function toFormValues(article: AdminArticle): ArticleFormValues {
     image_credit: article.image_credit ?? "",
     category_id: article.category_id,
     contributor_id: article.contributor_id,
-    contributor_name: article.contributors?.name ?? "",
     read_minutes: article.read_minutes,
     published_on: (article.published_at ?? article.created_at).slice(0, 10),
     is_published: article.is_published,
@@ -180,7 +177,7 @@ export function toFormValues(article: AdminArticle): ArticleFormValues {
   };
 }
 
-function toRow(values: ArticleFormValues, contributorId: string | null) {
+function toRow(values: ArticleFormValues) {
   return {
     title: values.title.trim(),
     slug: slugify(values.slug || values.title),
@@ -189,7 +186,7 @@ function toRow(values: ArticleFormValues, contributorId: string | null) {
     cover_image_url: values.cover_image_url.trim() || null,
     image_credit: values.image_credit.trim() || null,
     category_id: values.category_id,
-    contributor_id: contributorId,
+    contributor_id: values.contributor_id,
     read_minutes: Number(values.read_minutes) || 1,
     is_published: values.is_published,
     is_editors_pick: values.is_editors_pick,
@@ -199,40 +196,13 @@ function toRow(values: ArticleFormValues, contributorId: string | null) {
   };
 }
 
-/** Finds a contributor by typed name, creating one when the writer is new. */
-export async function resolveContributor(values: ArticleFormValues) {
-  const name = values.contributor_name.trim();
-  if (!name) return null;
-
-  const { data: existing, error: findError } = await supabase
-    .from("contributors")
-    .select("id, name")
-    .ilike("name", name)
-    .maybeSingle();
-  if (findError) throw new Error(findError.message);
-  if (existing) return existing.id;
-
-  const { data: created, error: createError } = await supabase
-    .from("contributors")
-    .insert({ name, slug: slugify(name) })
-    .select("id")
-    .single();
-  if (createError) throw new Error(createError.message);
-  return created.id;
-}
-
 export async function createArticle(values: ArticleFormValues) {
-  const contributorId = await resolveContributor(values);
-  const { error } = await supabase.from("articles").insert(toRow(values, contributorId));
+  const { error } = await supabase.from("articles").insert(toRow(values));
   if (error) throw new Error(error.message);
 }
 
 export async function updateArticle(article: AdminArticle, values: ArticleFormValues) {
-  const contributorId = await resolveContributor(values);
-  const { error } = await supabase
-    .from("articles")
-    .update(toRow(values, contributorId))
-    .eq("id", article.id);
+  const { error } = await supabase.from("articles").update(toRow(values)).eq("id", article.id);
   if (error) throw new Error(error.message);
 }
 
@@ -252,10 +222,7 @@ export async function deleteComment(id: string) {
 }
 
 export async function setSubmissionHandled(id: string, is_handled: boolean) {
-  const { error } = await supabase
-    .from("contact_submissions")
-    .update({ is_handled })
-    .eq("id", id);
+  const { error } = await supabase.from("contact_submissions").update({ is_handled }).eq("id", id);
   if (error) throw new Error(error.message);
 }
 
@@ -272,6 +239,7 @@ export type ContributorFormValues = {
   tiktok_url: string;
   linkedin_url: string;
   is_team: boolean;
+  is_published: boolean;
   sort_order: number;
 };
 
@@ -289,6 +257,7 @@ export function emptyContributor(): ContributorFormValues {
     tiktok_url: "",
     linkedin_url: "",
     is_team: false,
+    is_published: false,
     sort_order: 0,
   };
 }
@@ -307,6 +276,7 @@ export function toContributorForm(person: Contributor): ContributorFormValues {
     tiktok_url: person.tiktok_url ?? "",
     linkedin_url: person.linkedin_url ?? "",
     is_team: person.is_team,
+    is_published: person.is_published,
     sort_order: person.sort_order,
   };
 }
@@ -326,6 +296,7 @@ function toContributorRow(values: ContributorFormValues) {
     tiktok_url: clean(values.tiktok_url),
     linkedin_url: clean(values.linkedin_url),
     is_team: values.is_team,
+    is_published: values.is_published,
     sort_order: Number(values.sort_order) || 0,
   };
 }
@@ -336,7 +307,10 @@ export async function createContributor(values: ContributorFormValues) {
 }
 
 export async function updateContributor(id: string, values: ContributorFormValues) {
-  const { error } = await supabase.from("contributors").update(toContributorRow(values)).eq("id", id);
+  const { error } = await supabase
+    .from("contributors")
+    .update(toContributorRow(values))
+    .eq("id", id);
   if (error) throw new Error(error.message);
 }
 

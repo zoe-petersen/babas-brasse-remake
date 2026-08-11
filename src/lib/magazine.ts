@@ -23,6 +23,7 @@ export type Contributor = {
   twitter_url: string | null;
   email: string | null;
   is_team: boolean;
+  is_published: boolean;
   sort_order: number;
 };
 
@@ -108,6 +109,7 @@ export async function fetchContributors(team: boolean) {
     .from("contributors")
     .select("*")
     .eq("is_team", team)
+    .eq("is_published", true)
     .order("sort_order");
   if (error) throw new Error(error.message);
   return (data ?? []) as Contributor[];
@@ -118,6 +120,7 @@ export async function fetchContributor(slug: string) {
     .from("contributors")
     .select("*")
     .eq("slug", slug)
+    .eq("is_published", true)
     .maybeSingle();
   if (error) throw new Error(error.message);
   return (data as Contributor | null) ?? null;

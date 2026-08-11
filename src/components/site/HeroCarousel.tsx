@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import slide1 from "@/assets/hero1.jpeg";
+import slide1Mobile from "@/assets/hero-slide-1-mobile.png";
 import slide2 from "@/assets/hero2.webp";
 import slide3 from "@/assets/hero3.webp";
 import { cn } from "@/lib/utils";
 
 type Slide = {
   src: string;
+  mobileSrc?: string;
   alt: string;
   eyebrow?: string;
   title?: string;
@@ -16,6 +18,7 @@ type Slide = {
 const SLIDES: Slide[] = [
   {
     src: slide1,
+    mobileSrc: slide1Mobile,
     alt: "Babas and Brasse - South African arts and culture collage",
   },
   {
@@ -36,9 +39,12 @@ export function HeroCarousel() {
   const [index, setIndex] = useState(0);
   const count = SLIDES.length;
 
-  const go = useCallback((step: number) => {
-    setIndex((current) => (current + step + count) % count);
-  }, [count]);
+  const go = useCallback(
+    (step: number) => {
+      setIndex((current) => (current + step + count) % count);
+    },
+    [count],
+  );
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -53,7 +59,7 @@ export function HeroCarousel() {
     <section
       aria-roledescription="carousel"
       aria-label="Babas & Brasse highlights"
-      className="relative aspect-9/16 max-h-[70svh] w-full overflow-hidden border-b-2 border-ink bg-ink sm:aspect-auto sm:h-[calc(100svh-4rem)] sm:max-h-none sm:min-h-130"
+      className="relative h-[90svh] w-full overflow-hidden border-b-2 border-ink bg-ink sm:h-[calc(100svh-4rem)] sm:min-h-130"
     >
       {SLIDES.map((slide, i) => (
         <div
@@ -64,12 +70,17 @@ export function HeroCarousel() {
             i === index ? "opacity-100" : "pointer-events-none opacity-0",
           )}
         >
-          <img
-            src={slide.src}
-            alt={slide.alt}
-            {...(i === 0 ? {} : { loading: "lazy" as const })}
-            className="h-full w-full object-cover"
-          />
+          <picture className="block h-full w-full">
+            {slide.mobileSrc ? (
+              <source media="(max-width: 639px)" srcSet={slide.mobileSrc} />
+            ) : null}
+            <img
+              src={slide.src}
+              alt={slide.alt}
+              {...(i === 0 ? {} : { loading: "lazy" as const })}
+              className="h-full w-full object-cover"
+            />
+          </picture>
           {slide.title ? (
             <>
               <div className="absolute inset-0 bg-ink/55" />
@@ -88,7 +99,9 @@ export function HeroCarousel() {
         </div>
       ))}
 
-      <h1 className="sr-only">Babas &amp; Brasse — independent South African arts and culture magazine</h1>
+      <h1 className="sr-only">
+        Babas &amp; Brasse - independent South African arts and culture magazine
+      </h1>
 
       <button
         type="button"
@@ -107,7 +120,15 @@ export function HeroCarousel() {
         <ChevronRight className="h-4 w-4 sm:h-6 sm:w-6" />
       </button>
 
-      <div className="absolute inset-x-0 bottom-3 z-10 flex items-center justify-center gap-3 sm:bottom-6">
+      <div className="absolute inset-x-0 bottom-5 z-10 flex items-center justify-center gap-3 sm:bottom-6">
+        <button
+          type="button"
+          aria-label="Previous slide"
+          onClick={() => go(-1)}
+          className="grid h-10 w-10 place-items-center rounded-full border-2 border-ink bg-cream/95 text-ink shadow-[3px_3px_0_0_var(--ink)] backdrop-blur-sm transition hover:bg-magenta active:translate-x-0.5 active:translate-y-0.5 active:shadow-none sm:hidden"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
         {SLIDES.map((slide, i) => (
           <button
             key={slide.src}
@@ -121,6 +142,14 @@ export function HeroCarousel() {
             )}
           />
         ))}
+        <button
+          type="button"
+          aria-label="Next slide"
+          onClick={() => go(1)}
+          className="grid h-10 w-10 place-items-center rounded-full border-2 border-ink bg-cream/95 text-ink shadow-[3px_3px_0_0_var(--ink)] backdrop-blur-sm transition hover:bg-magenta active:translate-x-0.5 active:translate-y-0.5 active:shadow-none sm:hidden"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
       </div>
     </section>
   );

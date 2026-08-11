@@ -35,18 +35,35 @@ const SUBJECTS = [
   "Articles",
 ];
 
-const GUIDELINES = [
-  "Pitches should be a short paragraph - the idea, why now, and why you.",
-  "Articles generally run 600-1200 words. Essays can stretch further if the argument earns it.",
-  "Photography submissions: 5-10 images, high resolution, with captions and credits.",
-  "We respond to everything we can within two weeks.",
+const SUBMISSION_PROMPTS = [
+  "Do you have a burning desire to tell a story?",
+  "Do you have an opinion on a topic that you would like to share?",
+  "Is there a piece of art, fashion, or literature that you would like to have archived? Or would you like one of our resident writers to interview you, cover your next project, or review your work?",
 ];
+
+const GUIDELINES = [
+  "Fill in the below with a clear subject line.",
+  "Please clearly indicate the nature of your submission, for example: press release, theatre review, interview request, book review, photography submission, artwork submission, literary submission, or event coverage request.",
+  "Due to the high volume of submissions, we encourage you to keep your submission concise, with a minimum of 100 words.",
+  "Thereafter, one of our editors will contact you. Thank you for choosing Babas and Brasse.",
+];
+
+const MINIMUM_WORDS = 100;
+
+function countWords(value: string) {
+  const trimmed = value.trim();
+  return trimmed ? trimmed.split(/\s+/).length : 0;
+}
 
 function ContactPage() {
   const [form, setForm] = useState(EMPTY);
+  const wordCount = countWords(form.message);
 
   const mutation = useMutation({
     mutationFn: async () => {
+      if (wordCount < MINIMUM_WORDS) {
+        throw new Error(`Please enter at least ${MINIMUM_WORDS} words.`);
+      }
       const { error } = await supabase.from("contact_submissions").insert(form);
       if (error) throw new Error(error.message);
     },
@@ -68,6 +85,16 @@ function ContactPage() {
               Have a pitch, a photo essay, a correction or a strong opinion? Send it through.
             </p>
             <h2 className="mt-10 font-display text-2xl">Submission guidelines</h2>
+            <div className="mt-6 space-y-4">
+              {SUBMISSION_PROMPTS.map((prompt) => (
+                <p
+                  key={prompt}
+                  className="border-t border-primary-foreground/20 pt-4 font-body text-base opacity-90"
+                >
+                  {prompt}
+                </p>
+              ))}
+            </div>
             <ul className="mt-6 space-y-4">
               {GUIDELINES.map((item, index) => (
                 <li
@@ -89,7 +116,7 @@ function ContactPage() {
               event.preventDefault();
               mutation.mutate();
             }}
-            className="border-2 border-ink bg-background p-6 sm:p-8"
+            className="self-start border-2 border-ink bg-background p-6 sm:p-8"
           >
             <h2 className="font-display text-3xl sm:text-4xl">Send your submission</h2>
             <div className="mt-8 grid gap-5 sm:grid-cols-2">
@@ -132,10 +159,20 @@ function ContactPage() {
               <textarea
                 required
                 rows={7}
+                aria-describedby="message-word-count"
+                aria-invalid={wordCount > 0 && wordCount < MINIMUM_WORDS}
                 value={form.message}
                 onChange={(event) => setForm((prev) => ({ ...prev, message: event.target.value }))}
                 className="font-sabon mt-2 w-full border-2 border-ink bg-cream p-3 text-[17px] font-normal outline-none focus:border-magenta"
               />
+              <span
+                id="message-word-count"
+                className={`mt-2 block text-sm font-normal ${
+                  wordCount >= MINIMUM_WORDS ? "text-forest-deep" : "text-muted-foreground"
+                }`}
+              >
+                {wordCount} / {MINIMUM_WORDS} words minimum
+              </span>
             </label>
             <button
               type="submit"

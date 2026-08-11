@@ -19,8 +19,10 @@ import {
   AdminEmpty,
   AdminHeading,
   AdminModal,
+  AdminPublicationFilter,
   Pill,
   adminInputClass as inputClass,
+  type PublicationFilter,
 } from "@/components/admin/AdminUI";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 
@@ -41,6 +43,10 @@ function ContributorsAdminPage() {
   const { data: people = [], isLoading } = useQuery(adminContributorsQuery());
   const [editing, setEditing] = useState<Contributor | null>(null);
   const [values, setValues] = useState<ContributorFormValues | null>(null);
+  const [filter, setFilter] = useState<PublicationFilter>("all");
+  const visiblePeople = people.filter((person) =>
+    filter === "all" ? true : filter === "live" ? person.is_published : !person.is_published,
+  );
 
   function close() {
     setValues(null);
@@ -118,7 +124,9 @@ function ContributorsAdminPage() {
             </div>
 
             <div>
-              <label className="label-xs" htmlFor="name">Name</label>
+              <label className="label-xs" htmlFor="name">
+                Name
+              </label>
               <input
                 id="name"
                 required
@@ -134,7 +142,9 @@ function ContributorsAdminPage() {
             </div>
 
             <div>
-              <label className="label-xs" htmlFor="slug">Slug</label>
+              <label className="label-xs" htmlFor="slug">
+                Slug
+              </label>
               <input
                 id="slug"
                 required
@@ -145,7 +155,9 @@ function ContributorsAdminPage() {
             </div>
 
             <div>
-              <label className="label-xs" htmlFor="role">Role title</label>
+              <label className="label-xs" htmlFor="role">
+                Role title
+              </label>
               <input
                 id="role"
                 className={inputClass}
@@ -155,7 +167,9 @@ function ContributorsAdminPage() {
             </div>
 
             <div>
-              <label className="label-xs" htmlFor="email">Email</label>
+              <label className="label-xs" htmlFor="email">
+                Email
+              </label>
               <input
                 id="email"
                 type="email"
@@ -166,7 +180,9 @@ function ContributorsAdminPage() {
             </div>
 
             <div className="sm:col-span-2">
-              <label className="label-xs" htmlFor="bio">Bio</label>
+              <label className="label-xs" htmlFor="bio">
+                Bio
+              </label>
               <textarea
                 id="bio"
                 rows={5}
@@ -178,7 +194,9 @@ function ContributorsAdminPage() {
 
             {SOCIALS.map(([key, label]) => (
               <div key={key}>
-                <label className="label-xs" htmlFor={key}>{label}</label>
+                <label className="label-xs" htmlFor={key}>
+                  {label}
+                </label>
                 <input
                   id={key}
                   className={inputClass}
@@ -190,7 +208,9 @@ function ContributorsAdminPage() {
             ))}
 
             <div>
-              <label className="label-xs" htmlFor="order">Sort order</label>
+              <label className="label-xs" htmlFor="order">
+                Sort order
+              </label>
               <input
                 id="order"
                 type="number"
@@ -210,6 +230,16 @@ function ContributorsAdminPage() {
               Part of the creative team
             </label>
 
+            <label className="label-xs flex items-center gap-2 sm:col-span-2">
+              <input
+                type="checkbox"
+                className="h-4 w-4 accent-forest"
+                checked={values.is_published}
+                onChange={(e) => update("is_published", e.target.checked)}
+              />
+              Live on the public site
+            </label>
+
             <div className="flex flex-wrap gap-3 sm:col-span-2">
               <button
                 type="submit"
@@ -219,7 +249,11 @@ function ContributorsAdminPage() {
                 {save.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                 Save
               </button>
-              <button type="button" onClick={close} className="label-xs border-2 border-ink px-5 py-3">
+              <button
+                type="button"
+                onClick={close}
+                className="label-xs border-2 border-ink px-5 py-3"
+              >
                 Cancel
               </button>
             </div>
@@ -227,21 +261,30 @@ function ContributorsAdminPage() {
         </AdminModal>
       )}
 
+      <AdminPublicationFilter value={filter} onChange={setFilter} records={people} />
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {people.map((person) => (
+        {visiblePeople.map((person) => (
           <AdminCard key={person.id}>
             <div className="flex items-start gap-4">
               <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden border-2 border-ink bg-cream font-display text-lg">
                 {person.image_url ? (
-                  <img src={person.image_url} alt={person.name} className="h-full w-full object-cover" />
+                  <img
+                    src={person.image_url}
+                    alt={person.name}
+                    className="h-full w-full object-cover"
+                  />
                 ) : (
                   initials(person.name)
                 )}
               </div>
               <div className="min-w-0">
                 <p className="truncate font-semibold">{person.name}</p>
-                <p className="label-xs mt-1 text-muted-foreground">{person.role_title ?? "—"}</p>
-                <div className="mt-2">
+                <p className="label-xs mt-1 text-muted-foreground">{person.role_title ?? "-"}</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <Pill tone={person.is_published ? "green" : "grey"}>
+                    {person.is_published ? "Live" : "Draft"}
+                  </Pill>
                   <Pill tone={person.is_team ? "green" : "grey"}>
                     {person.is_team ? "Team" : "Contributor"}
                   </Pill>
@@ -275,7 +318,9 @@ function ContributorsAdminPage() {
           </AdminCard>
         ))}
       </div>
-      {!isLoading && people.length === 0 && <AdminEmpty message="No contributors yet." />}
+      {!isLoading && visiblePeople.length === 0 && (
+        <AdminEmpty message={`No ${filter === "all" ? "" : `${filter} `}contributors.`} />
+      )}
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { Eye, Loader2, Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   adminArticlesQuery,
+  adminContributorsQuery,
   articleViewCountsQuery,
   createArticle,
   deleteArticle,
@@ -15,14 +16,16 @@ import {
   type AdminArticle,
   type ArticleFormValues,
 } from "@/lib/admin";
-import { categoriesQuery, contributorsQuery, formatDate } from "@/lib/magazine";
+import { categoriesQuery, formatDate } from "@/lib/magazine";
 import {
   AdminCard,
   AdminEmpty,
   AdminHeading,
   AdminModal,
+  AdminPublicationFilter,
   Pill,
   adminInputClass as inputClass,
+  type PublicationFilter,
 } from "@/components/admin/AdminUI";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
@@ -36,12 +39,14 @@ function ContentPage() {
   const { data: articles = [], isLoading } = useQuery(adminArticlesQuery());
   const { data: views = {} } = useQuery(articleViewCountsQuery());
   const { data: categories = [] } = useQuery(categoriesQuery());
-  const { data: writers = [] } = useQuery(contributorsQuery(false));
-  const { data: team = [] } = useQuery(contributorsQuery(true));
-  const people = [...writers, ...team];
+  const { data: people = [] } = useQuery(adminContributorsQuery());
 
   const [editing, setEditing] = useState<AdminArticle | null>(null);
   const [values, setValues] = useState<ArticleFormValues | null>(null);
+  const [filter, setFilter] = useState<PublicationFilter>("all");
+  const visibleArticles = articles.filter((article) =>
+    filter === "all" ? true : filter === "live" ? article.is_published : !article.is_published,
+  );
 
   function close() {
     setValues(null);
@@ -57,7 +62,6 @@ function ContentPage() {
       toast.success(editing ? "Piece updated" : "Piece created");
       queryClient.invalidateQueries({ queryKey: ["admin"] });
       queryClient.invalidateQueries({ queryKey: ["articles"] });
-      queryClient.invalidateQueries({ queryKey: ["contributors"] });
       close();
     },
     onError: (error: Error) => toast.error(error.message),
@@ -107,7 +111,9 @@ function ContentPage() {
             }}
           >
             <div className="lg:col-span-2">
-              <label className="label-xs" htmlFor="title">Title</label>
+              <label className="label-xs" htmlFor="title">
+                Title
+              </label>
               <input
                 id="title"
                 required
@@ -123,7 +129,9 @@ function ContentPage() {
             </div>
 
             <div>
-              <label className="label-xs" htmlFor="slug">Slug</label>
+              <label className="label-xs" htmlFor="slug">
+                Slug
+              </label>
               <input
                 id="slug"
                 required
@@ -134,7 +142,9 @@ function ContentPage() {
             </div>
 
             <div>
-              <label className="label-xs" htmlFor="read">Read minutes</label>
+              <label className="label-xs" htmlFor="read">
+                Read minutes
+              </label>
               <input
                 id="read"
                 type="number"
@@ -146,14 +156,16 @@ function ContentPage() {
             </div>
 
             <div>
-              <label className="label-xs" htmlFor="category">Section</label>
+              <label className="label-xs" htmlFor="category">
+                Section
+              </label>
               <select
                 id="category"
                 className={inputClass}
                 value={values.category_id ?? ""}
                 onChange={(e) => update("category_id", e.target.value || null)}
               >
-                <option value="">— none —</option>
+                <option value="">- none -</option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.name}
@@ -163,27 +175,32 @@ function ContentPage() {
             </div>
 
             <div>
-              <label className="label-xs" htmlFor="contributor">Contributor</label>
-              <input
+              <label className="label-xs" htmlFor="contributor">
+                Contributor
+              </label>
+              <select
                 id="contributor"
-                list="contributor-options"
                 className={inputClass}
-                placeholder="Type a name"
-                value={values.contributor_name}
-                onChange={(e) => update("contributor_name", e.target.value)}
-              />
-              <datalist id="contributor-options">
+                value={values.contributor_id ?? ""}
+                onChange={(e) => update("contributor_id", e.target.value || null)}
+              >
+                <option value="">- none -</option>
                 {people.map((person) => (
-                  <option key={person.id} value={person.name} />
+                  <option key={person.id} value={person.id}>
+                    {person.name}
+                    {person.is_published ? "" : " (Draft)"}
+                  </option>
                 ))}
-              </datalist>
+              </select>
               <p className="mt-1 text-xs text-muted-foreground">
-                New names are added to contributors automatically.
+                Add or edit names from the Contributors page before assigning them here.
               </p>
             </div>
 
             <div>
-              <label className="label-xs" htmlFor="date">Date</label>
+              <label className="label-xs" htmlFor="date">
+                Date
+              </label>
               <input
                 id="date"
                 type="date"
@@ -194,7 +211,9 @@ function ContentPage() {
             </div>
 
             <div>
-              <label className="label-xs" htmlFor="credit">Image credit (optional)</label>
+              <label className="label-xs" htmlFor="credit">
+                Image credit (optional)
+              </label>
               <input
                 id="credit"
                 className={inputClass}
@@ -213,7 +232,9 @@ function ContentPage() {
             </div>
 
             <div className="lg:col-span-2">
-              <label className="label-xs" htmlFor="excerpt">Description</label>
+              <label className="label-xs" htmlFor="excerpt">
+                Description
+              </label>
               <textarea
                 id="excerpt"
                 rows={2}
@@ -229,10 +250,12 @@ function ContentPage() {
             </div>
 
             <div className="flex flex-wrap gap-5 lg:col-span-2">
-              {([
-                ["is_published", "Published"],
-                ["is_editors_pick", "Editor's pick"],
-              ] as const).map(([key, label]) => (
+              {(
+                [
+                  ["is_published", "Published"],
+                  ["is_editors_pick", "Editor's pick"],
+                ] as const
+              ).map(([key, label]) => (
                 <label key={key} className="label-xs flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -254,13 +277,19 @@ function ContentPage() {
                 {save.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                 Save
               </button>
-              <button type="button" onClick={close} className="label-xs border-2 border-ink px-5 py-3">
+              <button
+                type="button"
+                onClick={close}
+                className="label-xs border-2 border-ink px-5 py-3"
+              >
                 Cancel
               </button>
             </div>
           </form>
         </AdminModal>
       )}
+
+      <AdminPublicationFilter value={filter} onChange={setFilter} records={articles} />
 
       <AdminCard className="p-0 sm:p-0">
         <div className="overflow-x-auto">
@@ -280,11 +309,11 @@ function ContentPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {articles.map((article) => (
+              {visibleArticles.map((article) => (
                 <tr key={article.id}>
                   <td className="max-w-xs truncate px-4 py-3 font-semibold">{article.title}</td>
-                  <td className="px-4 py-3">{article.categories?.name ?? "—"}</td>
-                  <td className="px-4 py-3">{article.contributors?.name ?? "—"}</td>
+                  <td className="px-4 py-3">{article.categories?.name ?? "-"}</td>
+                  <td className="px-4 py-3">{article.contributors?.name ?? "-"}</td>
                   <td className="px-4 py-3 whitespace-nowrap">
                     {formatDate(article.published_at ?? article.created_at)}
                   </td>
@@ -324,7 +353,9 @@ function ContentPage() {
             </tbody>
           </table>
         </div>
-        {!isLoading && articles.length === 0 && <AdminEmpty message="No pieces yet." />}
+        {!isLoading && visibleArticles.length === 0 && (
+          <AdminEmpty message={`No ${filter === "all" ? "" : `${filter} `}pieces.`} />
+        )}
       </AdminCard>
     </div>
   );
