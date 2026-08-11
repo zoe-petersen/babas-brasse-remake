@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { useEffect } from "react";
+import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function AdminHeading({
@@ -53,6 +55,65 @@ export function AdminEmpty({ message }: { message: string }) {
   return (
     <div className="border-2 border-dashed border-border bg-background px-6 py-14 text-center text-sm text-muted-foreground">
       {message}
+    </div>
+  );
+}
+
+export const adminInputClass =
+  "mt-2 w-full border-2 border-ink bg-background px-3 py-2 text-sm outline-none focus:border-forest";
+
+export function AdminModal({
+  title,
+  onClose,
+  children,
+  wide,
+}: {
+  title: string;
+  onClose: () => void;
+  children: ReactNode;
+  wide?: boolean;
+}) {
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 grid place-items-start overflow-y-auto bg-ink/70 p-4 sm:p-8"
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <div
+        className={cn(
+          "mx-auto w-full border-2 border-ink bg-background",
+          wide ? "max-w-4xl" : "max-w-2xl",
+        )}
+      >
+        <div className="flex items-center justify-between gap-4 border-b-2 border-ink bg-cream px-5 py-4">
+          <h2 className="text-xl">{title}</h2>
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={onClose}
+            className="border-2 border-ink p-2 hover:bg-background"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
+        <div className="p-5">{children}</div>
+      </div>
     </div>
   );
 }

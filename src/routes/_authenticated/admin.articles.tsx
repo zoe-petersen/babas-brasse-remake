@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Pencil, Plus, Trash2, Loader2 } from "lucide-react";
+import { Eye, Loader2, Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   adminArticlesQuery,
+  articleViewCountsQuery,
   createArticle,
   deleteArticle,
   emptyArticle,
@@ -15,18 +16,25 @@ import {
   type ArticleFormValues,
 } from "@/lib/admin";
 import { categoriesQuery, contributorsQuery, formatDate } from "@/lib/magazine";
-import { AdminCard, AdminEmpty, AdminHeading, Pill } from "@/components/admin/AdminUI";
+import {
+  AdminCard,
+  AdminEmpty,
+  AdminHeading,
+  AdminModal,
+  Pill,
+  adminInputClass as inputClass,
+} from "@/components/admin/AdminUI";
+import { ImageUpload } from "@/components/admin/ImageUpload";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 
 export const Route = createFileRoute("/_authenticated/admin/articles")({
-  component: ArticlesPage,
+  component: ContentPage,
 });
 
-const inputClass =
-  "mt-2 w-full border-2 border-ink bg-background px-3 py-2 text-sm outline-none focus:border-forest";
-
-function ArticlesPage() {
+function ContentPage() {
   const queryClient = useQueryClient();
   const { data: articles = [], isLoading } = useQuery(adminArticlesQuery());
+  const { data: views = {} } = useQuery(articleViewCountsQuery());
   const { data: categories = [] } = useQuery(categoriesQuery());
   const { data: writers = [] } = useQuery(contributorsQuery(false));
   const { data: team = [] } = useQuery(contributorsQuery(true));
@@ -35,14 +43,9 @@ function ArticlesPage() {
   const [editing, setEditing] = useState<AdminArticle | null>(null);
   const [values, setValues] = useState<ArticleFormValues | null>(null);
 
-  function openNew() {
+  function close() {
+    setValues(null);
     setEditing(null);
-    setValues(emptyArticle());
-  }
-
-  function openEdit(article: AdminArticle) {
-    setEditing(article);
-    setValues(toFormValues(article));
   }
 
   const save = useMutation({
@@ -51,11 +54,11 @@ function ArticlesPage() {
       else await createArticle(form);
     },
     onSuccess: () => {
-      toast.success(editing ? "Article updated" : "Article created");
-      queryClient.invalidateQueries({ queryKey: ["admin", "articles"] });
+      toast.success(editing ? "Piece updated" : "Piece created");
+      queryClient.invalidateQueries({ queryKey: ["admin"] });
       queryClient.invalidateQueries({ queryKey: ["articles"] });
-      setValues(null);
-      setEditing(null);
+      queryClient.invalidateQueries({ queryKey: ["contributors"] });
+      close();
     },
     onError: (error: Error) => toast.error(error.message),
   });
@@ -63,8 +66,8 @@ function ArticlesPage() {
   const remove = useMutation({
     mutationFn: deleteArticle,
     onSuccess: () => {
-      toast.success("Article deleted");
-      queryClient.invalidateQueries({ queryKey: ["admin", "articles"] });
+      toast.success("Piece deleted");
+      queryClient.invalidateQueries({ queryKey: ["admin"] });
       queryClient.invalidateQueries({ queryKey: ["articles"] });
     },
     onError: (error: Error) => toast.error(error.message),
@@ -77,12 +80,15 @@ function ArticlesPage() {
   return (
     <div className="space-y-8">
       <AdminHeading
-        title="Articles"
-        description="Create, edit and publish work across every section."
+        title="Content"
+        description="Create, edit and publish pieces across every section."
         action={
           <button
             type="button"
-            onClick={openNew}
+            onClick={() => {
+              setEditing(null);
+              setValues(emptyArticle());
+            }}
             className="label-xs inline-flex items-center gap-2 border-2 border-ink bg-magenta px-4 py-3 text-ink"
           >
             <Plus className="h-3.5 w-3.5" />
@@ -92,12 +98,9 @@ function ArticlesPage() {
       />
 
       {values && (
-        <AdminCard>
-          <h2 className="border-b-2 border-ink pb-3 text-xl">
-            {editing ? "Edit article" : "New article"}
-          </h2>
+        <AdminModal wide title={editing ? "Edit piece" : "New piece"} onClose={close}>
           <form
-            className="mt-4 grid gap-4 lg:grid-cols-2"
+            className="grid gap-4 lg:grid-cols-2"
             onSubmit={(event) => {
               event.preventDefault();
               save.mutate(values);
@@ -113,13 +116,7 @@ function ArticlesPage() {
                 onChange={(e) => {
                   const title = e.target.value;
                   setValues((prev) =>
-                    prev
-                      ? {
-                          ...prev,
-                          title,
-                          slug: editing ? prev.slug : slugify(title),
-                        }
-                      : prev,
+                    prev ? { ...prev, title, slug: editing ? prev.slug : slugify(title) } : prev,
                   );
                 }}
               />
@@ -167,34 +164,37 @@ function ArticlesPage() {
 
             <div>
               <label className="label-xs" htmlFor="contributor">Contributor</label>
-              <select
+              <input
                 id="contributor"
+                list="contributor-options"
                 className={inputClass}
-                value={values.contributor_id ?? ""}
-                onChange={(e) => update("contributor_id", e.target.value || null)}
-              >
-                <option value="">— none —</option>
+                placeholder="Type a name"
+                value={values.contributor_name}
+                onChange={(e) => update("contributor_name", e.target.value)}
+              />
+              <datalist id="contributor-options">
                 {people.map((person) => (
-                  <option key={person.id} value={person.id}>
-                    {person.name}
-                  </option>
+                  <option key={person.id} value={person.name} />
                 ))}
-              </select>
+              </datalist>
+              <p className="mt-1 text-xs text-muted-foreground">
+                New names are added to contributors automatically.
+              </p>
             </div>
 
             <div>
-              <label className="label-xs" htmlFor="cover">Cover image URL</label>
+              <label className="label-xs" htmlFor="date">Date</label>
               <input
-                id="cover"
+                id="date"
+                type="date"
                 className={inputClass}
-                placeholder="https://… or /media/example.jpg"
-                value={values.cover_image_url}
-                onChange={(e) => update("cover_image_url", e.target.value)}
+                value={values.published_on}
+                onChange={(e) => update("published_on", e.target.value)}
               />
             </div>
 
             <div>
-              <label className="label-xs" htmlFor="credit">Image credit</label>
+              <label className="label-xs" htmlFor="credit">Image credit (optional)</label>
               <input
                 id="credit"
                 className={inputClass}
@@ -204,7 +204,16 @@ function ArticlesPage() {
             </div>
 
             <div className="lg:col-span-2">
-              <label className="label-xs" htmlFor="excerpt">Excerpt</label>
+              <ImageUpload
+                label="Cover image"
+                folder="articles"
+                value={values.cover_image_url}
+                onChange={(url) => update("cover_image_url", url)}
+              />
+            </div>
+
+            <div className="lg:col-span-2">
+              <label className="label-xs" htmlFor="excerpt">Description</label>
               <textarea
                 id="excerpt"
                 rows={2}
@@ -215,20 +224,13 @@ function ArticlesPage() {
             </div>
 
             <div className="lg:col-span-2">
-              <label className="label-xs" htmlFor="body">Body</label>
-              <textarea
-                id="body"
-                rows={12}
-                className={inputClass}
-                value={values.body}
-                onChange={(e) => update("body", e.target.value)}
-              />
+              <p className="label-xs">Body</p>
+              <RichTextEditor value={values.body} onChange={(html) => update("body", html)} />
             </div>
 
             <div className="flex flex-wrap gap-5 lg:col-span-2">
               {([
                 ["is_published", "Published"],
-                ["is_featured", "Featured"],
                 ["is_editors_pick", "Editor's pick"],
               ] as const).map(([key, label]) => (
                 <label key={key} className="label-xs flex items-center gap-2">
@@ -252,19 +254,12 @@ function ArticlesPage() {
                 {save.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                 Save
               </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setValues(null);
-                  setEditing(null);
-                }}
-                className="label-xs border-2 border-ink px-5 py-3"
-              >
+              <button type="button" onClick={close} className="label-xs border-2 border-ink px-5 py-3">
                 Cancel
               </button>
             </div>
           </form>
-        </AdminCard>
+        </AdminModal>
       )}
 
       <AdminCard className="p-0 sm:p-0">
@@ -276,6 +271,10 @@ function ArticlesPage() {
                 <th className="label-xs px-4 py-3">Section</th>
                 <th className="label-xs px-4 py-3">Author</th>
                 <th className="label-xs px-4 py-3">Date</th>
+                <th className="label-xs px-4 py-3">
+                  <span className="sr-only">Reads</span>
+                  <Eye className="h-4 w-4" aria-label="Reads" />
+                </th>
                 <th className="label-xs px-4 py-3">Status</th>
                 <th className="label-xs px-4 py-3 text-right">Actions</th>
               </tr>
@@ -289,6 +288,7 @@ function ArticlesPage() {
                   <td className="px-4 py-3 whitespace-nowrap">
                     {formatDate(article.published_at ?? article.created_at)}
                   </td>
+                  <td className="px-4 py-3 tabular-nums">{views[article.id] ?? 0}</td>
                   <td className="px-4 py-3">
                     <Pill tone={article.is_published ? "green" : "grey"}>
                       {article.is_published ? "Live" : "Draft"}
@@ -299,7 +299,10 @@ function ArticlesPage() {
                       <button
                         type="button"
                         aria-label={`Edit ${article.title}`}
-                        onClick={() => openEdit(article)}
+                        onClick={() => {
+                          setEditing(article);
+                          setValues(toFormValues(article));
+                        }}
                         className="border-2 border-ink p-2 hover:bg-cream"
                       >
                         <Pencil className="h-3.5 w-3.5" />
@@ -321,7 +324,7 @@ function ArticlesPage() {
             </tbody>
           </table>
         </div>
-        {!isLoading && articles.length === 0 && <AdminEmpty message="No articles yet." />}
+        {!isLoading && articles.length === 0 && <AdminEmpty message="No pieces yet." />}
       </AdminCard>
     </div>
   );

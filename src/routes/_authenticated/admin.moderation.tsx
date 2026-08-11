@@ -84,12 +84,26 @@ function ModerationPage() {
           <AdminCard key={comment.id}>
             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4">
               <div className="min-w-0">
-                <p className="truncate text-sm font-semibold">{comment.author_name}</p>
+                <p className="truncate text-sm font-semibold">
+                  {[comment.author_name, comment.author_surname].filter(Boolean).join(" ")}
+                </p>
                 <p className="label-xs mt-1 text-muted-foreground">
-                  {comment.author_email} · {formatDate(comment.created_at)}
+                  {formatDate(comment.created_at)}
                 </p>
                 <p className="label-xs mt-1 text-forest-deep">
-                  On: {comment.articles?.title ?? "Unknown article"}
+                  On:{" "}
+                  {comment.articles ? (
+                    <a
+                      href={`/article/${comment.articles.slug}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="border-b-2 border-forest-deep hover:text-magenta"
+                    >
+                      {comment.articles.title}
+                    </a>
+                  ) : (
+                    "Unknown piece"
+                  )}
                 </p>
               </div>
               <Pill

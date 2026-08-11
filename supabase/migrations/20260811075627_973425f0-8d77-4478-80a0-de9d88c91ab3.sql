@@ -1,0 +1,1 @@
+alter view public.approved_comments set (security_invoker = on);

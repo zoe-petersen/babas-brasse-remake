@@ -1,6 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { adminArticlesQuery, adminCommentsQuery, submissionsQuery } from "@/lib/admin";
+import {
+  adminArticlesQuery,
+  adminCommentsQuery,
+  articleViewCountsQuery,
+  submissionsQuery,
+} from "@/lib/admin";
 import { formatDate } from "@/lib/magazine";
 import { AdminCard, AdminEmpty, AdminHeading, Pill, StatCard } from "@/components/admin/AdminUI";
 
@@ -12,20 +17,23 @@ function DashboardPage() {
   const articles = useQuery(adminArticlesQuery());
   const comments = useQuery(adminCommentsQuery());
   const submissions = useQuery(submissionsQuery());
+  const views = useQuery(articleViewCountsQuery());
 
   const all = articles.data ?? [];
   const published = all.filter((a) => a.is_published);
   const drafts = all.filter((a) => !a.is_published);
   const pending = (comments.data ?? []).filter((c) => c.status === "pending");
   const openSubmissions = (submissions.data ?? []).filter((s) => !s.is_handled);
+  const totalReads = Object.values(views.data ?? {}).reduce((sum, value) => sum + value, 0);
 
   return (
     <div className="space-y-8">
       <AdminHeading title="Dashboard" description="A quick read on the newsroom right now." />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <StatCard label="Published" value={published.length} hint="Live on the public site" />
         <StatCard label="Drafts" value={drafts.length} hint="Not yet visible" />
+        <StatCard label="Total reads" value={totalReads} hint="Across every piece" />
         <StatCard label="Pending comments" value={pending.length} hint="Awaiting moderation" />
         <StatCard label="Open messages" value={openSubmissions.length} hint="Contact submissions" />
       </div>
@@ -33,7 +41,7 @@ function DashboardPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         <AdminCard>
           <div className="flex items-center justify-between gap-3 border-b-2 border-ink pb-3">
-            <h2 className="text-xl">Recent articles</h2>
+            <h2 className="text-xl">Recent pieces</h2>
             <Link to="/admin/articles" className="label-xs border-b-2 border-ink pb-0.5">
               Manage
             </Link>
@@ -54,7 +62,7 @@ function DashboardPage() {
               </li>
             ))}
           </ul>
-          {all.length === 0 && <AdminEmpty message="No articles yet." />}
+          {all.length === 0 && <AdminEmpty message="No pieces yet." />}
         </AdminCard>
 
         <AdminCard>
@@ -67,7 +75,9 @@ function DashboardPage() {
           <ul className="mt-3 divide-y divide-border">
             {pending.slice(0, 5).map((comment) => (
               <li key={comment.id} className="py-3">
-                <p className="label-xs text-forest-deep">{comment.author_name}</p>
+                <p className="label-xs text-forest-deep">
+                  {[comment.author_name, comment.author_surname].filter(Boolean).join(" ")}
+                </p>
                 <p className="mt-1 line-clamp-2 text-sm">{comment.body}</p>
               </li>
             ))}

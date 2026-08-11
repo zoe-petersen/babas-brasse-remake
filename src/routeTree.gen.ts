@@ -24,7 +24,9 @@ import { Route as PhotographyIndexRouteImport } from './routes/photography.index
 import { Route as PhotographyIdRouteImport } from './routes/photography.$id'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminArticlesRouteImport } from './routes/_authenticated/admin.articles'
+import { Route as AuthenticatedAdminContributorsRouteImport } from './routes/_authenticated/admin.contributors'
 import { Route as AuthenticatedAdminModerationRouteImport } from './routes/_authenticated/admin.moderation'
+import { Route as AuthenticatedAdminMoodBoardRouteImport } from './routes/_authenticated/admin.mood-board'
 import { Route as AuthenticatedAdminSubmissionsRouteImport } from './routes/_authenticated/admin.submissions'
 import { Route as ApiPublicMediaSplatRouteImport } from './routes/api/public/media.$'
 
@@ -103,10 +105,22 @@ const AuthenticatedAdminArticlesRoute =
     path: '/articles',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminContributorsRoute =
+  AuthenticatedAdminContributorsRouteImport.update({
+    id: '/contributors',
+    path: '/contributors',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminModerationRoute =
   AuthenticatedAdminModerationRouteImport.update({
     id: '/moderation',
     path: '/moderation',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminMoodBoardRoute =
+  AuthenticatedAdminMoodBoardRouteImport.update({
+    id: '/mood-board',
+    path: '/mood-board',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminSubmissionsRoute =
@@ -135,7 +149,9 @@ export interface FileRoutesByFullPath {
   '/contributors/': typeof ContributorsIndexRoute
   '/photography/': typeof PhotographyIndexRoute
   '/admin/articles': typeof AuthenticatedAdminArticlesRoute
+  '/admin/contributors': typeof AuthenticatedAdminContributorsRoute
   '/admin/moderation': typeof AuthenticatedAdminModerationRoute
+  '/admin/mood-board': typeof AuthenticatedAdminMoodBoardRoute
   '/admin/submissions': typeof AuthenticatedAdminSubmissionsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
@@ -153,7 +169,9 @@ export interface FileRoutesByTo {
   '/contributors': typeof ContributorsIndexRoute
   '/photography': typeof PhotographyIndexRoute
   '/admin/articles': typeof AuthenticatedAdminArticlesRoute
+  '/admin/contributors': typeof AuthenticatedAdminContributorsRoute
   '/admin/moderation': typeof AuthenticatedAdminModerationRoute
+  '/admin/mood-board': typeof AuthenticatedAdminMoodBoardRoute
   '/admin/submissions': typeof AuthenticatedAdminSubmissionsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
@@ -174,7 +192,9 @@ export interface FileRoutesById {
   '/contributors/': typeof ContributorsIndexRoute
   '/photography/': typeof PhotographyIndexRoute
   '/_authenticated/admin/articles': typeof AuthenticatedAdminArticlesRoute
+  '/_authenticated/admin/contributors': typeof AuthenticatedAdminContributorsRoute
   '/_authenticated/admin/moderation': typeof AuthenticatedAdminModerationRoute
+  '/_authenticated/admin/mood-board': typeof AuthenticatedAdminMoodBoardRoute
   '/_authenticated/admin/submissions': typeof AuthenticatedAdminSubmissionsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
@@ -195,7 +215,9 @@ export interface FileRouteTypes {
     | '/contributors/'
     | '/photography/'
     | '/admin/articles'
+    | '/admin/contributors'
     | '/admin/moderation'
+    | '/admin/mood-board'
     | '/admin/submissions'
     | '/admin/'
     | '/api/public/media/$'
@@ -213,7 +235,9 @@ export interface FileRouteTypes {
     | '/contributors'
     | '/photography'
     | '/admin/articles'
+    | '/admin/contributors'
     | '/admin/moderation'
+    | '/admin/mood-board'
     | '/admin/submissions'
     | '/admin'
     | '/api/public/media/$'
@@ -233,7 +257,9 @@ export interface FileRouteTypes {
     | '/contributors/'
     | '/photography/'
     | '/_authenticated/admin/articles'
+    | '/_authenticated/admin/contributors'
     | '/_authenticated/admin/moderation'
+    | '/_authenticated/admin/mood-board'
     | '/_authenticated/admin/submissions'
     | '/_authenticated/admin/'
     | '/api/public/media/$'
@@ -362,11 +388,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminArticlesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/contributors': {
+      id: '/_authenticated/admin/contributors'
+      path: '/contributors'
+      fullPath: '/admin/contributors'
+      preLoaderRoute: typeof AuthenticatedAdminContributorsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/moderation': {
       id: '/_authenticated/admin/moderation'
       path: '/moderation'
       fullPath: '/admin/moderation'
       preLoaderRoute: typeof AuthenticatedAdminModerationRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/mood-board': {
+      id: '/_authenticated/admin/mood-board'
+      path: '/mood-board'
+      fullPath: '/admin/mood-board'
+      preLoaderRoute: typeof AuthenticatedAdminMoodBoardRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/submissions': {
@@ -388,14 +428,18 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminArticlesRoute: typeof AuthenticatedAdminArticlesRoute
+  AuthenticatedAdminContributorsRoute: typeof AuthenticatedAdminContributorsRoute
   AuthenticatedAdminModerationRoute: typeof AuthenticatedAdminModerationRoute
+  AuthenticatedAdminMoodBoardRoute: typeof AuthenticatedAdminMoodBoardRoute
   AuthenticatedAdminSubmissionsRoute: typeof AuthenticatedAdminSubmissionsRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminArticlesRoute: AuthenticatedAdminArticlesRoute,
+  AuthenticatedAdminContributorsRoute: AuthenticatedAdminContributorsRoute,
   AuthenticatedAdminModerationRoute: AuthenticatedAdminModerationRoute,
+  AuthenticatedAdminMoodBoardRoute: AuthenticatedAdminMoodBoardRoute,
   AuthenticatedAdminSubmissionsRoute: AuthenticatedAdminSubmissionsRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
@@ -432,13 +476,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

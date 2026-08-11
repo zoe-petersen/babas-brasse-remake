@@ -55,6 +55,7 @@ export type Photograph = {
 export type ApprovedComment = {
   id: string;
   author_name: string;
+  author_surname: string | null;
   body: string;
   created_at: string;
 };
@@ -164,7 +165,7 @@ export async function registerArticleView(articleId: string) {
 export async function fetchApprovedComments(articleId: string) {
   const { data, error } = await supabase
     .from("approved_comments")
-    .select("id, author_name, body, created_at")
+    .select("id, author_name, author_surname, body, created_at")
     .eq("article_id", articleId)
     .order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
