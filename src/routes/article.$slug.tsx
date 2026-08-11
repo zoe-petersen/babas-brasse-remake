@@ -306,7 +306,9 @@ function Comments({ articleId, onSubmitted }: { articleId: string; onSubmitted: 
           ) : (
             comments.map((comment) => (
               <div key={comment.id} className="border-2 border-ink bg-cream p-5">
-                <p className="label-xs">{comment.author_name}</p>
+                <p className="label-xs">
+                  {[comment.author_name, comment.author_surname].filter(Boolean).join(" ")}
+                </p>
                 <p className="label-xs mt-1 opacity-60">{formatDate(comment.created_at)}</p>
                 <p className="mt-3 text-sm">{comment.body}</p>
               </div>
