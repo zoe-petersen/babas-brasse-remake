@@ -31,7 +31,7 @@ export function SiteFooter() {
             loading="lazy"
             width={500}
             height={500}
-            className="h-44 w-auto brightness-0 invert sm:h-52"
+            className="h-44 w-auto sm:h-52"
           />
           <p className="mt-6 max-w-xs text-sm opacity-90">
             Culture, criticism, and creative work made with nerve, care, and a point of view.
