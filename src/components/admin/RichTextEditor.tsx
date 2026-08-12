@@ -1,10 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { Extension } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { FontFamily } from "@tiptap/extension-font-family";
+import Image from "@tiptap/extension-image";
+import { toast } from "sonner";
+import { uploadImage } from "@/lib/storage";
 import {
   AlignCenter,
   AlignJustify,
@@ -22,6 +25,8 @@ import {
   Redo2,
   Minus,
   WrapText,
+  ImagePlus,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -93,6 +98,8 @@ export function RichTextEditor({
   value: string;
   onChange: (html: string) => void;
 }) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -100,6 +107,11 @@ export function RichTextEditor({
       TextStyle,
       FontFamily,
       Indentation,
+      Image.configure({
+        inline: false,
+        allowBase64: false,
+        HTMLAttributes: { class: "article-inline-image" },
+      }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
     ],
     content: value || "",
@@ -119,6 +131,27 @@ export function RichTextEditor({
   }, [editor, value]);
 
   if (!editor) return <div className="mt-2 border-2 border-ink p-4 text-sm">Loading editor…</div>;
+
+  async function insertImage(file: File | undefined) {
+    if (!file || !editor) return;
+    setUploading(true);
+    try {
+      const url = await uploadImage(file, "articles/body");
+      const caption = window.prompt("Caption for this image (optional)")?.trim() ?? "";
+      editor
+        .chain()
+        .focus()
+        .setImage({ src: url, alt: caption, title: caption })
+        .createParagraphNear()
+        .run();
+      toast.success("Image added");
+    } catch (error) {
+      toast.error((error as Error).message);
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  }
 
   const indent = (direction: 1 | -1) => {
     const { state, view } = editor;
@@ -225,6 +258,13 @@ export function RichTextEditor({
         <ToolButton label="Divider" onClick={() => editor.chain().focus().setHorizontalRule().run()}>
           <Minus className="h-3.5 w-3.5" />
         </ToolButton>
+        <ToolButton label="Insert image" onClick={() => fileRef.current?.click()}>
+          {uploading ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <ImagePlus className="h-3.5 w-3.5" />
+          )}
+        </ToolButton>
         <ToolButton label="Undo" onClick={() => editor.chain().focus().undo().run()}>
           <Undo2 className="h-3.5 w-3.5" />
         </ToolButton>
@@ -232,6 +272,13 @@ export function RichTextEditor({
           <Redo2 className="h-3.5 w-3.5" />
         </ToolButton>
       </div>
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(event) => void insertImage(event.target.files?.[0])}
+      />
       <EditorContent editor={editor} />
     </div>
   );
