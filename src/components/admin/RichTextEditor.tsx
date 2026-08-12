@@ -141,7 +141,7 @@ export function RichTextEditor({
       editor
         .chain()
         .focus()
-        .setImage({ src: url, alt: caption, title: caption || null })
+        .setImage({ src: url, alt: caption, title: caption })
         .createParagraphNear()
         .run();
       toast.success("Image added");

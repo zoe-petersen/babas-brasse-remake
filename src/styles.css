@@ -278,3 +278,28 @@
   height: 0;
   pointer-events: none;
 }
+
+.prose-editor img,
+.article-html img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin-block: 1.6em;
+  border: 2px solid var(--ink);
+  box-shadow: 8px 8px 0 0 var(--ink);
+  object-fit: cover;
+}
+
+.prose-editor img[title]:not([title=""]),
+.article-html img[title]:not([title=""]) {
+  margin-bottom: 0.6em;
+}
+
+.article-html img + p:empty {
+  display: none;
+}
+
+.prose-editor img.ProseMirror-selectednode {
+  outline: 3px solid var(--magenta);
+}
