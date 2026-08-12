@@ -5,7 +5,14 @@ import { Check, Mail, Undo2 } from "lucide-react";
 import { toast } from "sonner";
 import { setSubmissionHandled, submissionsQuery } from "@/lib/admin";
 import { formatDate } from "@/lib/magazine";
-import { AdminCard, AdminEmpty, AdminHeading, Pill } from "@/components/admin/AdminUI";
+import {
+  AdminCard,
+  AdminEmpty,
+  AdminFilterToolbar,
+  AdminHeading,
+  Pill,
+  adminFilterSelectClass,
+} from "@/components/admin/AdminUI";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/admin/submissions")({
@@ -18,11 +25,23 @@ type Filter = (typeof FILTERS)[number];
 function SubmissionsPage() {
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState<Filter>("open");
+  const [search, setSearch] = useState("");
+  const [subjectFilter, setSubjectFilter] = useState("all");
   const { data: submissions = [] } = useQuery(submissionsQuery());
 
-  const visible = submissions.filter((s) =>
-    filter === "all" ? true : filter === "open" ? !s.is_handled : s.is_handled,
-  );
+  const subjects = [...new Set(submissions.map((submission) => submission.subject))].sort();
+  const normalizedSearch = search.trim().toLowerCase();
+  const visible = submissions.filter((submission) => {
+    const matchesStatus =
+      filter === "all" ? true : filter === "open" ? !submission.is_handled : submission.is_handled;
+    const matchesSubject = subjectFilter === "all" || submission.subject === subjectFilter;
+    const matchesSearch =
+      !normalizedSearch ||
+      [submission.name, submission.email, submission.subject, submission.message].some((value) =>
+        value.toLowerCase().includes(normalizedSearch),
+      );
+    return matchesStatus && matchesSubject && matchesSearch;
+  });
 
   const toggle = useMutation({
     mutationFn: ({ id, handled }: { id: string; handled: boolean }) =>
@@ -50,9 +69,48 @@ function SubmissionsPage() {
             )}
           >
             {option}
+            <span className="ml-2 opacity-70">
+              {
+                submissions.filter((submission) =>
+                  option === "all"
+                    ? true
+                    : option === "open"
+                      ? !submission.is_handled
+                      : submission.is_handled,
+                ).length
+              }
+            </span>
           </button>
         ))}
       </div>
+
+      <AdminFilterToolbar
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder="Search name, email, subject or message..."
+        hasActiveFilters={Boolean(search) || filter !== "all" || subjectFilter !== "all"}
+        onClear={() => {
+          setSearch("");
+          setFilter("all");
+          setSubjectFilter("all");
+        }}
+      >
+        <label>
+          <span className="sr-only">Filter submissions by subject</span>
+          <select
+            value={subjectFilter}
+            onChange={(event) => setSubjectFilter(event.target.value)}
+            className={adminFilterSelectClass}
+          >
+            <option value="all">All subjects</option>
+            {subjects.map((subject) => (
+              <option key={subject} value={subject}>
+                {subject}
+              </option>
+            ))}
+          </select>
+        </label>
+      </AdminFilterToolbar>
 
       <div className="space-y-4">
         {visible.map((submission) => (
@@ -97,7 +155,7 @@ function SubmissionsPage() {
             </button>
           </AdminCard>
         ))}
-        {visible.length === 0 && <AdminEmpty message={`No ${filter} submissions.`} />}
+        {visible.length === 0 && <AdminEmpty message="No submissions match these filters." />}
       </div>
     </div>
   );

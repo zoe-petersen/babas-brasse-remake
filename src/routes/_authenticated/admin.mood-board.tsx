@@ -17,10 +17,12 @@ import { formatDate } from "@/lib/magazine";
 import {
   AdminCard,
   AdminEmpty,
+  AdminFilterToolbar,
   AdminHeading,
   AdminModal,
   AdminPublicationFilter,
   Pill,
+  adminFilterSelectClass,
   adminInputClass as inputClass,
   type PublicationFilter,
 } from "@/components/admin/AdminUI";
@@ -36,9 +38,23 @@ function MoodBoardAdminPage() {
   const [editing, setEditing] = useState<AdminPhotograph | null>(null);
   const [values, setValues] = useState<PhotographFormValues | null>(null);
   const [filter, setFilter] = useState<PublicationFilter>("all");
-  const visiblePhotos = photos.filter((photo) =>
-    filter === "all" ? true : filter === "live" ? photo.is_published : !photo.is_published,
-  );
+  const [search, setSearch] = useState("");
+  const [creditFilter, setCreditFilter] = useState("all");
+  const credits = [
+    ...new Set(photos.flatMap((photo) => (photo.credit ? [photo.credit] : []))),
+  ].sort();
+  const normalizedSearch = search.trim().toLowerCase();
+  const visiblePhotos = photos.filter((photo) => {
+    const matchesPublication =
+      filter === "all" ? true : filter === "live" ? photo.is_published : !photo.is_published;
+    const matchesCredit = creditFilter === "all" || photo.credit === creditFilter;
+    const matchesSearch =
+      !normalizedSearch ||
+      [photo.title, photo.caption, photo.credit, photo.taken_on]
+        .filter(Boolean)
+        .some((value) => value?.toLowerCase().includes(normalizedSearch));
+    return matchesPublication && matchesCredit && matchesSearch;
+  });
 
   function close() {
     setValues(null);
@@ -211,6 +227,34 @@ function MoodBoardAdminPage() {
 
       <AdminPublicationFilter value={filter} onChange={setFilter} records={photos} />
 
+      <AdminFilterToolbar
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder="Search title, caption, credit or date..."
+        hasActiveFilters={Boolean(search) || filter !== "all" || creditFilter !== "all"}
+        onClear={() => {
+          setSearch("");
+          setFilter("all");
+          setCreditFilter("all");
+        }}
+      >
+        <label>
+          <span className="sr-only">Filter by photographer or credit</span>
+          <select
+            value={creditFilter}
+            onChange={(event) => setCreditFilter(event.target.value)}
+            className={adminFilterSelectClass}
+          >
+            <option value="all">All credits</option>
+            {credits.map((credit) => (
+              <option key={credit} value={credit}>
+                {credit}
+              </option>
+            ))}
+          </select>
+        </label>
+      </AdminFilterToolbar>
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {visiblePhotos.map((photo) => (
           <AdminCard key={photo.id} className="p-0 sm:p-0">
@@ -260,7 +304,7 @@ function MoodBoardAdminPage() {
         ))}
       </div>
       {!isLoading && visiblePhotos.length === 0 && (
-        <AdminEmpty message={`No ${filter === "all" ? "" : `${filter} `}photographs.`} />
+        <AdminEmpty message="No photographs match these filters." />
       )}
     </div>
   );

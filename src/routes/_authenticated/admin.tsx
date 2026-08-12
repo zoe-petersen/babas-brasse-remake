@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 
 const NAV = [
   { label: "Dashboard", to: "/admin", icon: LayoutDashboard, exact: true },
-  { label: "Content", to: "/admin/articles", icon: Newspaper, exact: false },
+  { label: "Content", to: "/admin/content", icon: Newspaper, exact: false },
   { label: "Contributors", to: "/admin/contributors", icon: Users, exact: false },
   { label: "Mood board", to: "/admin/mood-board", icon: Images, exact: false },
   { label: "Moderation", to: "/admin/moderation", icon: MessageSquare, exact: false },

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { useEffect } from "react";
-import { X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function AdminHeading({
@@ -75,6 +75,55 @@ export function AdminEmpty({ message }: { message: string }) {
 
 export const adminInputClass =
   "mt-2 w-full border-2 border-ink bg-background px-3 py-2 text-sm outline-none focus:border-forest";
+
+export const adminFilterSelectClass =
+  "h-11 min-w-40 border-2 border-ink bg-background px-3 text-sm outline-none focus:border-forest";
+
+export function AdminFilterToolbar({
+  searchValue,
+  onSearchChange,
+  searchPlaceholder,
+  hasActiveFilters,
+  onClear,
+  children,
+}: {
+  searchValue: string;
+  onSearchChange: (value: string) => void;
+  searchPlaceholder: string;
+  hasActiveFilters: boolean;
+  onClear: () => void;
+  children?: ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-3 border-2 border-ink bg-cream p-3 lg:flex-row lg:items-center">
+      <label className="relative min-w-0 flex-1">
+        <span className="sr-only">Search</span>
+        <Search
+          className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+          aria-hidden="true"
+        />
+        <input
+          type="search"
+          value={searchValue}
+          onChange={(event) => onSearchChange(event.target.value)}
+          placeholder={searchPlaceholder}
+          className="h-11 w-full border-2 border-ink bg-background pr-3 pl-10 text-sm outline-none placeholder:text-muted-foreground focus:border-forest"
+        />
+      </label>
+      {children && <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">{children}</div>}
+      {hasActiveFilters && (
+        <button
+          type="button"
+          onClick={onClear}
+          className="label-xs inline-flex h-11 shrink-0 items-center justify-center gap-2 border-2 border-ink bg-background px-4 hover:bg-magenta"
+        >
+          <X className="h-3.5 w-3.5" aria-hidden="true" />
+          Clear filters
+        </button>
+      )}
+    </div>
+  );
+}
 
 export function AdminModal({
   title,

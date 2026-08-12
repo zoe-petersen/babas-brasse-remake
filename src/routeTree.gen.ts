@@ -25,6 +25,7 @@ import { Route as PhotographyIndexRouteImport } from './routes/photography.index
 import { Route as PhotographyIdRouteImport } from './routes/photography.$id'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminArticlesRouteImport } from './routes/_authenticated/admin.articles'
+import { Route as AuthenticatedAdminContentRouteImport } from './routes/_authenticated/admin.content'
 import { Route as AuthenticatedAdminContributorsRouteImport } from './routes/_authenticated/admin.contributors'
 import { Route as AuthenticatedAdminModerationRouteImport } from './routes/_authenticated/admin.moderation'
 import { Route as AuthenticatedAdminMoodBoardRouteImport } from './routes/_authenticated/admin.mood-board'
@@ -111,6 +112,12 @@ const AuthenticatedAdminArticlesRoute =
     path: '/articles',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminContentRoute =
+  AuthenticatedAdminContentRouteImport.update({
+    id: '/content',
+    path: '/content',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminContributorsRoute =
   AuthenticatedAdminContributorsRouteImport.update({
     id: '/contributors',
@@ -156,6 +163,7 @@ export interface FileRoutesByFullPath {
   '/contributors/': typeof ContributorsIndexRoute
   '/photography/': typeof PhotographyIndexRoute
   '/admin/articles': typeof AuthenticatedAdminArticlesRoute
+  '/admin/content': typeof AuthenticatedAdminContentRoute
   '/admin/contributors': typeof AuthenticatedAdminContributorsRoute
   '/admin/moderation': typeof AuthenticatedAdminModerationRoute
   '/admin/mood-board': typeof AuthenticatedAdminMoodBoardRoute
@@ -177,6 +185,7 @@ export interface FileRoutesByTo {
   '/contributors': typeof ContributorsIndexRoute
   '/photography': typeof PhotographyIndexRoute
   '/admin/articles': typeof AuthenticatedAdminArticlesRoute
+  '/admin/content': typeof AuthenticatedAdminContentRoute
   '/admin/contributors': typeof AuthenticatedAdminContributorsRoute
   '/admin/moderation': typeof AuthenticatedAdminModerationRoute
   '/admin/mood-board': typeof AuthenticatedAdminMoodBoardRoute
@@ -201,6 +210,7 @@ export interface FileRoutesById {
   '/contributors/': typeof ContributorsIndexRoute
   '/photography/': typeof PhotographyIndexRoute
   '/_authenticated/admin/articles': typeof AuthenticatedAdminArticlesRoute
+  '/_authenticated/admin/content': typeof AuthenticatedAdminContentRoute
   '/_authenticated/admin/contributors': typeof AuthenticatedAdminContributorsRoute
   '/_authenticated/admin/moderation': typeof AuthenticatedAdminModerationRoute
   '/_authenticated/admin/mood-board': typeof AuthenticatedAdminMoodBoardRoute
@@ -225,6 +235,7 @@ export interface FileRouteTypes {
     | '/contributors/'
     | '/photography/'
     | '/admin/articles'
+    | '/admin/content'
     | '/admin/contributors'
     | '/admin/moderation'
     | '/admin/mood-board'
@@ -246,6 +257,7 @@ export interface FileRouteTypes {
     | '/contributors'
     | '/photography'
     | '/admin/articles'
+    | '/admin/content'
     | '/admin/contributors'
     | '/admin/moderation'
     | '/admin/mood-board'
@@ -269,6 +281,7 @@ export interface FileRouteTypes {
     | '/contributors/'
     | '/photography/'
     | '/_authenticated/admin/articles'
+    | '/_authenticated/admin/content'
     | '/_authenticated/admin/contributors'
     | '/_authenticated/admin/moderation'
     | '/_authenticated/admin/mood-board'
@@ -408,6 +421,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminArticlesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/content': {
+      id: '/_authenticated/admin/content'
+      path: '/content'
+      fullPath: '/admin/content'
+      preLoaderRoute: typeof AuthenticatedAdminContentRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/contributors': {
       id: '/_authenticated/admin/contributors'
       path: '/contributors'
@@ -448,6 +468,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminArticlesRoute: typeof AuthenticatedAdminArticlesRoute
+  AuthenticatedAdminContentRoute: typeof AuthenticatedAdminContentRoute
   AuthenticatedAdminContributorsRoute: typeof AuthenticatedAdminContributorsRoute
   AuthenticatedAdminModerationRoute: typeof AuthenticatedAdminModerationRoute
   AuthenticatedAdminMoodBoardRoute: typeof AuthenticatedAdminMoodBoardRoute
@@ -457,6 +478,7 @@ interface AuthenticatedAdminRouteChildren {
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminArticlesRoute: AuthenticatedAdminArticlesRoute,
+  AuthenticatedAdminContentRoute: AuthenticatedAdminContentRoute,
   AuthenticatedAdminContributorsRoute: AuthenticatedAdminContributorsRoute,
   AuthenticatedAdminModerationRoute: AuthenticatedAdminModerationRoute,
   AuthenticatedAdminMoodBoardRoute: AuthenticatedAdminMoodBoardRoute,

@@ -10,7 +10,14 @@ import {
   type AdminComment,
 } from "@/lib/admin";
 import { formatDate } from "@/lib/magazine";
-import { AdminCard, AdminEmpty, AdminHeading, Pill } from "@/components/admin/AdminUI";
+import {
+  AdminCard,
+  AdminEmpty,
+  AdminFilterToolbar,
+  AdminHeading,
+  Pill,
+  adminFilterSelectClass,
+} from "@/components/admin/AdminUI";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/admin/moderation")({
@@ -23,9 +30,34 @@ type Filter = (typeof FILTERS)[number];
 function ModerationPage() {
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState<Filter>("pending");
+  const [search, setSearch] = useState("");
+  const [articleFilter, setArticleFilter] = useState("all");
   const { data: comments = [] } = useQuery(adminCommentsQuery());
 
-  const visible = comments.filter((c) => (filter === "all" ? true : c.status === filter));
+  const articleOptions = [
+    ...new Map(
+      comments.flatMap((comment) =>
+        comment.articles ? [[comment.articles.slug, comment.articles] as const] : [],
+      ),
+    ).values(),
+  ].sort((a, b) => a.title.localeCompare(b.title));
+  const normalizedSearch = search.trim().toLowerCase();
+  const visible = comments.filter((comment) => {
+    const matchesStatus = filter === "all" || comment.status === filter;
+    const matchesArticle = articleFilter === "all" || comment.articles?.slug === articleFilter;
+    const matchesSearch =
+      !normalizedSearch ||
+      [
+        comment.author_name,
+        comment.author_surname,
+        comment.author_email,
+        comment.body,
+        comment.articles?.title,
+      ]
+        .filter(Boolean)
+        .some((value) => value?.toLowerCase().includes(normalizedSearch));
+    return matchesStatus && matchesArticle && matchesSearch;
+  });
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ["admin", "comments"] });
@@ -78,6 +110,34 @@ function ModerationPage() {
           </button>
         ))}
       </div>
+
+      <AdminFilterToolbar
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder="Search author, email, comment or article..."
+        hasActiveFilters={Boolean(search) || filter !== "all" || articleFilter !== "all"}
+        onClear={() => {
+          setSearch("");
+          setFilter("all");
+          setArticleFilter("all");
+        }}
+      >
+        <label>
+          <span className="sr-only">Filter comments by article</span>
+          <select
+            value={articleFilter}
+            onChange={(event) => setArticleFilter(event.target.value)}
+            className={adminFilterSelectClass}
+          >
+            <option value="all">All articles</option>
+            {articleOptions.map((article) => (
+              <option key={article.slug} value={article.slug}>
+                {article.title}
+              </option>
+            ))}
+          </select>
+        </label>
+      </AdminFilterToolbar>
 
       <div className="space-y-4">
         {visible.map((comment) => (
@@ -157,7 +217,7 @@ function ModerationPage() {
             </div>
           </AdminCard>
         ))}
-        {visible.length === 0 && <AdminEmpty message={`No ${filter} comments.`} />}
+        {visible.length === 0 && <AdminEmpty message="No comments match these filters." />}
       </div>
     </div>
   );

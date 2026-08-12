@@ -17,10 +17,12 @@ import { initials, type Contributor } from "@/lib/magazine";
 import {
   AdminCard,
   AdminEmpty,
+  AdminFilterToolbar,
   AdminHeading,
   AdminModal,
   AdminPublicationFilter,
   Pill,
+  adminFilterSelectClass,
   adminInputClass as inputClass,
   type PublicationFilter,
 } from "@/components/admin/AdminUI";
@@ -44,9 +46,21 @@ function ContributorsAdminPage() {
   const [editing, setEditing] = useState<Contributor | null>(null);
   const [values, setValues] = useState<ContributorFormValues | null>(null);
   const [filter, setFilter] = useState<PublicationFilter>("all");
-  const visiblePeople = people.filter((person) =>
-    filter === "all" ? true : filter === "live" ? person.is_published : !person.is_published,
-  );
+  const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState<"all" | "team" | "contributors">("all");
+  const normalizedSearch = search.trim().toLowerCase();
+  const visiblePeople = people.filter((person) => {
+    const matchesPublication =
+      filter === "all" ? true : filter === "live" ? person.is_published : !person.is_published;
+    const matchesType =
+      typeFilter === "all" || (typeFilter === "team" ? person.is_team : !person.is_team);
+    const matchesSearch =
+      !normalizedSearch ||
+      [person.name, person.role_title, person.email, person.bio]
+        .filter(Boolean)
+        .some((value) => value?.toLowerCase().includes(normalizedSearch));
+    return matchesPublication && matchesType && matchesSearch;
+  });
 
   function close() {
     setValues(null);
@@ -263,6 +277,33 @@ function ContributorsAdminPage() {
 
       <AdminPublicationFilter value={filter} onChange={setFilter} records={people} />
 
+      <AdminFilterToolbar
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder="Search name, role, email or bio..."
+        hasActiveFilters={Boolean(search) || filter !== "all" || typeFilter !== "all"}
+        onClear={() => {
+          setSearch("");
+          setFilter("all");
+          setTypeFilter("all");
+        }}
+      >
+        <label>
+          <span className="sr-only">Filter by contributor type</span>
+          <select
+            value={typeFilter}
+            onChange={(event) =>
+              setTypeFilter(event.target.value as "all" | "team" | "contributors")
+            }
+            className={adminFilterSelectClass}
+          >
+            <option value="all">All people</option>
+            <option value="team">Team members</option>
+            <option value="contributors">Contributors</option>
+          </select>
+        </label>
+      </AdminFilterToolbar>
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {visiblePeople.map((person) => (
           <AdminCard key={person.id}>
@@ -319,7 +360,7 @@ function ContributorsAdminPage() {
         ))}
       </div>
       {!isLoading && visiblePeople.length === 0 && (
-        <AdminEmpty message={`No ${filter === "all" ? "" : `${filter} `}contributors.`} />
+        <AdminEmpty message="No contributors match these filters." />
       )}
     </div>
   );
