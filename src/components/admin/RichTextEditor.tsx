@@ -1,10 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { Extension } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { FontFamily } from "@tiptap/extension-font-family";
+import Image from "@tiptap/extension-image";
+import { toast } from "sonner";
+import { uploadImage } from "@/lib/storage";
 import {
   AlignCenter,
   AlignJustify,
@@ -22,6 +25,8 @@ import {
   Redo2,
   Minus,
   WrapText,
+  ImagePlus,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -100,6 +105,11 @@ export function RichTextEditor({
       TextStyle,
       FontFamily,
       Indentation,
+      Image.configure({
+        inline: false,
+        allowBase64: false,
+        HTMLAttributes: { class: "article-inline-image" },
+      }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
     ],
     content: value || "",
