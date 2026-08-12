@@ -99,6 +99,7 @@ export function RichTextEditor({
   onChange: (html: string) => void;
 }) {
   const editor = useEditor({
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     immediatelyRender: false,
     extensions: [
       StarterKit,
