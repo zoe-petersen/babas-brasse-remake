@@ -18,11 +18,12 @@ const NAV = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
-  const [sectionsOpen, setSectionsOpen] = useState(false);
+  const [contentOpen, setContentOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
   const { data } = useQuery(categoriesQuery());
   const categories = hydrated ? (data ?? []) : [];
+
 
   return (
     <header className="sticky top-0 z-50 border-b-2 border-ink bg-background">
@@ -84,52 +85,65 @@ export function SiteHeader() {
 
       <div className={cn("border-t-2 border-ink lg:hidden", open ? "block" : "hidden")}>
         <nav className="flex flex-col">
-          {NAV.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              onClick={() => setOpen(false)}
-              className="label-xs border-b border-border px-5 py-4"
-            >
-              {item.label}
-            </Link>
-          ))}
-          <div className="border-b border-border">
-            <button
-              type="button"
-              aria-expanded={sectionsOpen}
-              onClick={() => setSectionsOpen((value) => !value)}
-              className="label-xs flex w-full items-center justify-between px-5 py-4"
-            >
-              Sections
-              <ChevronDown
-                className={cn(
-                  "h-4 w-4 transition-transform",
-                  sectionsOpen && "rotate-180",
-                )}
-              />
-            </button>
-            {sectionsOpen && (
-              <div className="flex flex-col bg-cream">
-                {categories.map((category) => (
+          {NAV.map((item) =>
+            item.label === "Content" && categories.length > 0 ? (
+              <div key={item.to} className="border-b border-border">
+                <div className="grid grid-cols-[minmax(0,1fr)_auto]">
                   <Link
-                    key={category.id}
-                    to="/content/$slug"
-                    params={{ slug: category.slug }}
-                    onClick={() => {
-                      setOpen(false);
-                      setSectionsOpen(false);
-                    }}
-                    className="label-xs border-t border-border px-8 py-3"
+                    to={item.to}
+                    onClick={() => setOpen(false)}
+                    className="label-xs flex items-center px-5 py-4"
                   >
-                    {category.name}
+                    {item.label}
                   </Link>
-                ))}
+                  <button
+                    type="button"
+                    aria-expanded={contentOpen}
+                    aria-label="Toggle content sections"
+                    onClick={() => setContentOpen((value) => !value)}
+                    className="flex items-center justify-center border-l border-border px-5 py-4"
+                  >
+                    <ChevronDown
+                      className={cn(
+                        "h-4 w-4 transition-transform",
+                        contentOpen && "rotate-180",
+                      )}
+                    />
+                  </button>
+                </div>
+                {contentOpen && (
+                  <div className="flex flex-col bg-cream">
+                    {categories.map((category) => (
+                      <Link
+                        key={category.id}
+                        to="/content/$slug"
+                        params={{ slug: category.slug }}
+                        onClick={() => {
+                          setOpen(false);
+                          setContentOpen(false);
+                        }}
+                        className="label-xs border-t border-border px-8 py-3"
+                      >
+                        {category.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            ) : (
+              <Link
+                key={item.to}
+                to={item.to}
+                onClick={() => setOpen(false)}
+                className="label-xs border-b border-border px-5 py-4"
+              >
+                {item.label}
+              </Link>
+            ),
+          )}
         </nav>
       </div>
+
     </header>
   );
 }
