@@ -357,7 +357,51 @@ function ContentPage() {
       </AdminFilterToolbar>
 
       <AdminCard className="p-0 sm:p-0">
-        <div className="overflow-x-auto">
+        <ul className="divide-y divide-border md:hidden">
+          {visibleArticles.map((article) => (
+            <li key={article.id} className="min-w-0 p-4">
+              <div className="flex min-w-0 items-start justify-between gap-3">
+                <p className="min-w-0 flex-1 text-sm font-semibold wrap-break-word">{article.title}</p>
+                <Pill tone={article.is_published ? "green" : "grey"}>
+                  {article.is_published ? "Live" : "Draft"}
+                </Pill>
+              </div>
+              <p className="mt-2 text-xs wrap-break-word text-muted-foreground">
+                {article.categories?.name ?? "-"} · {article.contributors?.name ?? "-"}
+              </p>
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+                <span className="text-xs text-muted-foreground">
+                  {formatDate(article.published_at ?? article.created_at)} ·{" "}
+                  <span className="tabular-nums">{views[article.id] ?? 0}</span> reads
+                </span>
+                <div className="flex shrink-0 gap-2">
+                  <button
+                    type="button"
+                    aria-label={`Edit ${article.title}`}
+                    onClick={() => {
+                      setEditing(article);
+                      setValues(toFormValues(article));
+                    }}
+                    className="border-2 border-ink p-2 hover:bg-cream"
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={`Delete ${article.title}`}
+                    onClick={() => {
+                      if (confirm(`Delete “${article.title}”?`)) remove.mutate(article.id);
+                    }}
+                    className="border-2 border-destructive p-2 text-destructive hover:bg-destructive/10"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <div className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-180 text-left text-sm">
             <thead className="border-b-2 border-ink bg-cream">
               <tr>
@@ -422,6 +466,7 @@ function ContentPage() {
           <AdminEmpty message="No content matches these filters." />
         )}
       </AdminCard>
+
     </div>
   );
 }
