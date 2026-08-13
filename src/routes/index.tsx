@@ -20,7 +20,8 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Babas & Brasse | Independent Arts & Culture Magazine" },
       {
         property: "og:description",
-        content: "Culture, criticism, and creative work made with nerve, care, and a point of view.",
+        content:
+          "Culture, criticism, and creative work made with nerve, care, and a point of view.",
       },
     ],
   }),
@@ -104,15 +105,21 @@ function HomePage() {
             title="Editor's Pick"
             action={
               <ActionLink
-                to="/article/$slug"
-                params={{ slug: editorsPick.slug }}
+                to="/content/$category/$slug"
+                params={{
+                  category: editorsPick.categories?.slug ?? "uncategorised",
+                  slug: editorsPick.slug,
+                }}
                 label="Read the story"
               />
             }
           />
           <Link
-            to="/article/$slug"
-            params={{ slug: editorsPick.slug }}
+            to="/content/$category/$slug"
+            params={{
+              category: editorsPick.categories?.slug ?? "uncategorised",
+              slug: editorsPick.slug,
+            }}
             className="mt-10 grid border-2 border-ink md:grid-cols-2"
           >
             {editorsPick.cover_image_url && (
@@ -150,7 +157,12 @@ function HomePage() {
               original South African voices.
             </p>
           </div>
-          <ActionLink to="/contact" variant="outline" label="Submit your work" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-forest-deep" />
+          <ActionLink
+            to="/contact"
+            variant="outline"
+            label="Submit your work"
+            className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-forest-deep"
+          />
         </div>
       </section>
     </div>

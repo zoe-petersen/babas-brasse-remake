@@ -13,8 +13,8 @@ export function ArticleCard({
 }) {
   return (
     <Link
-      to="/article/$slug"
-      params={{ slug: article.slug }}
+      to="/content/$category/$slug"
+      params={{ category: article.categories?.slug ?? "uncategorised", slug: article.slug }}
       className={cn(
         "group flex flex-col border-2 border-ink bg-background transition-transform hover:-translate-y-1",
         className,
@@ -39,9 +39,7 @@ export function ArticleCard({
       <div className="flex flex-1 flex-col p-5">
         <p className="label-xs text-forest-deep">{article.categories?.name}</p>
         <h3 className="mt-3 text-xl leading-tight sm:text-2xl">{article.title}</h3>
-        {article.excerpt && (
-          <p className="mt-3 text-sm text-muted-foreground">{article.excerpt}</p>
-        )}
+        {article.excerpt && <p className="mt-3 text-sm text-muted-foreground">{article.excerpt}</p>}
         <div className="mt-auto flex flex-wrap items-center gap-2 pt-6 text-[11px]">
           <span className="label-xs">{article.contributors?.name}</span>
           <span className="opacity-40">/</span>

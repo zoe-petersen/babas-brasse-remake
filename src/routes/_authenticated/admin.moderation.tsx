@@ -154,7 +154,7 @@ function ModerationPage() {
                   On:{" "}
                   {comment.articles ? (
                     <a
-                      href={`/article/${comment.articles.slug}`}
+                      href={`/content/${comment.articles.categories?.slug ?? "uncategorised"}/${comment.articles.slug}`}
                       target="_blank"
                       rel="noreferrer"
                       className="border-b-2 border-forest-deep hover:text-magenta"

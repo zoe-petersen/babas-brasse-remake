@@ -1,12 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Facebook, Instagram, Linkedin, Mail, Music2, Twitter } from "lucide-react";
-import {
-  articlesQuery,
-  contributorQuery,
-  formatDate,
-  initials,
-} from "@/lib/magazine";
+import { articlesQuery, contributorQuery, formatDate, initials } from "@/lib/magazine";
 import { ActionLink } from "@/components/site/ActionLink";
 import { EmptyState } from "@/components/site/EmptyState";
 
@@ -22,7 +17,8 @@ export const Route = createFileRoute("/contributors/$slug")({
       return { meta: [{ title: "Profile unavailable" }, { name: "robots", content: "noindex" }] };
     }
     const title = `${loaderData.name} | Babas & Brasse`;
-    const description = loaderData.bio ?? `${loaderData.name}, ${loaderData.role ?? "contributor"}.`;
+    const description =
+      loaderData.bio ?? `${loaderData.name}, ${loaderData.role ?? "contributor"}.`;
     return {
       meta: [
         { title },
@@ -145,8 +141,11 @@ function ContributorPage() {
             {theirs.map((article) => (
               <Link
                 key={article.id}
-                to="/article/$slug"
-                params={{ slug: article.slug }}
+                to="/content/$category/$slug"
+                params={{
+                  category: article.categories?.slug ?? "uncategorised",
+                  slug: article.slug,
+                }}
                 className="grid gap-4 p-6 transition-colors hover:bg-cream sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
               >
                 <div className="min-w-0">

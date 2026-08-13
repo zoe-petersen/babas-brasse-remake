@@ -18,7 +18,11 @@ export type AdminComment = {
   body: string;
   status: "pending" | "approved" | "rejected";
   created_at: string;
-  articles: { title: string; slug: string } | null;
+  articles: {
+    title: string;
+    slug: string;
+    categories: { slug: string } | null;
+  } | null;
 };
 
 export type Submission = {
@@ -64,7 +68,7 @@ export async function fetchAdminComments() {
   const { data, error } = await supabase
     .from("comments")
     .select(
-      "id, article_id, author_name, author_surname, author_email, body, status, created_at, articles:article_id ( title, slug )",
+      "id, article_id, author_name, author_surname, author_email, body, status, created_at, articles:article_id ( title, slug, categories:category_id ( slug ) )",
     )
     .order("created_at", { ascending: false });
   if (error) throw new Error(error.message);

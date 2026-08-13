@@ -1,7 +1,13 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
-import { articlesQuery, categoriesQuery, formatDate } from "@/lib/magazine";
+import {
+  articleQuery,
+  articlesQuery,
+  categoriesQuery,
+  formatDate,
+  type Category,
+} from "@/lib/magazine";
 import { PageHero } from "@/components/site/PageHero";
 import { ActionLink } from "@/components/site/ActionLink";
 import { EmptyState } from "@/components/site/EmptyState";
@@ -10,13 +16,26 @@ export const Route = createFileRoute("/content/$slug")({
   loader: async ({ context, params }) => {
     const categories = await context.queryClient.ensureQueryData(categoriesQuery());
     const category = categories.find((item) => item.slug === params.slug);
-    if (!category) throw notFound();
-    await context.queryClient.ensureQueryData(articlesQuery());
-    return { category };
+    if (category) {
+      await context.queryClient.ensureQueryData(articlesQuery());
+      return { kind: "category" as const, category };
+    }
+
+    const article = await context.queryClient.ensureQueryData(articleQuery(params.slug));
+    if (!article) throw notFound();
+    throw redirect({
+      to: "/content/$category/$slug",
+      params: {
+        category: article.categories?.slug ?? "uncategorised",
+        slug: article.slug,
+      },
+      replace: true,
+      statusCode: 301,
+    });
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
-      return { meta: [{ title: "Section unavailable" }, { name: "robots", content: "noindex" }] };
+      return { meta: [{ title: "Content unavailable" }, { name: "robots", content: "noindex" }] };
     }
     const title = `${loaderData.category.name} | Babas & Brasse`;
     const description =
@@ -30,24 +49,28 @@ export const Route = createFileRoute("/content/$slug")({
       ],
     };
   },
-  notFoundComponent: SectionNotFound,
-  component: CategoryPage,
+  notFoundComponent: ContentNotFound,
+  component: ContentSlugPage,
 });
 
-function SectionNotFound() {
+function ContentNotFound() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-24 text-center">
-      <h1 className="text-4xl">Section not found</h1>
-      <p className="mt-4 text-muted-foreground">That magazine section does not exist.</p>
+      <h1 className="text-4xl">Content not found</h1>
+      <p className="mt-4 text-muted-foreground">That section or piece does not exist.</p>
       <div className="mt-8">
-        <ActionLink to="/content" label="Browse all sections" />
+        <ActionLink to="/content" label="Back to the magazine" />
       </div>
     </div>
   );
 }
 
-function CategoryPage() {
-  const { category } = Route.useLoaderData();
+function ContentSlugPage() {
+  const data = Route.useLoaderData();
+  return <CategoryPage category={data.category} />;
+}
+
+function CategoryPage({ category }: { category: Category }) {
   const { data: articles } = useSuspenseQuery(articlesQuery());
   const items = articles.filter((article) => article.categories?.slug === category.slug);
   const lead = items[0]!;
@@ -83,8 +106,8 @@ function CategoryPage() {
         ) : (
           <div className="mt-10 space-y-10">
             <Link
-              to="/article/$slug"
-              params={{ slug: lead.slug }}
+              to="/content/$category/$slug"
+              params={{ category: category.slug, slug: lead.slug }}
               className="group block border-2 border-ink"
             >
               <div className="grid md:grid-cols-2">
@@ -117,8 +140,8 @@ function CategoryPage() {
               {rest.map((article) => (
                 <Link
                   key={article.id}
-                  to="/article/$slug"
-                  params={{ slug: article.slug }}
+                  to="/content/$category/$slug"
+                  params={{ category: category.slug, slug: article.slug }}
                   className="flex flex-col border-2 border-ink transition-transform hover:-translate-y-1"
                 >
                   {article.cover_image_url && (

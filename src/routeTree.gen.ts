@@ -30,6 +30,7 @@ import { Route as AuthenticatedAdminContributorsRouteImport } from './routes/_au
 import { Route as AuthenticatedAdminModerationRouteImport } from './routes/_authenticated/admin.moderation'
 import { Route as AuthenticatedAdminMoodBoardRouteImport } from './routes/_authenticated/admin.mood-board'
 import { Route as AuthenticatedAdminSubmissionsRouteImport } from './routes/_authenticated/admin.submissions'
+import { Route as ContentCategorySlugRouteImport } from './routes/content.$category.$slug'
 import { Route as ApiPublicMediaSplatRouteImport } from './routes/api/public/media.$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -142,6 +143,11 @@ const AuthenticatedAdminSubmissionsRoute =
     path: '/submissions',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const ContentCategorySlugRoute = ContentCategorySlugRouteImport.update({
+  id: '/content/$category/$slug',
+  path: '/content/$category/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicMediaSplatRoute = ApiPublicMediaSplatRouteImport.update({
   id: '/api/public/media/$',
   path: '/api/public/media/$',
@@ -168,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/admin/moderation': typeof AuthenticatedAdminModerationRoute
   '/admin/mood-board': typeof AuthenticatedAdminMoodBoardRoute
   '/admin/submissions': typeof AuthenticatedAdminSubmissionsRoute
+  '/content/$category/$slug': typeof ContentCategorySlugRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
@@ -190,6 +197,7 @@ export interface FileRoutesByTo {
   '/admin/moderation': typeof AuthenticatedAdminModerationRoute
   '/admin/mood-board': typeof AuthenticatedAdminMoodBoardRoute
   '/admin/submissions': typeof AuthenticatedAdminSubmissionsRoute
+  '/content/$category/$slug': typeof ContentCategorySlugRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
@@ -215,6 +223,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/moderation': typeof AuthenticatedAdminModerationRoute
   '/_authenticated/admin/mood-board': typeof AuthenticatedAdminMoodBoardRoute
   '/_authenticated/admin/submissions': typeof AuthenticatedAdminSubmissionsRoute
+  '/content/$category/$slug': typeof ContentCategorySlugRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
@@ -240,6 +249,7 @@ export interface FileRouteTypes {
     | '/admin/moderation'
     | '/admin/mood-board'
     | '/admin/submissions'
+    | '/content/$category/$slug'
     | '/admin/'
     | '/api/public/media/$'
   fileRoutesByTo: FileRoutesByTo
@@ -262,6 +272,7 @@ export interface FileRouteTypes {
     | '/admin/moderation'
     | '/admin/mood-board'
     | '/admin/submissions'
+    | '/content/$category/$slug'
     | '/admin'
     | '/api/public/media/$'
   id:
@@ -286,6 +297,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/moderation'
     | '/_authenticated/admin/mood-board'
     | '/_authenticated/admin/submissions'
+    | '/content/$category/$slug'
     | '/_authenticated/admin/'
     | '/api/public/media/$'
   fileRoutesById: FileRoutesById
@@ -304,6 +316,7 @@ export interface RootRouteChildren {
   ContentIndexRoute: typeof ContentIndexRoute
   ContributorsIndexRoute: typeof ContributorsIndexRoute
   PhotographyIndexRoute: typeof PhotographyIndexRoute
+  ContentCategorySlugRoute: typeof ContentCategorySlugRoute
   ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
 }
 
@@ -456,6 +469,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSubmissionsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/content/$category/$slug': {
+      id: '/content/$category/$slug'
+      path: '/content/$category/$slug'
+      fullPath: '/content/$category/$slug'
+      preLoaderRoute: typeof ContentCategorySlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/media/$': {
       id: '/api/public/media/$'
       path: '/api/public/media/$'
@@ -514,6 +534,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContentIndexRoute: ContentIndexRoute,
   ContributorsIndexRoute: ContributorsIndexRoute,
   PhotographyIndexRoute: PhotographyIndexRoute,
+  ContentCategorySlugRoute: ContentCategorySlugRoute,
   ApiPublicMediaSplatRoute: ApiPublicMediaSplatRoute,
 }
 export const routeTree = rootRouteImport

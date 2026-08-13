@@ -115,8 +115,8 @@ function ContentPage() {
                     {items.slice(0, 3).map((item) => (
                       <li key={item.id} className="border-t border-current/20 pt-2 font-semibold">
                         <Link
-                          to="/article/$slug"
-                          params={{ slug: item.slug }}
+                          to="/content/$category/$slug"
+                          params={{ category: category.slug, slug: item.slug }}
                           className="hover:underline"
                         >
                           {item.title}
