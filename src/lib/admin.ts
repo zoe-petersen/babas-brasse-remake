@@ -49,7 +49,7 @@ export type AdminPhotograph = {
 
 const ADMIN_ARTICLE_SELECT = `
   id, title, slug, excerpt, body, cover_image_url, image_credit, read_minutes,
-  published_at, is_editors_pick, is_featured, is_published, created_at,
+  published_at, is_editors_pick, is_featured, is_published, created_at, author_name,
   category_id, contributor_id,
   categories:category_id ( id, name, slug ),
   contributors:contributor_id ( id, name, slug, role_title, bio )
@@ -141,6 +141,7 @@ export type ArticleFormValues = {
   image_credit: string;
   category_id: string | null;
   contributor_id: string | null;
+  author_name: string;
   read_minutes: number;
   published_on: string;
   is_published: boolean;
@@ -157,6 +158,7 @@ export function emptyArticle(): ArticleFormValues {
     image_credit: "",
     category_id: null,
     contributor_id: null,
+    author_name: "",
     read_minutes: 4,
     published_on: new Date().toISOString().slice(0, 10),
     is_published: false,
@@ -174,6 +176,7 @@ export function toFormValues(article: AdminArticle): ArticleFormValues {
     image_credit: article.image_credit ?? "",
     category_id: article.category_id,
     contributor_id: article.contributor_id,
+    author_name: article.author_name ?? article.contributors?.name ?? "",
     read_minutes: article.read_minutes,
     published_on: (article.published_at ?? article.created_at).slice(0, 10),
     is_published: article.is_published,
@@ -191,6 +194,7 @@ function toRow(values: ArticleFormValues) {
     image_credit: values.image_credit.trim() || null,
     category_id: values.category_id,
     contributor_id: values.contributor_id,
+    author_name: values.author_name.trim() || null,
     read_minutes: Number(values.read_minutes) || 1,
     is_published: values.is_published,
     is_editors_pick: values.is_editors_pick,

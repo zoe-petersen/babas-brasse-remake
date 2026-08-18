@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tansta
 import { useEffect, useState } from "react";
 import { CalendarDays, Clock, Eye, MessageCircle, Tag } from "lucide-react";
 import { toast } from "sonner";
-import {
+import { byline,
   articleQuery,
   articlesQuery,
   articleViewsQuery,
@@ -50,11 +50,11 @@ export function PiecePage({ slug }: { slug: string }) {
           <aside className="lg:border-l-2 lg:border-ink lg:pl-8">
             <div className="flex items-center gap-3">
               <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-forest text-sm font-semibold text-primary-foreground">
-                {initials(article.contributors?.name ?? "BB")}
+                {initials(byline(article) ?? "BB")}
               </span>
               <div className="min-w-0">
                 <p className="label-xs opacity-60">Written by</p>
-                <p className="truncate font-semibold">{article.contributors?.name}</p>
+                <p className="truncate font-semibold">{byline(article)}</p>
               </div>
             </div>
             <dl className="mt-6 space-y-3 border-t border-border pt-4">

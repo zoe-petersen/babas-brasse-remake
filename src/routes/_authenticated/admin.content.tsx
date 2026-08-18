@@ -16,7 +16,7 @@ import {
   type AdminArticle,
   type ArticleFormValues,
 } from "@/lib/admin";
-import { categoriesQuery, formatDate } from "@/lib/magazine";
+import { byline, categoriesQuery, formatDate } from "@/lib/magazine";
 import {
   AdminCard,
   AdminEmpty,
@@ -58,7 +58,7 @@ function ContentPage() {
       contributorFilter === "all" || article.contributor_id === contributorFilter;
     const matchesSearch =
       !normalizedSearch ||
-      [article.title, article.excerpt, article.categories?.name, article.contributors?.name]
+      [article.title, article.excerpt, article.categories?.name, article.author_name, article.contributors?.name]
         .filter(Boolean)
         .some((value) => value?.toLowerCase().includes(normalizedSearch));
     return matchesPublication && matchesCategory && matchesContributor && matchesSearch;
@@ -192,24 +192,35 @@ function ContentPage() {
 
             <div>
               <label className="label-xs" htmlFor="contributor">
-                Contributor
+                Contributor / author name
               </label>
-              <select
+              <input
                 id="contributor"
+                list="contributor-names"
+                autoComplete="off"
+                placeholder="Type any name"
                 className={inputClass}
-                value={values.contributor_id ?? ""}
-                onChange={(e) => update("contributor_id", e.target.value || null)}
-              >
-                <option value="">- none -</option>
+                value={values.author_name}
+                onChange={(e) => {
+                  const name = e.target.value;
+                  const match = people.find(
+                    (person) => person.name.toLowerCase() === name.trim().toLowerCase(),
+                  );
+                  setValues((prev) =>
+                    prev
+                      ? { ...prev, author_name: name, contributor_id: match ? match.id : null }
+                      : prev,
+                  );
+                }}
+              />
+              <datalist id="contributor-names">
                 {people.map((person) => (
-                  <option key={person.id} value={person.id}>
-                    {person.name}
-                    {person.is_published ? "" : " (Draft)"}
-                  </option>
+                  <option key={person.id} value={person.name} />
                 ))}
-              </select>
+              </datalist>
               <p className="mt-1 text-xs text-muted-foreground">
-                Add or edit names from the Contributors page before assigning them here.
+                Free text — typing a name here does not create a contributor profile. It only links
+                to the Contributors page if the name exactly matches one you added there.
               </p>
             </div>
 
@@ -367,7 +378,7 @@ function ContentPage() {
                 </Pill>
               </div>
               <p className="mt-2 text-xs wrap-break-word text-muted-foreground">
-                {article.categories?.name ?? "-"} · {article.contributors?.name ?? "-"}
+                {article.categories?.name ?? "-"} · {byline(article) ?? "-"}
               </p>
               <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
                 <span className="text-xs text-muted-foreground">
@@ -422,7 +433,7 @@ function ContentPage() {
                 <tr key={article.id}>
                   <td className="max-w-xs truncate px-4 py-3 font-semibold">{article.title}</td>
                   <td className="px-4 py-3">{article.categories?.name ?? "-"}</td>
-                  <td className="px-4 py-3">{article.contributors?.name ?? "-"}</td>
+                  <td className="px-4 py-3">{byline(article) ?? "-"}</td>
                   <td className="px-4 py-3 whitespace-nowrap">
                     {formatDate(article.published_at ?? article.created_at)}
                   </td>

@@ -56,15 +56,27 @@ function AboutPage() {
           <div className="grid gap-6 sm:grid-cols-2">
             <div className="hard-shadow border-2 border-ink bg-cream p-6">
               <p className="text-base leading-relaxed">
-                Babas &amp; Brasse is an independent magazine covering theatre, film, books, music,
-                photography and the arguments happening around them. We publish the reviews and
-                essays that bigger outlets skip.
+                Babas and Brasse is an inclusive non-profit arts, fashion, and literary platform and
+                collective created to showcase, archive, and celebrate local creative work. Created
+                in 2026 from a response to the gatekeeping often found in mainstream media and
+                online publishing spaces, Babas and Brasse aims to support creatives who may not
+                always have access to the resources, visibility, and archive needed to share their
+                stories, build their profiles, and reach wider audiences.
               </p>
             </div>
             <div className="hard-shadow border-2 border-ink bg-forest p-6 text-primary-foreground">
               <p className="text-base leading-relaxed">
-                We are writers, critics, photographers and editors who believe local work deserves
-                serious, unhurried attention and readers who deserve more than a press release.
+                Beyond art, fashion, and literature, we are committed to giving voice to individuals
+                from marginalised communities and creating a space where their lived experiences,
+                creativity, and contributions can be seen, heard, and celebrated.
+              </p>
+            </div>
+            <div className="hard-shadow border-2 border-ink bg-cream p-6 sm:col-span-2">
+              <p className="text-base leading-relaxed">
+                Our collective is for all the babas and brasse out there: the artists, misfits,
+                writers, makers and shakers, and lovers of all things creative who are hustling
+                through the gatekeeping and kapping aan despite the many challenges of life in South
+                Africa.
               </p>
             </div>
             <div className="grid grid-cols-3 gap-4 border-2 border-ink bg-background p-6 sm:col-span-2">
@@ -130,23 +142,27 @@ function AboutPage() {
 
           <div className="grid gap-6 sm:grid-cols-2">
             <div className="hard-shadow border-2 border-ink bg-cream p-6">
-              <p className="font-display text-4xl text-forest-deep">Babas</p>
+              <p className="font-display text-4xl text-forest-deep">Baba</p>
               <p className="mt-3 text-base leading-relaxed">
-                The familiar hello, warm, a little cheeky. The language of the stoep, the taxi rank
-                and the theatre foyer.
+                &ldquo;Baba&rdquo; is the Afrikaans word for &ldquo;baby&rdquo;, a term of endearment
+                often used to refer to someone affectionately.
               </p>
             </div>
             <div className="hard-shadow border-2 border-ink bg-forest p-6 text-primary-foreground">
               <p className="font-display text-4xl">Brasse</p>
               <p className="mt-3 text-base leading-relaxed">
-                Your people. The ones you argue with about a play at midnight and still call in the
-                morning.
+                &ldquo;Brasse&rdquo; is a colloquial word for brother, friend, or close companion.
+                Both terms are gender-neutral and can be used to warmly describe another.
               </p>
             </div>
             <div className="border-2 border-ink bg-background p-6 sm:col-span-2">
               <p className="text-base leading-relaxed">
-                Together they sound like a conversation rather than an institution, and that is the
-                tone we aim on every page we publish.
+                Creative Director and Editor-in-Chief, Zubayr Charles, purposefully chose this
+                localised name to align with the platform and collective&rsquo;s brand and vision.
+                Through the name Babas and Brasse, the team aims to capture the spirit of being a
+                local platform and collective that promotes pride in South African art, fashion,
+                literature, and language through community, inclusivity, and belonging. Babas and
+                Brasse is, of course, a platform and collective for all.
               </p>
               <div className="mt-6 grid grid-cols-3 gap-4 border-t-2 border-ink pt-6">
                 {[

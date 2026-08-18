@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
-import {
+import { byline,
   articleQuery,
   articlesQuery,
   categoriesQuery,
@@ -125,7 +125,7 @@ function CategoryPage({ category }: { category: Category }) {
                   <h3 className="text-3xl leading-tight lg:text-4xl">{lead.title}</h3>
                   <p className="mt-4 text-sm text-muted-foreground">{lead.excerpt}</p>
                   <p className="label-xs mt-auto border-t border-border pt-6">
-                    {lead.contributors?.name}
+                    {byline(lead)}
                     <span className="mx-2 opacity-40">/</span>
                     <span className="opacity-70">{formatDate(lead.published_at)}</span>
                   </p>
@@ -158,7 +158,7 @@ function CategoryPage({ category }: { category: Category }) {
                     <h3 className="text-2xl leading-tight">{article.title}</h3>
                     <p className="mt-3 text-sm text-muted-foreground">{article.excerpt}</p>
                     <p className="label-xs mt-auto border-t border-border pt-4">
-                      {article.contributors?.name}
+                      {byline(article)}
                       <span className="mx-2 opacity-40">/</span>
                       <span className="opacity-70">{formatDate(article.published_at)}</span>
                     </p>

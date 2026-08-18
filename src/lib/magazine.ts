@@ -41,7 +41,16 @@ export type Article = {
   is_featured: boolean;
   categories: Pick<Category, "id" | "name" | "slug"> | null;
   contributors: Pick<Contributor, "id" | "name" | "slug" | "role_title" | "bio"> | null;
+  author_name: string | null;
 };
+
+/** Prefers a linked contributor's name, falling back to the free-text author name. */
+export function byline(article: {
+  contributors?: { name: string } | null;
+  author_name?: string | null;
+}) {
+  return article.contributors?.name ?? article.author_name ?? null;
+}
 
 export type Photograph = {
   id: string;
@@ -63,7 +72,7 @@ export type ApprovedComment = {
 
 const ARTICLE_SELECT = `
   id, title, slug, excerpt, body, cover_image_url, image_credit, read_minutes,
-  published_at, is_editors_pick, is_featured,
+  published_at, is_editors_pick, is_featured, author_name,
   categories:category_id ( id, name, slug ),
   contributors:contributor_id ( id, name, slug, role_title, bio )
 `;

@@ -108,7 +108,7 @@ function ContactPage() {
                 </li>
               ))}
             </ul>
-            <p className="label-xs mt-8 text-magenta">hello@babasenbrasse.co.za</p>
+            <p className="label-xs mt-8 text-magenta">submissions@babasandbrasse.co.za</p>
           </aside>
 
           <form

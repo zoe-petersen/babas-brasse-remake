@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowUpRight } from "lucide-react";
-import { articlesQuery, categoriesQuery, formatDate } from "@/lib/magazine";
+import { byline, articlesQuery, categoriesQuery, formatDate } from "@/lib/magazine";
 import { HeroCarousel } from "@/components/site/HeroCarousel";
 import { ArticleCard } from "@/components/site/ArticleCard";
 import { SectionHeading } from "@/components/site/SectionHeading";
@@ -137,7 +137,7 @@ function HomePage() {
               <h3 className="mt-4 text-3xl leading-tight lg:text-4xl">{editorsPick.title}</h3>
               <p className="mt-4 text-sm text-muted-foreground">{editorsPick.excerpt}</p>
               <p className="label-xs mt-8">
-                {editorsPick.contributors?.name}
+                {byline(editorsPick)}
                 <span className="mx-2 opacity-40">/</span>
                 <span className="opacity-70">{formatDate(editorsPick.published_at)}</span>
               </p>

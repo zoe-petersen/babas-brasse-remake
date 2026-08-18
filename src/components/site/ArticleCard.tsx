@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { type Article, formatDate } from "@/lib/magazine";
+import { byline, type Article, formatDate } from "@/lib/magazine";
 import { cn } from "@/lib/utils";
 
 export function ArticleCard({
@@ -41,7 +41,7 @@ export function ArticleCard({
         <h3 className="mt-3 text-xl leading-tight sm:text-2xl">{article.title}</h3>
         {article.excerpt && <p className="mt-3 text-sm text-muted-foreground">{article.excerpt}</p>}
         <div className="mt-auto flex flex-wrap items-center gap-2 pt-6 text-[11px]">
-          <span className="label-xs">{article.contributors?.name}</span>
+          <span className="label-xs">{byline(article)}</span>
           <span className="opacity-40">/</span>
           <span className="label-xs opacity-70">{formatDate(article.published_at)}</span>
         </div>
