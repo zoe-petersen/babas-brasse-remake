@@ -79,11 +79,12 @@ function AboutPage() {
                 Africa.
               </p>
             </div>
-            <div className="grid grid-cols-3 gap-4 border-2 border-ink bg-background p-6 sm:col-span-2">
+            <div className="grid grid-cols-3 gap-2 border-2 border-ink bg-background p-6 sm:col-span-2">
               {[
                 { value: "100%", label: "Independent" },
                 { value: "SA", label: "Voices first" },
-                { value: "Always", label: "Open to pitches" },
+                { value: "Respect & Love", label: "For all opinions & views" },
+                
               ].map((item) => (
                 <div key={item.label} className="min-w-0">
                   <p className="font-display text-2xl text-forest-deep sm:text-3xl">{item.value}</p>
@@ -166,9 +167,10 @@ function AboutPage() {
               </p>
               <div className="mt-6 grid grid-cols-3 gap-4 border-t-2 border-ink pt-6">
                 {[
-                  { value: "Kaaps", label: "Rooted in" },
-                  { value: "Talk", label: "Not lecture" },
-                  { value: "Ours", label: "Every page" },
+                  { value: "Rooted In", label: "Multilingualism" },
+                  { value: "All Cultures", label: "Wanted & Accepted" },
+                  { value: "South African", label: "Home-grown Stores" },
+                  
                 ].map((item) => (
                   <div key={item.label} className="min-w-0">
                     <p className="font-display text-2xl text-forest-deep sm:text-3xl">

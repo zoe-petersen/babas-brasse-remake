@@ -59,7 +59,7 @@ function ContributorsPage() {
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {people.map((person) => (
               <article key={person.id} className="flex flex-col border-2 border-ink bg-background">
-                <div className="aspect-16/10 overflow-hidden border-b-2 border-ink bg-cream">
+                <div className="aspect-4/3 overflow-hidden border-b-2 border-ink bg-cream">
                   {person.image_url ? (
                     <img
                       src={person.image_url}
