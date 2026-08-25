@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Facebook, Instagram, Linkedin, Mail, Music2, Twitter } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Mail, Music2, Youtube } from "lucide-react";
 import { articlesQuery, contributorQuery, formatDate, initials } from "@/lib/magazine";
 import { ActionLink } from "@/components/site/ActionLink";
 import { EmptyState } from "@/components/site/EmptyState";
@@ -51,7 +51,7 @@ function ContributorPage() {
   const socials = [
     { href: person.instagram_url, Icon: Instagram, label: "Instagram" },
     { href: person.facebook_url, Icon: Facebook, label: "Facebook" },
-    { href: person.twitter_url, Icon: Twitter, label: "Twitter" },
+    { href: person.youtube_url, Icon: Youtube, label: "YouTube" },
     { href: person.tiktok_url, Icon: Music2, label: "TikTok" },
     { href: person.linkedin_url, Icon: Linkedin, label: "LinkedIn" },
     { href: person.email ? `mailto:${person.email}` : null, Icon: Mail, label: "Email" },

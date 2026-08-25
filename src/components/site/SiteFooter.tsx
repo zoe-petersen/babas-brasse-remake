@@ -34,7 +34,7 @@ export function SiteFooter() {
             className="h-44 w-auto sm:h-52"
           />
           <p className="mt-6 max-w-xs text-sm opacity-90">
-            Culture, criticism, and creative work made with nerve, care, and a point of view.
+            Our voices. Our stories.
           </p>
           <Link
             to="/contact"

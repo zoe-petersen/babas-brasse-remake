@@ -20,7 +20,7 @@ export type Contributor = {
   instagram_url: string | null;
   tiktok_url: string | null;
   linkedin_url: string | null;
-  twitter_url: string | null;
+  youtube_url: string | null;
   email: string | null;
   is_team: boolean;
   is_published: boolean;

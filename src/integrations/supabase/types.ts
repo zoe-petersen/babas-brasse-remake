@@ -236,8 +236,8 @@ export type Database = {
           slug: string
           sort_order: number
           tiktok_url: string | null
-          twitter_url: string | null
           updated_at: string
+          youtube_url: string | null
         }
         Insert: {
           bio?: string | null
@@ -255,8 +255,8 @@ export type Database = {
           slug: string
           sort_order?: number
           tiktok_url?: string | null
-          twitter_url?: string | null
           updated_at?: string
+          youtube_url?: string | null
         }
         Update: {
           bio?: string | null
@@ -274,8 +274,8 @@ export type Database = {
           slug?: string
           sort_order?: number
           tiktok_url?: string | null
-          twitter_url?: string | null
           updated_at?: string
+          youtube_url?: string | null
         }
         Relationships: []
       }

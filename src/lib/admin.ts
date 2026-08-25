@@ -243,7 +243,7 @@ export type ContributorFormValues = {
   email: string;
   instagram_url: string;
   facebook_url: string;
-  twitter_url: string;
+  youtube_url: string;
   tiktok_url: string;
   linkedin_url: string;
   is_team: boolean;
@@ -261,7 +261,7 @@ export function emptyContributor(): ContributorFormValues {
     email: "",
     instagram_url: "",
     facebook_url: "",
-    twitter_url: "",
+    youtube_url: "",
     tiktok_url: "",
     linkedin_url: "",
     is_team: false,
@@ -280,7 +280,7 @@ export function toContributorForm(person: Contributor): ContributorFormValues {
     email: person.email ?? "",
     instagram_url: person.instagram_url ?? "",
     facebook_url: person.facebook_url ?? "",
-    twitter_url: person.twitter_url ?? "",
+    youtube_url: person.youtube_url ?? "",
     tiktok_url: person.tiktok_url ?? "",
     linkedin_url: person.linkedin_url ?? "",
     is_team: person.is_team,
@@ -300,7 +300,7 @@ function toContributorRow(values: ContributorFormValues) {
     email: clean(values.email),
     instagram_url: clean(values.instagram_url),
     facebook_url: clean(values.facebook_url),
-    twitter_url: clean(values.twitter_url),
+    youtube_url: clean(values.youtube_url),
     tiktok_url: clean(values.tiktok_url),
     linkedin_url: clean(values.linkedin_url),
     is_team: values.is_team,

@@ -35,7 +35,7 @@ export const Route = createFileRoute("/_authenticated/admin/contributors")({
 const SOCIALS = [
   ["instagram_url", "Instagram URL"],
   ["facebook_url", "Facebook URL"],
-  ["twitter_url", "Twitter / X URL"],
+  ["youtube_url", "YouTube URL"],
   ["tiktok_url", "TikTok URL"],
   ["linkedin_url", "LinkedIn URL"],
 ] as const;

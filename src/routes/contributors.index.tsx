@@ -56,10 +56,10 @@ function ContributorsPage() {
         {people.length === 0 ? (
           <EmptyState message="No contributors have been added yet." />
         ) : (
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {people.map((person) => (
               <article key={person.id} className="flex flex-col border-2 border-ink bg-background">
-                <div className="aspect-4/3 overflow-hidden border-b-2 border-ink bg-cream">
+                <div className="aspect-4/5 overflow-hidden border-b-2 border-ink bg-cream">
                   {person.image_url ? (
                     <img
                       src={person.image_url}
