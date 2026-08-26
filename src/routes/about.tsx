@@ -79,19 +79,7 @@ function AboutPage() {
                 Africa.
               </p>
             </div>
-            <div className="grid grid-cols-3 gap-2 border-2 border-ink bg-background p-6 sm:col-span-2">
-              {[
-                { value: "100%", label: "Independent" },
-                { value: "SA", label: "Voices first" },
-                { value: "Respect & Love", label: "For all opinions & views" },
-                
-              ].map((item) => (
-                <div key={item.label} className="min-w-0">
-                  <p className="font-display text-2xl text-forest-deep sm:text-3xl">{item.value}</p>
-                  <p className="label-xs mt-2 opacity-70">{item.label}</p>
-                </div>
-              ))}
-            </div>
+            
           </div>
         </div>
       </section>
@@ -165,18 +153,21 @@ function AboutPage() {
                 literature, and language through community, inclusivity, and belonging. Babas and
                 Brasse is, of course, a platform and collective for all.
               </p>
-              <div className="mt-6 grid grid-cols-3 gap-4 border-t-2 border-ink pt-6">
+              <div className="mt-6 grid grid-cols-1 gap-4 border-t-2 border-ink pt-6 sm:grid-cols-3">
                 {[
-                  { value: "Rooted In", label: "Multilingualism" },
-                  { value: "All Cultures", label: "Wanted & Accepted" },
-                  { value: "South African", label: "Home-grown Stores" },
+                  { value: "Rooted In - ", label: "Multilingualism" },
+                  { value: "All Cultures - ", label: "Wanted & Accepted" },
+                  { value: "South African - ", label: "Home grown Stores" },
                   
                 ].map((item) => (
-                  <div key={item.label} className="min-w-0">
+                  <div
+                    key={item.label}
+                    className="flex min-w-0 items-baseline justify-center gap-2 text-center sm:block sm:text-left"
+                  >
                     <p className="font-display text-2xl text-forest-deep sm:text-3xl">
                       {item.value}
                     </p>
-                    <p className="label-xs mt-2 opacity-70">{item.label}</p>
+                    <p className="label-xs mt-0 opacity-70 sm:mt-2">{item.label}</p>
                   </div>
                 ))}
               </div>

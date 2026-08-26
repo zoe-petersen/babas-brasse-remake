@@ -6,10 +6,14 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import netlify from "@netlify/vite-plugin-tanstack-start";
+import { loadEnv } from "vite";
 
 const isNetlifyBuild = process.env["NETLIFY"] === "true";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  Object.assign(process.env, loadEnv(mode, process.cwd(), ""));
+
+  return {
   ...(isNetlifyBuild
     ? {
         nitro: false as const,
@@ -21,4 +25,5 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  };
 });

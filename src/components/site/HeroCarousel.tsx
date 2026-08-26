@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import slide1 from "@/assets/babas-and-brasse-banner-new.jpg";
-import slide1Mobile from "@/assets/hero-slide-1-mobile.png";
+import slide1Mobile from "@/assets/babas-and-brasse-banner-new.jpg";
+// import slide1Mobile from "@/assets/hero-slide-1-mobile.png";
 import slide2 from "@/assets/hero2.webp";
 import slide3 from "@/assets/hero3.webp";
 import { cn } from "@/lib/utils";

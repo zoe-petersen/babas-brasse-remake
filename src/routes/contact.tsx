@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { submitContactForm } from "@/lib/contact.functions";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -59,16 +60,17 @@ function ContactPage() {
   const [form, setForm] = useState(EMPTY);
   const wordCount = countWords(form.message);
 
+  const submit = useServerFn(submitContactForm);
+
   const mutation = useMutation({
     mutationFn: async () => {
       if (wordCount < MINIMUM_WORDS) {
         throw new Error(`Please enter at least ${MINIMUM_WORDS} words.`);
       }
-      const { error } = await supabase.from("contact_submissions").insert(form);
-      if (error) throw new Error(error.message);
+      await submit({ data: form });
     },
     onSuccess: () => {
-      toast.success("Thanks - your submission is with the editors.");
+      toast.success("Thanks - your submission is with the editors. Check your inbox for a copy.");
       setForm(EMPTY);
     },
     onError: (error: Error) => toast.error(error.message),
