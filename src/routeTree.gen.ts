@@ -15,6 +15,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DevEditorCheckRouteImport } from './routes/dev-editor-check'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ArticleSlugRouteImport } from './routes/article.$slug'
 import { Route as ContentIndexRouteImport } from './routes/content.index'
@@ -60,6 +61,11 @@ const ContactRoute = ContactRouteImport.update({
 const DevEditorCheckRoute = DevEditorCheckRouteImport.update({
   id: '/dev-editor-check',
   path: '/dev-editor-check',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -160,6 +166,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/dev-editor-check': typeof DevEditorCheckRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/article/$slug': typeof ArticleSlugRoute
   '/content/$slug': typeof ContentSlugRoute
@@ -184,6 +191,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/dev-editor-check': typeof DevEditorCheckRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/article/$slug': typeof ArticleSlugRoute
   '/content/$slug': typeof ContentSlugRoute
   '/contributors/$slug': typeof ContributorsSlugRoute
@@ -209,6 +217,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/dev-editor-check': typeof DevEditorCheckRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/article/$slug': typeof ArticleSlugRoute
   '/content/$slug': typeof ContentSlugRoute
@@ -235,6 +244,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/dev-editor-check'
+    | '/sitemap.xml'
     | '/admin'
     | '/article/$slug'
     | '/content/$slug'
@@ -259,6 +269,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/dev-editor-check'
+    | '/sitemap.xml'
     | '/article/$slug'
     | '/content/$slug'
     | '/contributors/$slug'
@@ -283,6 +294,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/dev-editor-check'
+    | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/article/$slug'
     | '/content/$slug'
@@ -309,6 +321,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   DevEditorCheckRoute: typeof DevEditorCheckRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ArticleSlugRoute: typeof ArticleSlugRoute
   ContentSlugRoute: typeof ContentSlugRoute
   ContributorsSlugRoute: typeof ContributorsSlugRoute
@@ -362,6 +375,13 @@ declare module '@tanstack/react-router' {
       path: '/dev-editor-check'
       fullPath: '/dev-editor-check'
       preLoaderRoute: typeof DevEditorCheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -527,6 +547,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   DevEditorCheckRoute: DevEditorCheckRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   ArticleSlugRoute: ArticleSlugRoute,
   ContentSlugRoute: ContentSlugRoute,
   ContributorsSlugRoute: ContributorsSlugRoute,
