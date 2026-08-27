@@ -57,7 +57,7 @@ function AboutPage() {
             <div className="hard-shadow border-2 border-ink bg-cream p-6">
               <p className="text-base leading-relaxed">
                 Babas and Brasse is an inclusive non-profit arts, fashion, and literary platform and
-                collective created to showcase, archive, and celebrate local creative work. Created
+                collective created to showcase, archive, and celebrate local work. Created
                 in 2026 from a response to the gatekeeping often found in mainstream media and
                 online publishing spaces, Babas and Brasse aims to support creatives who may not
                 always have access to the resources, visibility, and archive needed to share their
