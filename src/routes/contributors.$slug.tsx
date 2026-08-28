@@ -1,16 +1,26 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Facebook, Instagram, Linkedin, Mail, Music2, Youtube } from "lucide-react";
-import { articlesQuery, contributorQuery, formatDate, initials } from "@/lib/magazine";
+import {
+  contributorArticlesQuery,
+  contributorQuery,
+  initials,
+  type Contributor,
+} from "@/lib/magazine";
 import { ActionLink } from "@/components/site/ActionLink";
-import { EmptyState } from "@/components/site/EmptyState";
+import { ContributorWorkArchive } from "@/components/site/ContributorWorkArchive";
 
 export const Route = createFileRoute("/contributors/$slug")({
   loader: async ({ context, params }) => {
     const contributor = await context.queryClient.ensureQueryData(contributorQuery(params.slug));
     if (!contributor) throw notFound();
-    await context.queryClient.ensureQueryData(articlesQuery());
-    return { name: contributor.name, role: contributor.role_title, bio: contributor.bio };
+    await context.queryClient.ensureQueryData(contributorArticlesQuery(contributor.id));
+    return {
+      name: contributor.name,
+      role: contributor.role_title,
+      bio: contributor.bio,
+      image: contributor.image_url,
+    };
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
@@ -26,6 +36,7 @@ export const Route = createFileRoute("/contributors/$slug")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "profile" },
+        ...(loaderData.image ? [{ property: "og:image", content: loaderData.image }] : []),
       ],
     };
   },
@@ -43,10 +54,13 @@ export const Route = createFileRoute("/contributors/$slug")({
 function ContributorPage() {
   const { slug } = Route.useParams();
   const { data: person } = useSuspenseQuery(contributorQuery(slug));
-  const { data: articles } = useSuspenseQuery(articlesQuery());
 
   if (!person) return null;
-  const theirs = articles.filter((article) => article.contributors?.slug === person.slug);
+  return <LoadedContributorPage person={person} />;
+}
+
+function LoadedContributorPage({ person }: { person: Contributor }) {
+  const { data: articles } = useSuspenseQuery(contributorArticlesQuery(person.id));
 
   const socials = [
     { href: person.instagram_url, Icon: Instagram, label: "Instagram" },
@@ -127,40 +141,7 @@ function ContributorPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 border-b-2 border-ink pb-4">
-          <h2 className="text-3xl sm:text-4xl">Pieces &amp; media</h2>
-          <span className="label-xs opacity-60">{theirs.length} published</span>
-        </div>
-        {theirs.length === 0 ? (
-          <div className="mt-10">
-            <EmptyState message="No published work from this contributor yet." />
-          </div>
-        ) : (
-          <div className="mt-10 divide-y-2 divide-ink border-2 border-ink">
-            {theirs.map((article) => (
-              <Link
-                key={article.id}
-                to="/content/$category/$slug"
-                params={{
-                  category: article.categories?.slug ?? "uncategorised",
-                  slug: article.slug,
-                }}
-                className="grid gap-4 p-6 transition-colors hover:bg-cream sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
-              >
-                <div className="min-w-0">
-                  <p className="label-xs text-forest-deep">{article.categories?.name}</p>
-                  <h3 className="mt-2 text-2xl leading-tight">{article.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{article.excerpt}</p>
-                </div>
-                <span className="label-xs shrink-0 opacity-60">
-                  {formatDate(article.published_at)}
-                </span>
-              </Link>
-            ))}
-          </div>
-        )}
-      </section>
+      <ContributorWorkArchive contributorName={person.name} articles={articles} />
     </div>
   );
 }

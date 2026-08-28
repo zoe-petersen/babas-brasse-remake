@@ -58,7 +58,14 @@ function ContentPage() {
       contributorFilter === "all" || article.contributor_id === contributorFilter;
     const matchesSearch =
       !normalizedSearch ||
-      [article.title, article.excerpt, article.categories?.name, article.author_name, article.contributors?.name]
+      [
+        article.title,
+        article.excerpt,
+        article.categories?.name,
+        article.author_name,
+        article.contributors?.name,
+      ]
+        .concat(article.article_places.map((relation) => relation.places?.name))
         .filter(Boolean)
         .some((value) => value?.toLowerCase().includes(normalizedSearch));
     return matchesPublication && matchesCategory && matchesContributor && matchesSearch;
@@ -78,6 +85,7 @@ function ContentPage() {
       toast.success(editing ? "Piece updated" : "Piece created");
       queryClient.invalidateQueries({ queryKey: ["admin"] });
       queryClient.invalidateQueries({ queryKey: ["articles"] });
+      queryClient.invalidateQueries({ queryKey: ["places"] });
       close();
     },
     onError: (error: Error) => toast.error(error.message),
@@ -271,6 +279,74 @@ function ContentPage() {
               />
             </div>
 
+            <fieldset className="grid gap-4 border-2 border-ink bg-cream p-4 lg:col-span-2 lg:grid-cols-2">
+              <legend className="label-xs bg-magenta px-3 py-1">Search &amp; location</legend>
+
+              <div className="border-l-4 border-magenta bg-background px-4 py-3 lg:col-span-2">
+                <p className="text-sm leading-relaxed text-ink">
+                  This section helps people discover the piece through Google and place searches.
+                  The SEO title and description can control how it appears in search results, while
+                  Places covered connects it to public location pages. If the SEO fields are left
+                  empty, the piece title and description will be used automatically.
+                </p>
+              </div>
+
+              <div>
+                <label className="label-xs" htmlFor="seo-title">
+                  SEO title (optional)
+                </label>
+                <input
+                  id="seo-title"
+                  maxLength={70}
+                  placeholder={values.title || "Uses the article title when empty"}
+                  className={inputClass}
+                  value={values.seo_title}
+                  onChange={(e) => update("seo_title", e.target.value)}
+                />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {values.seo_title.length}/70 characters. Keep the main search phrase natural and
+                  specific.
+                </p>
+              </div>
+
+              <div>
+                <label className="label-xs" htmlFor="seo-description">
+                  SEO description (optional)
+                </label>
+                <textarea
+                  id="seo-description"
+                  rows={3}
+                  maxLength={170}
+                  placeholder={values.excerpt || "Uses the article description when empty"}
+                  className={inputClass}
+                  value={values.seo_description}
+                  onChange={(e) => update("seo_description", e.target.value)}
+                />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {values.seo_description.length}/170 characters. Describe what a reader will find
+                  in the piece.
+                </p>
+              </div>
+
+              <div className="lg:col-span-2">
+                <label className="label-xs" htmlFor="places">
+                  Places covered
+                </label>
+                <textarea
+                  id="places"
+                  rows={3}
+                  placeholder={"Woodstock, Cape Town\nSoweto\nJohannesburg"}
+                  className={inputClass}
+                  value={values.places}
+                  onChange={(e) => update("places", e.target.value)}
+                />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Enter one real place per line. Each place gets a public archive page and is linked
+                  to this piece for search engines and readers.
+                </p>
+              </div>
+            </fieldset>
+
             <div className="lg:col-span-2">
               <p className="label-xs">Body</p>
               <RichTextEditor value={values.body} onChange={(html) => update("body", html)} />
@@ -372,7 +448,9 @@ function ContentPage() {
           {visibleArticles.map((article) => (
             <li key={article.id} className="min-w-0 p-4">
               <div className="flex min-w-0 items-start justify-between gap-3">
-                <p className="min-w-0 flex-1 text-sm font-semibold wrap-break-word">{article.title}</p>
+                <p className="min-w-0 flex-1 text-sm font-semibold wrap-break-word">
+                  {article.title}
+                </p>
                 <Pill tone={article.is_published ? "green" : "grey"}>
                   {article.is_published ? "Live" : "Draft"}
                 </Pill>
@@ -477,7 +555,6 @@ function ContentPage() {
           <AdminEmpty message="No content matches these filters." />
         )}
       </AdminCard>
-
     </div>
   );
 }

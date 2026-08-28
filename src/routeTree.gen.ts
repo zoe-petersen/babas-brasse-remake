@@ -15,7 +15,9 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DevEditorCheckRouteImport } from './routes/dev-editor-check'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TermsAndConditionsRouteImport } from './routes/terms-and-conditions'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ArticleSlugRouteImport } from './routes/article.$slug'
 import { Route as ContentIndexRouteImport } from './routes/content.index'
@@ -24,6 +26,8 @@ import { Route as ContributorsIndexRouteImport } from './routes/contributors.ind
 import { Route as ContributorsSlugRouteImport } from './routes/contributors.$slug'
 import { Route as PhotographyIndexRouteImport } from './routes/photography.index'
 import { Route as PhotographyIdRouteImport } from './routes/photography.$id'
+import { Route as PlacesIndexRouteImport } from './routes/places.index'
+import { Route as PlacesSlugRouteImport } from './routes/places.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminArticlesRouteImport } from './routes/_authenticated/admin.articles'
 import { Route as AuthenticatedAdminContentRouteImport } from './routes/_authenticated/admin.content'
@@ -63,9 +67,19 @@ const DevEditorCheckRoute = DevEditorCheckRouteImport.update({
   path: '/dev-editor-check',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsAndConditionsRoute = TermsAndConditionsRouteImport.update({
+  id: '/terms-and-conditions',
+  path: '/terms-and-conditions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -106,6 +120,16 @@ const PhotographyIndexRoute = PhotographyIndexRouteImport.update({
 const PhotographyIdRoute = PhotographyIdRouteImport.update({
   id: '/photography/$id',
   path: '/photography/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlacesIndexRoute = PlacesIndexRouteImport.update({
+  id: '/places/',
+  path: '/places/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlacesSlugRoute = PlacesSlugRouteImport.update({
+  id: '/places/$slug',
+  path: '/places/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
@@ -166,15 +190,19 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/dev-editor-check': typeof DevEditorCheckRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms-and-conditions': typeof TermsAndConditionsRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/article/$slug': typeof ArticleSlugRoute
   '/content/$slug': typeof ContentSlugRoute
   '/contributors/$slug': typeof ContributorsSlugRoute
   '/photography/$id': typeof PhotographyIdRoute
+  '/places/$slug': typeof PlacesSlugRoute
   '/content/': typeof ContentIndexRoute
   '/contributors/': typeof ContributorsIndexRoute
   '/photography/': typeof PhotographyIndexRoute
+  '/places/': typeof PlacesIndexRoute
   '/admin/articles': typeof AuthenticatedAdminArticlesRoute
   '/admin/content': typeof AuthenticatedAdminContentRoute
   '/admin/contributors': typeof AuthenticatedAdminContributorsRoute
@@ -191,14 +219,18 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/dev-editor-check': typeof DevEditorCheckRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms-and-conditions': typeof TermsAndConditionsRoute
   '/article/$slug': typeof ArticleSlugRoute
   '/content/$slug': typeof ContentSlugRoute
   '/contributors/$slug': typeof ContributorsSlugRoute
   '/photography/$id': typeof PhotographyIdRoute
+  '/places/$slug': typeof PlacesSlugRoute
   '/content': typeof ContentIndexRoute
   '/contributors': typeof ContributorsIndexRoute
   '/photography': typeof PhotographyIndexRoute
+  '/places': typeof PlacesIndexRoute
   '/admin/articles': typeof AuthenticatedAdminArticlesRoute
   '/admin/content': typeof AuthenticatedAdminContentRoute
   '/admin/contributors': typeof AuthenticatedAdminContributorsRoute
@@ -217,15 +249,19 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/dev-editor-check': typeof DevEditorCheckRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms-and-conditions': typeof TermsAndConditionsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/article/$slug': typeof ArticleSlugRoute
   '/content/$slug': typeof ContentSlugRoute
   '/contributors/$slug': typeof ContributorsSlugRoute
   '/photography/$id': typeof PhotographyIdRoute
+  '/places/$slug': typeof PlacesSlugRoute
   '/content/': typeof ContentIndexRoute
   '/contributors/': typeof ContributorsIndexRoute
   '/photography/': typeof PhotographyIndexRoute
+  '/places/': typeof PlacesIndexRoute
   '/_authenticated/admin/articles': typeof AuthenticatedAdminArticlesRoute
   '/_authenticated/admin/content': typeof AuthenticatedAdminContentRoute
   '/_authenticated/admin/contributors': typeof AuthenticatedAdminContributorsRoute
@@ -244,15 +280,19 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/dev-editor-check'
+    | '/privacy-policy'
     | '/sitemap.xml'
+    | '/terms-and-conditions'
     | '/admin'
     | '/article/$slug'
     | '/content/$slug'
     | '/contributors/$slug'
     | '/photography/$id'
+    | '/places/$slug'
     | '/content/'
     | '/contributors/'
     | '/photography/'
+    | '/places/'
     | '/admin/articles'
     | '/admin/content'
     | '/admin/contributors'
@@ -269,14 +309,18 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/dev-editor-check'
+    | '/privacy-policy'
     | '/sitemap.xml'
+    | '/terms-and-conditions'
     | '/article/$slug'
     | '/content/$slug'
     | '/contributors/$slug'
     | '/photography/$id'
+    | '/places/$slug'
     | '/content'
     | '/contributors'
     | '/photography'
+    | '/places'
     | '/admin/articles'
     | '/admin/content'
     | '/admin/contributors'
@@ -294,15 +338,19 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/dev-editor-check'
+    | '/privacy-policy'
     | '/sitemap.xml'
+    | '/terms-and-conditions'
     | '/_authenticated/admin'
     | '/article/$slug'
     | '/content/$slug'
     | '/contributors/$slug'
     | '/photography/$id'
+    | '/places/$slug'
     | '/content/'
     | '/contributors/'
     | '/photography/'
+    | '/places/'
     | '/_authenticated/admin/articles'
     | '/_authenticated/admin/content'
     | '/_authenticated/admin/contributors'
@@ -321,14 +369,18 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   DevEditorCheckRoute: typeof DevEditorCheckRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TermsAndConditionsRoute: typeof TermsAndConditionsRoute
   ArticleSlugRoute: typeof ArticleSlugRoute
   ContentSlugRoute: typeof ContentSlugRoute
   ContributorsSlugRoute: typeof ContributorsSlugRoute
   PhotographyIdRoute: typeof PhotographyIdRoute
+  PlacesSlugRoute: typeof PlacesSlugRoute
   ContentIndexRoute: typeof ContentIndexRoute
   ContributorsIndexRoute: typeof ContributorsIndexRoute
   PhotographyIndexRoute: typeof PhotographyIndexRoute
+  PlacesIndexRoute: typeof PlacesIndexRoute
   ContentCategorySlugRoute: typeof ContentCategorySlugRoute
   ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
 }
@@ -377,11 +429,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DevEditorCheckRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms-and-conditions': {
+      id: '/terms-and-conditions'
+      path: '/terms-and-conditions'
+      fullPath: '/terms-and-conditions'
+      preLoaderRoute: typeof TermsAndConditionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -438,6 +504,20 @@ declare module '@tanstack/react-router' {
       path: '/photography/$id'
       fullPath: '/photography/$id'
       preLoaderRoute: typeof PhotographyIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/places/': {
+      id: '/places/'
+      path: '/places'
+      fullPath: '/places/'
+      preLoaderRoute: typeof PlacesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/places/$slug': {
+      id: '/places/$slug'
+      path: '/places/$slug'
+      fullPath: '/places/$slug'
+      preLoaderRoute: typeof PlacesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
@@ -547,14 +627,18 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   DevEditorCheckRoute: DevEditorCheckRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TermsAndConditionsRoute: TermsAndConditionsRoute,
   ArticleSlugRoute: ArticleSlugRoute,
   ContentSlugRoute: ContentSlugRoute,
   ContributorsSlugRoute: ContributorsSlugRoute,
   PhotographyIdRoute: PhotographyIdRoute,
+  PlacesSlugRoute: PlacesSlugRoute,
   ContentIndexRoute: ContentIndexRoute,
   ContributorsIndexRoute: ContributorsIndexRoute,
   PhotographyIndexRoute: PhotographyIndexRoute,
+  PlacesIndexRoute: PlacesIndexRoute,
   ContentCategorySlugRoute: ContentCategorySlugRoute,
   ApiPublicMediaSplatRoute: ApiPublicMediaSplatRoute,
 }

@@ -27,6 +27,13 @@ export type Contributor = {
   sort_order: number;
 };
 
+export type Place = {
+  id: string;
+  name: string;
+  slug: string;
+  updated_at: string;
+};
+
 export type Article = {
   id: string;
   title: string;
@@ -37,11 +44,18 @@ export type Article = {
   image_credit: string | null;
   read_minutes: number;
   published_at: string | null;
+  updated_at: string;
+  seo_title: string | null;
+  seo_description: string | null;
   is_editors_pick: boolean;
   is_featured: boolean;
   categories: Pick<Category, "id" | "name" | "slug"> | null;
-  contributors: Pick<Contributor, "id" | "name" | "slug" | "role_title" | "bio"> | null;
+  contributors: Pick<
+    Contributor,
+    "id" | "name" | "slug" | "role_title" | "bio" | "image_url" | "email"
+  > | null;
   author_name: string | null;
+  article_places: Array<{ places: Place | null }>;
 };
 
 /** Prefers a linked contributor's name, falling back to the free-text author name. */
@@ -50,6 +64,18 @@ export function byline(article: {
   author_name?: string | null;
 }) {
   return article.contributors?.name ?? article.author_name ?? null;
+}
+
+/** Returns the distinct public places attached to a piece. */
+export function placesForArticle(article: Pick<Article, "article_places">) {
+  const seen = new Set<string>();
+  return article.article_places
+    .map((relation) => relation.places)
+    .filter((place): place is Place => {
+      if (!place || seen.has(place.id)) return false;
+      seen.add(place.id);
+      return true;
+    });
 }
 
 export type Photograph = {
@@ -72,9 +98,11 @@ export type ApprovedComment = {
 
 const ARTICLE_SELECT = `
   id, title, slug, excerpt, body, cover_image_url, image_credit, read_minutes,
-  published_at, is_editors_pick, is_featured, author_name,
+  published_at, updated_at, seo_title, seo_description,
+  is_editors_pick, is_featured, author_name,
   categories:category_id ( id, name, slug ),
-  contributors:contributor_id ( id, name, slug, role_title, bio )
+  contributors:contributor_id ( id, name, slug, role_title, bio, image_url, email ),
+  article_places ( places:place_id ( id, name, slug, updated_at ) )
 `;
 
 export async function fetchArticles(options?: { categorySlug?: string; limit?: number }) {
@@ -133,6 +161,43 @@ export async function fetchContributor(slug: string) {
     .maybeSingle();
   if (error) throw new Error(error.message);
   return (data as Contributor | null) ?? null;
+}
+
+export async function fetchContributorArticles(contributorId: string) {
+  const { data, error } = await supabase
+    .from("articles")
+    .select(ARTICLE_SELECT)
+    .eq("is_published", true)
+    .eq("contributor_id", contributorId)
+    .order("published_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as unknown as Article[];
+}
+
+export async function fetchPlaces() {
+  const { data, error } = await supabase
+    .from("places")
+    .select("id, name, slug, updated_at")
+    .order("name");
+  if (error) throw new Error(error.message);
+  return (data ?? []) as Place[];
+}
+
+export async function fetchPlace(slug: string) {
+  const { data, error } = await supabase
+    .from("places")
+    .select("id, name, slug, updated_at")
+    .eq("slug", slug)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return (data as Place | null) ?? null;
+}
+
+export async function fetchPlaceArticles(placeId: string) {
+  const articles = await fetchArticles();
+  return articles.filter((article) =>
+    placesForArticle(article).some((place) => place.id === placeId),
+  );
 }
 
 export async function fetchPhotographs() {
@@ -201,6 +266,23 @@ export const contributorsQuery = (team: boolean) =>
 
 export const contributorQuery = (slug: string) =>
   queryOptions({ queryKey: ["contributor", slug], queryFn: () => fetchContributor(slug) });
+
+export const contributorArticlesQuery = (contributorId: string) =>
+  queryOptions({
+    queryKey: ["contributor-articles", contributorId],
+    queryFn: () => fetchContributorArticles(contributorId),
+  });
+
+export const placesQuery = () => queryOptions({ queryKey: ["places"], queryFn: fetchPlaces });
+
+export const placeQuery = (slug: string) =>
+  queryOptions({ queryKey: ["place", slug], queryFn: () => fetchPlace(slug) });
+
+export const placeArticlesQuery = (placeId: string) =>
+  queryOptions({
+    queryKey: ["place-articles", placeId],
+    queryFn: () => fetchPlaceArticles(placeId),
+  });
 
 export const photographsQuery = () =>
   queryOptions({ queryKey: ["photographs"], queryFn: fetchPhotographs });

@@ -1,6 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { articlesQuery, categoriesQuery, contributorsQuery } from "@/lib/magazine";
+import {
+  articlesQuery,
+  categoriesQuery,
+  contributorsQuery,
+  placesForArticle,
+  placesQuery,
+} from "@/lib/magazine";
 import { PageHero } from "@/components/site/PageHero";
 import { SectionHeading } from "@/components/site/SectionHeading";
 import { ActionLink } from "@/components/site/ActionLink";
@@ -26,6 +32,7 @@ export const Route = createFileRoute("/content/")({
       context.queryClient.ensureQueryData(articlesQuery()),
       context.queryClient.ensureQueryData(categoriesQuery()),
       context.queryClient.ensureQueryData(contributorsQuery(false)),
+      context.queryClient.ensureQueryData(placesQuery()),
     ]);
   },
   component: ContentPage,
@@ -35,9 +42,15 @@ function ContentPage() {
   const { data: articles } = useSuspenseQuery(articlesQuery());
   const { data: categories } = useSuspenseQuery(categoriesQuery());
   const { data: contributors } = useSuspenseQuery(contributorsQuery(false));
+  const { data: places } = useSuspenseQuery(placesQuery());
 
   const usedSections = categories.filter((category) =>
     articles.some((article) => article.categories?.slug === category.slug),
+  );
+  const activePlaces = places.filter((place) =>
+    articles.some((article) =>
+      placesForArticle(article).some((articlePlace) => articlePlace.id === place.id),
+    ),
   );
 
   const stats = [
@@ -144,6 +157,37 @@ function ContentPage() {
           </div>
         </div>
       </section>
+
+      {activePlaces.length > 0 && (
+        <section className="border-y-2 border-ink bg-forest text-primary-foreground">
+          <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+            <SectionHeading
+              eyebrow="Stories rooted in place"
+              title="Explore the places we cover"
+              action={
+                <ActionLink
+                  to="/places"
+                  variant="outline"
+                  label="All places"
+                  className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-forest-deep"
+                />
+              }
+            />
+            <div className="mt-8 flex flex-wrap gap-3">
+              {activePlaces.map((place) => (
+                <Link
+                  key={place.id}
+                  to="/places/$slug"
+                  params={{ slug: place.slug }}
+                  className="label-xs border-2 border-primary-foreground bg-background px-4 py-3 text-ink transition-transform hover:-translate-y-0.5 hover:bg-magenta"
+                >
+                  {place.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

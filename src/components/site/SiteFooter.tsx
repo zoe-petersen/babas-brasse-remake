@@ -5,6 +5,7 @@ import { SocialRow } from "./SocialRow";
 
 const EXPLORE = [
   { label: "Content", to: "/content" },
+  { label: "Places", to: "/places" },
   { label: "Contributors", to: "/contributors" },
   { label: "Photography", to: "/photography" },
   { label: "About", to: "/about" },
@@ -33,9 +34,7 @@ export function SiteFooter() {
             height={500}
             className="h-44 w-auto sm:h-52"
           />
-          <p className="mt-6 max-w-xs text-sm opacity-90">
-            Our voices. Our stories.
-          </p>
+          <p className="mt-6 max-w-xs text-sm opacity-90">Our voices. Our stories.</p>
           <Link
             to="/contact"
             className="label-xs mt-8 inline-flex items-center gap-2 rounded-full bg-magenta px-6 py-3 text-ink transition-transform hover:-translate-y-0.5"
@@ -88,8 +87,16 @@ export function SiteFooter() {
       </div>
 
       <div className="border-t border-primary-foreground/20">
-        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-xs opacity-80 sm:flex-row sm:justify-between sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-6 text-xs opacity-80 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <p>Copyright {new Date().getFullYear()} Babas &amp; Brasse. All rights reserved.</p>
+          <nav aria-label="Legal" className="flex flex-wrap gap-x-5 gap-y-2">
+            <Link to="/terms-and-conditions" className="hover:underline">
+              Terms &amp; Conditions
+            </Link>
+            <Link to="/privacy-policy" className="hover:underline">
+              Privacy Policy
+            </Link>
+          </nav>
           <p>Independent arts &amp; culture from South Africa.</p>
         </div>
       </div>

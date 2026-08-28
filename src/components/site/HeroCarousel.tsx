@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import slide1 from "@/assets/bannerf.png";
-import slide1Mobile from "@/assets/mobile_banner2.png";
+import slide1Mobile from "@/assets/mobile_banner.jpeg";
 import slide2 from "@/assets/hero2.webp";
 import slide3 from "@/assets/hero3.webp";
 import { cn } from "@/lib/utils";

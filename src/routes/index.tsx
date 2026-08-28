@@ -2,11 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowUpRight } from "lucide-react";
 import { byline, articlesQuery, categoriesQuery, formatDate } from "@/lib/magazine";
-import { HeroCarousel } from "@/components/site/HeroCarousel";
+// Carousel intentionally disabled at the client's request.
+// import { HeroCarousel } from "@/components/site/HeroCarousel";
+import { HeroBanner } from "@/components/site/HeroBanner";
 import { ArticleCard } from "@/components/site/ArticleCard";
 import { SectionHeading } from "@/components/site/SectionHeading";
 import { ActionLink } from "@/components/site/ActionLink";
 import { EmptyState } from "@/components/site/EmptyState";
+import { ORGANIZATION_ID, SITE_NAME, SITE_URL, publisherJsonLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -23,7 +26,27 @@ export const Route = createFileRoute("/")({
         content:
           "Culture, criticism, and creative work made with nerve, care, and a point of view.",
       },
+      { property: "og:url", content: SITE_URL },
+      { property: "og:site_name", content: SITE_NAME },
+      {
+        "script:ld+json": {
+          "@context": "https://schema.org",
+          "@graph": [
+            publisherJsonLd(),
+            {
+              "@type": "WebSite",
+              "@id": `${SITE_URL}/#website`,
+              name: SITE_NAME,
+              alternateName: ["Babas and Brasse", "babasandbrasse.co.za"],
+              url: SITE_URL,
+              publisher: { "@id": ORGANIZATION_ID },
+              inLanguage: "en-ZA",
+            },
+          ],
+        },
+      },
     ],
+    links: [{ rel: "canonical", href: SITE_URL }],
   }),
   loader: async ({ context }) => {
     await Promise.all([
@@ -43,7 +66,8 @@ function HomePage() {
 
   return (
     <div>
-      <HeroCarousel />
+      {/* <HeroCarousel /> */}
+      <HeroBanner />
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <SectionHeading

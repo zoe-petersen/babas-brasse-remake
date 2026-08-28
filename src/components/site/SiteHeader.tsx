@@ -24,7 +24,6 @@ export function SiteHeader() {
   const { data } = useQuery(categoriesQuery());
   const categories = hydrated ? (data ?? []) : [];
 
-
   return (
     <header className="sticky top-0 z-50 border-b-2 border-ink bg-background">
       <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr] items-center gap-4 px-4 py-1.5 sm:px-6 lg:px-8">
@@ -104,10 +103,7 @@ export function SiteHeader() {
                     className="flex items-center justify-center border-l border-border px-5 py-4"
                   >
                     <ChevronDown
-                      className={cn(
-                        "h-4 w-4 transition-transform",
-                        contentOpen && "rotate-180",
-                      )}
+                      className={cn("h-4 w-4 transition-transform", contentOpen && "rotate-180")}
                     />
                   </button>
                 </div>
@@ -143,7 +139,6 @@ export function SiteHeader() {
           )}
         </nav>
       </div>
-
     </header>
   );
 }

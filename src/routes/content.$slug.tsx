@@ -1,7 +1,8 @@
 import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
-import { byline,
+import {
+  byline,
   articleQuery,
   articlesQuery,
   categoriesQuery,

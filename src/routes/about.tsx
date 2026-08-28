@@ -57,11 +57,11 @@ function AboutPage() {
             <div className="hard-shadow border-2 border-ink bg-cream p-6">
               <p className="text-base leading-relaxed">
                 Babas and Brasse is an inclusive non-profit arts, fashion, and literary platform and
-                collective created to showcase, archive, and celebrate local work. Created
-                in 2026 from a response to the gatekeeping often found in mainstream media and
-                online publishing spaces, Babas and Brasse aims to support creatives who may not
-                always have access to the resources, visibility, and archive needed to share their
-                stories, build their profiles, and reach wider audiences.
+                collective created to showcase, archive, and celebrate local work. Created in 2026
+                from a response to the gatekeeping often found in mainstream media and online
+                publishing spaces, Babas and Brasse aims to support creatives who may not always
+                have access to the resources, visibility, and archive needed to share their stories,
+                build their profiles, and reach wider audiences.
               </p>
             </div>
             <div className="hard-shadow border-2 border-ink bg-forest p-6 text-primary-foreground">
@@ -79,7 +79,6 @@ function AboutPage() {
                 Africa.
               </p>
             </div>
-            
           </div>
         </div>
       </section>
@@ -87,10 +86,10 @@ function AboutPage() {
       <section className="border-y-2 border-ink bg-forest text-primary-foreground">
         <div className="mx-auto max-w-4xl px-4 py-20 text-center sm:px-6">
           <p className="font-display text-3xl leading-snug sm:text-4xl lg:text-5xl">
-            &ldquo;Culture is not decoration. It is the argument a country has with itself, out
-            loud.&rdquo;
+            &ldquo;There is so much beautiful talent in Cape Town that is not getting recognition.
+            It is time to change this, one post at a time.&rdquo;
           </p>
-          <p className="label-xs mt-8 text-magenta">The editors</p>
+          <p className="label-xs mt-8 text-magenta">Zubayr Charles</p>
         </div>
       </section>
 
@@ -133,8 +132,8 @@ function AboutPage() {
             <div className="hard-shadow border-2 border-ink bg-cream p-6">
               <p className="font-display text-4xl text-forest-deep">Baba</p>
               <p className="mt-3 text-base leading-relaxed">
-                &ldquo;Baba&rdquo; is the Afrikaans word for &ldquo;baby&rdquo;, a term of endearment
-                often used to refer to someone affectionately.
+                &ldquo;Baba&rdquo; is the Afrikaans word for &ldquo;baby&rdquo;, a term of
+                endearment often used to refer to someone affectionately.
               </p>
             </div>
             <div className="hard-shadow border-2 border-ink bg-forest p-6 text-primary-foreground">
@@ -158,7 +157,6 @@ function AboutPage() {
                   { value: "Rooted In - ", label: "Multilingualism" },
                   { value: "All Cultures - ", label: "Wanted & Accepted" },
                   { value: "South African - ", label: "Home grown Stores" },
-                  
                 ].map((item) => (
                   <div
                     key={item.label}

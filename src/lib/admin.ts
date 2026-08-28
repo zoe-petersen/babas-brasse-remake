@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import type { Article, Category, Contributor } from "@/lib/magazine";
+import { placesForArticle, type Article, type Category, type Contributor } from "@/lib/magazine";
 
 export type AdminArticle = Article & {
   is_published: boolean;
@@ -49,10 +49,12 @@ export type AdminPhotograph = {
 
 const ADMIN_ARTICLE_SELECT = `
   id, title, slug, excerpt, body, cover_image_url, image_credit, read_minutes,
-  published_at, is_editors_pick, is_featured, is_published, created_at, author_name,
+  published_at, updated_at, seo_title, seo_description,
+  is_editors_pick, is_featured, is_published, created_at, author_name,
   category_id, contributor_id,
   categories:category_id ( id, name, slug ),
-  contributors:contributor_id ( id, name, slug, role_title, bio )
+  contributors:contributor_id ( id, name, slug, role_title, bio, image_url, email ),
+  article_places ( places:place_id ( id, name, slug, updated_at ) )
 `;
 
 export async function fetchAdminArticles() {
@@ -136,6 +138,9 @@ export type ArticleFormValues = {
   title: string;
   slug: string;
   excerpt: string;
+  seo_title: string;
+  seo_description: string;
+  places: string;
   body: string;
   cover_image_url: string;
   image_credit: string;
@@ -153,6 +158,9 @@ export function emptyArticle(): ArticleFormValues {
     title: "",
     slug: "",
     excerpt: "",
+    seo_title: "",
+    seo_description: "",
+    places: "",
     body: "",
     cover_image_url: "",
     image_credit: "",
@@ -171,6 +179,11 @@ export function toFormValues(article: AdminArticle): ArticleFormValues {
     title: article.title,
     slug: article.slug,
     excerpt: article.excerpt ?? "",
+    seo_title: article.seo_title ?? "",
+    seo_description: article.seo_description ?? "",
+    places: placesForArticle(article)
+      .map((place) => place.name)
+      .join("\n"),
     body: article.body ?? "",
     cover_image_url: article.cover_image_url ?? "",
     image_credit: article.image_credit ?? "",
@@ -189,6 +202,8 @@ function toRow(values: ArticleFormValues) {
     title: values.title.trim(),
     slug: slugify(values.slug || values.title),
     excerpt: values.excerpt.trim() || null,
+    seo_title: values.seo_title.trim() || null,
+    seo_description: values.seo_description.trim() || null,
     body: values.body.trim() || null,
     cover_image_url: values.cover_image_url.trim() || null,
     image_credit: values.image_credit.trim() || null,
@@ -204,14 +219,59 @@ function toRow(values: ArticleFormValues) {
   };
 }
 
+function parsePlaces(value: string) {
+  const places = new Map<string, string>();
+  for (const rawName of value.split(/\r?\n/)) {
+    const name = rawName.trim();
+    const slug = slugify(name);
+    if (name && slug && !places.has(slug)) places.set(slug, name);
+  }
+  return [...places].map(([slug, name]) => ({ name, slug }));
+}
+
+async function syncArticlePlaces(articleId: string, value: string) {
+  const requestedPlaces = parsePlaces(value);
+  if (requestedPlaces.length === 0) {
+    const { error } = await supabase.from("article_places").delete().eq("article_id", articleId);
+    if (error) throw new Error(error.message);
+    return;
+  }
+
+  const { data: places, error: placeError } = await supabase
+    .from("places")
+    .upsert(requestedPlaces, { onConflict: "slug" })
+    .select("id");
+  if (placeError) throw new Error(placeError.message);
+
+  const { error: deleteError } = await supabase
+    .from("article_places")
+    .delete()
+    .eq("article_id", articleId);
+  if (deleteError) throw new Error(deleteError.message);
+
+  const { error: relationError } = await supabase.from("article_places").insert(
+    (places ?? []).map((place) => ({
+      article_id: articleId,
+      place_id: place.id,
+    })),
+  );
+  if (relationError) throw new Error(relationError.message);
+}
+
 export async function createArticle(values: ArticleFormValues) {
-  const { error } = await supabase.from("articles").insert(toRow(values));
+  const { data, error } = await supabase
+    .from("articles")
+    .insert(toRow(values))
+    .select("id")
+    .single();
   if (error) throw new Error(error.message);
+  await syncArticlePlaces(data.id, values.places);
 }
 
 export async function updateArticle(article: AdminArticle, values: ArticleFormValues) {
   const { error } = await supabase.from("articles").update(toRow(values)).eq("id", article.id);
   if (error) throw new Error(error.message);
+  await syncArticlePlaces(article.id, values.places);
 }
 
 export async function deleteArticle(id: string) {

@@ -19,9 +19,7 @@ export function SocialRow({ variant = "plain" }: { variant?: "plain" | "circle" 
           aria-label={label}
           className={cn(
             "inline-flex items-center justify-center transition-opacity hover:opacity-60",
-            variant === "circle"
-              ? "h-10 w-10 rounded-full border border-current"
-              : "h-8 w-8",
+            variant === "circle" ? "h-10 w-10 rounded-full border border-current" : "h-8 w-8",
           )}
         >
           <Icon className="h-4 w-4" />

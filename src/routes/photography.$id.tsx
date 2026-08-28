@@ -11,7 +11,9 @@ export const Route = createFileRoute("/photography/$id")({
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
-      return { meta: [{ title: "Photograph unavailable" }, { name: "robots", content: "noindex" }] };
+      return {
+        meta: [{ title: "Photograph unavailable" }, { name: "robots", content: "noindex" }],
+      };
     }
     const description = loaderData.caption ?? "A photograph from the Babas & Brasse mood board.";
     return {
@@ -48,7 +50,12 @@ function PhotographPage() {
   return (
     <div className="bg-cream">
       <div className="mx-auto max-w-5xl px-4 pt-8 sm:px-6">
-        <ActionLink to="/photography" variant="underline" showArrow={false} label="← Back to mood board" />
+        <ActionLink
+          to="/photography"
+          variant="underline"
+          showArrow={false}
+          label="← Back to mood board"
+        />
       </div>
 
       <article className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
@@ -86,7 +93,12 @@ function PhotographPage() {
               </div>
             )}
             <div className="pt-2">
-              <ActionLink to="/contact" variant="outline" showArrow={false} label="Submit visual work" />
+              <ActionLink
+                to="/contact"
+                variant="outline"
+                showArrow={false}
+                label="Submit visual work"
+              />
             </div>
           </dl>
         </div>

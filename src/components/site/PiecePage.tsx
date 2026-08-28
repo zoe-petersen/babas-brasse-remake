@@ -3,7 +3,8 @@ import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tansta
 import { useEffect, useState } from "react";
 import { CalendarDays, Clock, Eye, MessageCircle, Tag } from "lucide-react";
 import { toast } from "sonner";
-import { byline,
+import {
+  byline,
   articleQuery,
   articlesQuery,
   articleViewsQuery,
@@ -11,12 +12,19 @@ import { byline,
   formatDate,
   formatLongDate,
   initials,
+  placesForArticle,
   registerArticleView,
+  type Article,
 } from "@/lib/magazine";
 import { supabase } from "@/integrations/supabase/client";
 import { ActionLink } from "@/components/site/ActionLink";
 import { SectionHeading } from "@/components/site/SectionHeading";
 import { ArticleBody } from "@/components/site/ArticleBody";
+import { ArticleContributor } from "@/components/site/ArticleContributor";
+import { ArticleLegalNotice } from "@/components/site/ArticleLegalNotice";
+import { ArticleShare } from "@/components/site/ArticleShare";
+import { ArticlePlaces } from "@/components/site/ArticlePlaces";
+import { articleCanonicalUrl, articleSeoDescription } from "@/lib/seo";
 
 export function PiecePage({ slug }: { slug: string }) {
   const { data: article } = useSuspenseQuery(articleQuery(slug));
@@ -26,6 +34,7 @@ export function PiecePage({ slug }: { slug: string }) {
   if (!article) return null;
 
   const keepReading = allArticles.filter((item) => item.id !== article.id).slice(0, 3);
+  const places = placesForArticle(article);
 
   return (
     <div>
@@ -48,15 +57,7 @@ export function PiecePage({ slug }: { slug: string }) {
             )}
           </div>
           <aside className="lg:border-l-2 lg:border-ink lg:pl-8">
-            <div className="flex items-center gap-3">
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-forest text-sm font-semibold text-primary-foreground">
-                {initials(byline(article) ?? "BB")}
-              </span>
-              <div className="min-w-0">
-                <p className="label-xs opacity-60">Written by</p>
-                <p className="truncate font-semibold">{byline(article)}</p>
-              </div>
-            </div>
+            <ArticleByline article={article} />
             <dl className="mt-6 space-y-3 border-t border-border pt-4">
               <Meta icon={<Tag className="h-3.5 w-3.5" />} value={article.categories?.name ?? ""} />
               <Meta
@@ -90,31 +91,23 @@ export function PiecePage({ slug }: { slug: string }) {
           </figure>
         )}
 
+        <ArticleShare
+          title={article.title}
+          description={articleSeoDescription(article)}
+          url={articleCanonicalUrl(article)}
+        />
+
+        <ArticlePlaces places={places} />
+
         <ArticleBody body={article.body} />
 
-        {article.contributors && (
-          <div className="mt-14 grid border-2 border-ink md:grid-cols-[1fr_1.2fr]">
-            <div className="flex items-center gap-4 bg-forest p-6 text-primary-foreground">
-              <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-magenta font-semibold text-ink">
-                {initials(article.contributors.name)}
-              </span>
-              <div className="min-w-0">
-                <p className="label-xs text-magenta">About the author</p>
-                <p className="truncate font-display text-2xl">{article.contributors.name}</p>
-                <p className="label-xs mt-1 opacity-80">{article.contributors.role_title}</p>
-              </div>
-            </div>
-            <div className="flex flex-col justify-center gap-4 p-6">
-              <p className="text-sm text-muted-foreground">{article.contributors.bio}</p>
-              <ActionLink
-                to="/contributors/$slug"
-                params={{ slug: article.contributors.slug }}
-                variant="underline"
-                label="View contributor profile"
-              />
-            </div>
-          </div>
-        )}
+        {article.contributors && <ArticleContributor contributor={article.contributors} />}
+
+        <ArticleLegalNotice
+          authorName={byline(article) ?? "Babas & Brasse"}
+          publishedAt={article.published_at}
+          contactEmail={article.contributors?.email ?? null}
+        />
       </article>
 
       <Comments
@@ -154,7 +147,7 @@ export function PiecePage({ slug }: { slug: string }) {
                   <p className="label-xs text-forest-deep">{item.categories?.name}</p>
                   <h3 className="mt-2 text-xl leading-tight">{item.title}</h3>
                   <p className="label-xs mt-3 opacity-60">
-                    {item.contributors?.name} &middot; {formatDate(item.published_at)}
+                    {byline(item)} &middot; {formatDate(item.published_at)}
                   </p>
                   <span className="label-xs mt-auto pt-6">Read piece →</span>
                 </div>
@@ -164,6 +157,46 @@ export function PiecePage({ slug }: { slug: string }) {
         </div>
       </section>
     </div>
+  );
+}
+
+function ArticleByline({ article }: { article: Article }) {
+  const authorName = byline(article) ?? "Babas & Brasse";
+  const content = (
+    <>
+      <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-forest text-sm font-semibold text-primary-foreground">
+        {article.contributors?.image_url ? (
+          <img
+            src={article.contributors.image_url}
+            alt=""
+            width={88}
+            height={88}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          initials(authorName)
+        )}
+      </span>
+      <span className="min-w-0">
+        <span className="label-xs block opacity-60">Written by</span>
+        <span className="block truncate font-semibold">{authorName}</span>
+      </span>
+    </>
+  );
+
+  if (!article.contributors) {
+    return <div className="flex items-center gap-3">{content}</div>;
+  }
+
+  return (
+    <Link
+      to="/contributors/$slug"
+      params={{ slug: article.contributors.slug }}
+      className="group flex items-center gap-3"
+      aria-label={`View all work by ${article.contributors.name}`}
+    >
+      {content}
+    </Link>
   );
 }
 
