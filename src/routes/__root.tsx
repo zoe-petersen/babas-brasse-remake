@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { Toaster } from "@/components/ui/sonner";
+import { SITE_SHARE_IMAGE } from "@/lib/seo";
 
 function NotFoundComponent() {
   return (
@@ -94,7 +95,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content: "Reviews, essays, interviews, photography and art from South African voices.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Babas & Brasse" },
+      { property: "og:image", content: SITE_SHARE_IMAGE },
+      { property: "og:image:secure_url", content: SITE_SHARE_IMAGE },
+      { property: "og:image:alt", content: "Babas & Brasse logo" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Babas & Brasse | Arts & Culture Magazine" },
+      {
+        name: "twitter:description",
+        content: "Reviews, essays, interviews, photography and art from South African voices.",
+      },
+      { name: "twitter:image", content: SITE_SHARE_IMAGE },
+      { name: "twitter:image:alt", content: "Babas & Brasse logo" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },

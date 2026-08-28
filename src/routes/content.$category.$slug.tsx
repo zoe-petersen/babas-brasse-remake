@@ -122,7 +122,12 @@ export const Route = createFileRoute("/content/$category/$slug")({
         { name: "twitter:description", content: description },
         { name: "twitter:domain", content: "babasandbrasse.co.za" },
         { name: "twitter:url", content: canonicalUrl },
-        ...(imageUrl ? [{ name: "twitter:image", content: imageUrl }] : []),
+        ...(imageUrl
+          ? [
+              { name: "twitter:image", content: imageUrl },
+              { name: "twitter:image:alt", content: article.title },
+            ]
+          : []),
         {
           "script:ld+json": {
             "@context": "https://schema.org",

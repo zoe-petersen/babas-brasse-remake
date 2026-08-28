@@ -9,6 +9,8 @@ export function absoluteSiteUrl(value: string) {
   return new URL(value, `${SITE_URL}/`).toString();
 }
 
+export const SITE_SHARE_IMAGE = absoluteSiteUrl(logoAsset);
+
 export function articlePath(article: Pick<Article, "categories" | "slug">) {
   return `/content/${article.categories?.slug ?? "uncategorised"}/${article.slug}`;
 }
@@ -38,7 +40,7 @@ export function publisherJsonLd() {
     url: SITE_URL,
     logo: {
       "@type": "ImageObject",
-      url: absoluteSiteUrl(logoAsset),
+      url: SITE_SHARE_IMAGE,
     },
     email: "submissions@babasandbrasse.co.za",
     description:
