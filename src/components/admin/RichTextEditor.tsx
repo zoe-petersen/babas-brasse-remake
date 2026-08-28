@@ -122,6 +122,89 @@ function adjustInlineIndent(editor: Editor, direction: 1 | -1) {
     : chain.setMark("inlineIndentation", { level: nextLevel }).run();
 }
 
+function currentLineRange(editor: Editor) {
+  const { state, view } = editor;
+  const { from, $from } = state.selection;
+
+  if (!$from.parent.isTextblock) return null;
+
+  const blockStart = $from.start();
+  const blockEnd = $from.end();
+  let segmentStart = blockStart;
+  let segmentEnd = blockEnd;
+
+  $from.parent.forEach((node, offset) => {
+    if (node.type.name !== "hardBreak") return;
+
+    const position = blockStart + offset;
+    if (position < from) segmentStart = position + node.nodeSize;
+    else if (position >= from && segmentEnd === blockEnd) segmentEnd = position;
+  });
+
+  if (segmentStart === segmentEnd) {
+    return { from: segmentStart, to: segmentEnd };
+  }
+
+  // A wrapped browser line is not a separate ProseMirror node. Use the editor's
+  // rendered caret coordinates so indentation remains limited to the visible line.
+  try {
+    const cursorCoords = view.coordsAtPos(from);
+    const tolerance = Math.max(3, (cursorCoords.bottom - cursorCoords.top) * 0.6);
+    const isOnCursorLine = (position: number, side: -1 | 1) => {
+      const coords = view.coordsAtPos(position, side);
+      return Math.abs(coords.top - cursorCoords.top) <= tolerance;
+    };
+
+    let lineStart = from;
+    while (lineStart > segmentStart && isOnCursorLine(lineStart - 1, 1)) {
+      lineStart -= 1;
+    }
+
+    let lineEnd = from;
+    while (lineEnd < segmentEnd && isOnCursorLine(lineEnd + 1, -1)) {
+      lineEnd += 1;
+    }
+
+    return { from: lineStart, to: lineEnd };
+  } catch {
+    return { from: segmentStart, to: segmentEnd };
+  }
+}
+
+function adjustCurrentLineIndent(editor: Editor, direction: 1 | -1) {
+  const range = currentLineRange(editor);
+  if (!range) return false;
+
+  if (range.from === range.to) {
+    return adjustInlineIndent(editor, direction);
+  }
+
+  const { state, view } = editor;
+  const markType = state.schema.marks["inlineIndentation"];
+  if (!markType) return false;
+
+  const cursorMark = markType.isInSet(state.storedMarks ?? state.selection.$from.marks());
+  let currentLevel = Number(cursorMark?.attrs["level"]) || 0;
+
+  if (!currentLevel) {
+    state.doc.nodesBetween(range.from, range.to, (node) => {
+      if (currentLevel || !node.isText) return;
+      const mark = markType.isInSet(node.marks);
+      currentLevel = Number(mark?.attrs["level"]) || 0;
+    });
+  }
+
+  const nextLevel = Math.min(MAX_INDENT, Math.max(0, currentLevel + direction));
+  if (nextLevel === currentLevel) return true;
+
+  const transaction = state.tr.removeMark(range.from, range.to, markType);
+  if (nextLevel > 0) {
+    transaction.addMark(range.from, range.to, markType.create({ level: nextLevel }));
+  }
+  view.dispatch(transaction.scrollIntoView());
+  return true;
+}
+
 function adjustIndent(editor: Editor, direction: 1 | -1) {
   const { from: selectionFrom, to: selectionTo } = editor.state.selection;
   const hasSelectedText =
@@ -136,6 +219,10 @@ function adjustIndent(editor: Editor, direction: 1 | -1) {
     return direction === 1
       ? editor.commands.sinkListItem("listItem")
       : editor.commands.liftListItem("listItem");
+  }
+
+  if (selectionFrom === selectionTo) {
+    return adjustCurrentLineIndent(editor, direction);
   }
 
   const { state, view } = editor;
