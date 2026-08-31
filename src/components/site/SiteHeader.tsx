@@ -68,7 +68,7 @@ export function SiteHeader() {
           </nav>
 
           <div className="hidden items-center gap-1 border-l border-border pl-4 lg:flex">
-            <SocialRow />
+            <SocialRow includeAdditionalNavIcons />
           </div>
 
           <button

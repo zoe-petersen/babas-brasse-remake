@@ -3,15 +3,12 @@ const MAGAZINE_CONTACT_EMAIL = "submissions@babasandbrasse.co.za";
 export function ArticleLegalNotice({
   authorName,
   publishedAt,
-  contactEmail,
 }: {
   authorName: string;
   publishedAt: string | null;
-  contactEmail?: string | null;
 }) {
   const publishedYear = publishedAt ? new Date(publishedAt).getUTCFullYear() : NaN;
   const year = Number.isFinite(publishedYear) ? publishedYear : new Date().getFullYear();
-  const email = contactEmail || MAGAZINE_CONTACT_EMAIL;
 
   return (
     <aside aria-label="Copyright and contributor disclaimer" className="mt-10 border-2 border-ink">
@@ -22,8 +19,11 @@ export function ArticleLegalNotice({
           permitted by law. The author retains copyright unless otherwise stated. Unauthorised
           reproduction, republication or substantial adaptation of this work is prohibited. For
           permissions or copyright concerns, contact{" "}
-          <a className="font-semibold text-foreground underline" href={`mailto:${email}`}>
-            {email}
+          <a
+            className="font-semibold text-foreground underline"
+            href={`mailto:${MAGAZINE_CONTACT_EMAIL}`}
+          >
+            {MAGAZINE_CONTACT_EMAIL}
           </a>
           .
         </p>

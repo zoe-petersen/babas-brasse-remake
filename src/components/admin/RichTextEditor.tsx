@@ -73,6 +73,93 @@ function parseIndentLevel(element: HTMLElement) {
   );
 }
 
+const ITALIC_SPACING_STYLES = [
+  "letter-spacing",
+  "max-width",
+  "margin",
+  "margin-inline",
+  "margin-inline-end",
+  "margin-inline-start",
+  "margin-left",
+  "margin-right",
+  "min-width",
+  "padding",
+  "padding-inline",
+  "padding-inline-end",
+  "padding-inline-start",
+  "padding-left",
+  "padding-right",
+  "text-indent",
+  "white-space",
+  "width",
+  "word-spacing",
+];
+const PASTED_WHITESPACE = /[\s\u00a0]+/;
+
+function boundaryTextNode(node: Node, edge: "first" | "last"): Text | null {
+  if (node.nodeType === 3) return node as Text;
+
+  const children = node.childNodes;
+  if (edge === "first") {
+    for (let index = 0; index < children.length; index += 1) {
+      const match = boundaryTextNode(children[index]!, edge);
+      if (match) return match;
+    }
+  } else {
+    for (let index = children.length - 1; index >= 0; index -= 1) {
+      const match = boundaryTextNode(children[index]!, edge);
+      if (match) return match;
+    }
+  }
+
+  return null;
+}
+
+function normalizeAdjacentWhitespace(node: ChildNode | null, edge: "start" | "end") {
+  if (!node) return;
+
+  if (node.nodeType === 3) {
+    const text = node as Text;
+    text.data =
+      edge === "start"
+        ? text.data.replace(/[\s\u00a0]+$/, " ")
+        : text.data.replace(/^[\s\u00a0]+/, " ");
+    return;
+  }
+
+  if (node instanceof HTMLElement && PASTED_WHITESPACE.test(node.textContent ?? "")) {
+    if ((node.textContent ?? "").replace(/[\s\u00a0]/g, "") === "") {
+      node.textContent = " ";
+    }
+  }
+}
+
+function normalizePastedItalicSpacing(html: string) {
+  const parsed = new DOMParser().parseFromString(html, "text/html");
+
+  parsed.querySelectorAll<HTMLElement>("i, em, [style]").forEach((element) => {
+    const tagName = element.tagName.toLowerCase();
+    const isItalic =
+      tagName === "i" ||
+      tagName === "em" ||
+      element.style.fontStyle === "italic" ||
+      element.style.fontStyle === "oblique";
+    if (!isItalic) return;
+
+    ITALIC_SPACING_STYLES.forEach((property) => element.style.removeProperty(property));
+
+    const firstText = boundaryTextNode(element, "first");
+    const lastText = boundaryTextNode(element, "last");
+    if (firstText) firstText.data = firstText.data.replace(/^[\s\u00a0]+/, " ");
+    if (lastText) lastText.data = lastText.data.replace(/[\s\u00a0]+$/, " ");
+
+    normalizeAdjacentWhitespace(element.previousSibling, "start");
+    normalizeAdjacentWhitespace(element.nextSibling, "end");
+  });
+
+  return parsed.body.innerHTML;
+}
+
 const InlineIndentation = Mark.create({
   name: "inlineIndentation",
 
@@ -352,6 +439,7 @@ export function RichTextEditor({
       attributes: {
         class: "prose-editor min-h-72 max-h-140 overflow-y-auto px-4 py-3 text-sm outline-none",
       },
+      transformPastedHTML: normalizePastedItalicSpacing,
     },
     onUpdate: ({ editor: instance }) => onChange(instance.getHTML()),
   });

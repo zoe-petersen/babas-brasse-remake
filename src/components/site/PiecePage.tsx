@@ -106,7 +106,6 @@ export function PiecePage({ slug }: { slug: string }) {
         <ArticleLegalNotice
           authorName={byline(article) ?? "Babas & Brasse"}
           publishedAt={article.published_at}
-          contactEmail={article.contributors?.email ?? null}
         />
       </article>
 
