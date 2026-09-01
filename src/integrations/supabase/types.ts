@@ -444,6 +444,31 @@ export type Database = {
       };
       increment_article_view: { Args: { _article_id: string }; Returns: number };
       is_admin: { Args: never; Returns: boolean };
+      register_public_article_view: {
+        Args: { _article_id: string; _viewer_key: string };
+        Returns: number;
+      };
+      submit_public_comment: {
+        Args: {
+          _article_id: string;
+          _author_name: string;
+          _author_surname: string;
+          _author_email: string;
+          _body: string;
+          _request_key: string;
+        };
+        Returns: string;
+      };
+      submit_public_contact: {
+        Args: {
+          _name: string;
+          _email: string;
+          _subject: string;
+          _message: string;
+          _request_key: string;
+        };
+        Returns: string;
+      };
     };
     Enums: {
       app_role: "admin";

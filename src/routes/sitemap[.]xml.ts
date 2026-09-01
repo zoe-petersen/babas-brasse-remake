@@ -12,6 +12,29 @@ type SitemapEntry = {
   image?: string | null;
 };
 
+const SITEMAP_PAGE_SIZE = 1000;
+const SITEMAP_CACHE_HEADERS = {
+  "Cache-Control": "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400",
+  "CDN-Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
+  "Content-Type": "application/xml; charset=utf-8",
+};
+
+async function collectPages<T>(
+  fetchPage: (
+    from: number,
+    to: number,
+  ) => Promise<{ data: T[] | null; error: { message: string } | null }>,
+) {
+  const rows: T[] = [];
+  for (let from = 0; ; from += SITEMAP_PAGE_SIZE) {
+    const { data, error } = await fetchPage(from, from + SITEMAP_PAGE_SIZE - 1);
+    if (error) throw new Error(error.message);
+    const page = data ?? [];
+    rows.push(...page);
+    if (page.length < SITEMAP_PAGE_SIZE) return rows;
+  }
+}
+
 function escapeXml(value: string) {
   return value
     .replace(/&/g, "&amp;")
@@ -81,8 +104,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         if (!supabaseUrl || !publishableKey) {
           return new Response(createSitemap(staticEntries), {
             headers: {
-              "Cache-Control": "public, max-age=300",
-              "Content-Type": "application/xml; charset=utf-8",
+              ...SITEMAP_CACHE_HEADERS,
             },
           });
         }
@@ -91,17 +113,37 @@ export const Route = createFileRoute("/sitemap.xml")({
           auth: { persistSession: false, autoRefreshToken: false },
         });
 
-        const [{ data: articles }, { data: contributors }, { data: photographs }] =
-          await Promise.all([
-            supabase
+        const [articles, contributors, photographs] = await Promise.all([
+          collectPages(async (from, to) => {
+            const result = await supabase
               .from("articles")
               .select(
                 "slug, published_at, updated_at, cover_image_url, categories:category_id(slug), article_places(places:place_id(slug, updated_at))",
               )
-              .eq("is_published", true),
-            supabase.from("contributors").select("slug, updated_at").eq("is_published", true),
-            supabase.from("photographs").select("id, updated_at").eq("is_published", true),
-          ]);
+              .eq("is_published", true)
+              .order("id")
+              .range(from, to);
+            return result;
+          }),
+          collectPages(async (from, to) => {
+            const result = await supabase
+              .from("contributors")
+              .select("slug, updated_at")
+              .eq("is_published", true)
+              .order("id")
+              .range(from, to);
+            return result;
+          }),
+          collectPages(async (from, to) => {
+            const result = await supabase
+              .from("photographs")
+              .select("id, updated_at")
+              .eq("is_published", true)
+              .order("id")
+              .range(from, to);
+            return result;
+          }),
+        ]);
 
         const articleRows = (articles ?? []) as unknown as Array<{
           slug: string;
@@ -138,13 +180,13 @@ export const Route = createFileRoute("/sitemap.xml")({
             path: `/places/${slug}`,
             lastmod,
           })),
-          ...((contributors ?? []) as Array<{ slug: string; updated_at: string | null }>).map(
+          ...(contributors as Array<{ slug: string; updated_at: string | null }>).map(
             (contributor) => ({
               path: `/contributors/${contributor.slug}`,
               lastmod: contributor.updated_at,
             }),
           ),
-          ...((photographs ?? []) as Array<{ id: string; updated_at: string | null }>).map(
+          ...(photographs as Array<{ id: string; updated_at: string | null }>).map(
             (photograph) => ({
               path: `/photography/${photograph.id}`,
               lastmod: photograph.updated_at,
@@ -154,8 +196,7 @@ export const Route = createFileRoute("/sitemap.xml")({
 
         return new Response(createSitemap([...staticEntries, ...dynamicEntries]), {
           headers: {
-            "Cache-Control": "public, max-age=300",
-            "Content-Type": "application/xml; charset=utf-8",
+            ...SITEMAP_CACHE_HEADERS,
           },
         });
       },

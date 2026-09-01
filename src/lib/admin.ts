@@ -61,7 +61,8 @@ export async function fetchAdminArticles() {
   const { data, error } = await supabase
     .from("articles")
     .select(ADMIN_ARTICLE_SELECT)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .limit(500);
   if (error) throw new Error(error.message);
   return (data ?? []) as unknown as AdminArticle[];
 }
@@ -72,13 +73,17 @@ export async function fetchAdminComments() {
     .select(
       "id, article_id, author_name, author_surname, author_email, body, status, created_at, articles:article_id ( title, slug, categories:category_id ( slug ) )",
     )
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .limit(500);
   if (error) throw new Error(error.message);
   return (data ?? []) as unknown as AdminComment[];
 }
 
 export async function fetchArticleViewCounts() {
-  const { data, error } = await supabase.from("article_views").select("article_id, views");
+  const { data, error } = await supabase
+    .from("article_views")
+    .select("article_id, views")
+    .limit(500);
   if (error) throw new Error(error.message);
   const map: Record<string, number> = {};
   for (const row of (data ?? []) as { article_id: string; views: number }[]) {
@@ -90,7 +95,9 @@ export async function fetchArticleViewCounts() {
 export async function fetchAdminContributors() {
   const { data, error } = await supabase
     .from("contributors")
-    .select("*")
+    .select(
+      "id, name, slug, role_title, bio, image_url, facebook_url, instagram_url, tiktok_url, linkedin_url, youtube_url, email, is_team, is_published, sort_order",
+    )
     .order("is_team", { ascending: false })
     .order("sort_order");
   if (error) throw new Error(error.message);
@@ -110,29 +117,54 @@ export async function fetchAdminPhotographs() {
 export async function fetchSubmissions() {
   const { data, error } = await supabase
     .from("contact_submissions")
-    .select("*")
-    .order("created_at", { ascending: false });
+    .select("id, name, email, subject, message, is_handled, created_at")
+    .order("created_at", { ascending: false })
+    .limit(500);
   if (error) throw new Error(error.message);
   return (data ?? []) as Submission[];
 }
 
 export const adminArticlesQuery = () =>
-  queryOptions({ queryKey: ["admin", "articles"], queryFn: fetchAdminArticles });
+  queryOptions({
+    queryKey: ["admin", "articles"],
+    queryFn: fetchAdminArticles,
+    staleTime: 30 * 1000,
+  });
 
 export const adminCommentsQuery = () =>
-  queryOptions({ queryKey: ["admin", "comments"], queryFn: fetchAdminComments });
+  queryOptions({
+    queryKey: ["admin", "comments"],
+    queryFn: fetchAdminComments,
+    staleTime: 30 * 1000,
+  });
 
 export const submissionsQuery = () =>
-  queryOptions({ queryKey: ["admin", "submissions"], queryFn: fetchSubmissions });
+  queryOptions({
+    queryKey: ["admin", "submissions"],
+    queryFn: fetchSubmissions,
+    staleTime: 30 * 1000,
+  });
 
 export const articleViewCountsQuery = () =>
-  queryOptions({ queryKey: ["admin", "article-views"], queryFn: fetchArticleViewCounts });
+  queryOptions({
+    queryKey: ["admin", "article-views"],
+    queryFn: fetchArticleViewCounts,
+    staleTime: 60 * 1000,
+  });
 
 export const adminContributorsQuery = () =>
-  queryOptions({ queryKey: ["admin", "contributors"], queryFn: fetchAdminContributors });
+  queryOptions({
+    queryKey: ["admin", "contributors"],
+    queryFn: fetchAdminContributors,
+    staleTime: 60 * 1000,
+  });
 
 export const adminPhotographsQuery = () =>
-  queryOptions({ queryKey: ["admin", "photographs"], queryFn: fetchAdminPhotographs });
+  queryOptions({
+    queryKey: ["admin", "photographs"],
+    queryFn: fetchAdminPhotographs,
+    staleTime: 60 * 1000,
+  });
 
 export type ArticleFormValues = {
   title: string;

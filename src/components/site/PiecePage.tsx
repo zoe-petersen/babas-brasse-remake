@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { CalendarDays, Clock, Eye, MessageCircle, Tag } from "lucide-react";
 import { toast } from "sonner";
@@ -13,10 +14,9 @@ import {
   formatLongDate,
   initials,
   placesForArticle,
-  registerArticleView,
   type Article,
 } from "@/lib/magazine";
-import { supabase } from "@/integrations/supabase/client";
+import { registerPublicArticleView, submitPublicComment } from "@/lib/public-write.functions";
 import { ActionLink } from "@/components/site/ActionLink";
 import { SectionHeading } from "@/components/site/SectionHeading";
 import { ArticleBody } from "@/components/site/ArticleBody";
@@ -29,7 +29,6 @@ import { articleCanonicalUrl, articleSeoDescription } from "@/lib/seo";
 export function PiecePage({ slug }: { slug: string }) {
   const { data: article } = useSuspenseQuery(articleQuery(slug));
   const { data: allArticles } = useSuspenseQuery(articlesQuery());
-  const queryClient = useQueryClient();
 
   if (!article) return null;
 
@@ -109,10 +108,7 @@ export function PiecePage({ slug }: { slug: string }) {
         />
       </article>
 
-      <Comments
-        articleId={article.id}
-        onSubmitted={() => queryClient.invalidateQueries({ queryKey: ["comments", article.id] })}
-      />
+      <Comments articleId={article.id} />
 
       <section className="border-y-2 border-ink bg-cream">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -221,15 +217,16 @@ function CommentCount({ articleId }: { articleId: string }) {
 function ViewCount({ articleId }: { articleId: string }) {
   const queryClient = useQueryClient();
   const { data = 0 } = useQuery(articleViewsQuery(articleId));
+  const registerView = useServerFn(registerPublicArticleView);
 
   useEffect(() => {
     const key = `viewed:${articleId}`;
     if (sessionStorage.getItem(key)) return;
     sessionStorage.setItem(key, "1");
-    registerArticleView(articleId)
+    registerView({ data: { articleId } })
       .then((views) => queryClient.setQueryData(["article-views", articleId], views))
       .catch(() => undefined);
-  }, [articleId, queryClient]);
+  }, [articleId, queryClient, registerView]);
 
   return (
     <Meta
@@ -239,46 +236,33 @@ function ViewCount({ articleId }: { articleId: string }) {
   );
 }
 
-function Comments({ articleId, onSubmitted }: { articleId: string; onSubmitted: () => void }) {
+function Comments({ articleId }: { articleId: string }) {
   const { data: comments = [] } = useQuery(commentsQuery(articleId));
   const [form, setForm] = useState({
     author_name: "",
     author_surname: "",
     author_email: "",
     body: "",
+    website: "",
   });
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    const channel = supabase
-      .channel(`comments-${articleId}`)
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "comments", filter: `article_id=eq.${articleId}` },
-        () => queryClient.invalidateQueries({ queryKey: ["comments", articleId] }),
-      )
-      .subscribe();
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [articleId, queryClient]);
+  const submitComment = useServerFn(submitPublicComment);
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from("comments").insert({
-        article_id: articleId,
-        author_name: form.author_name,
-        author_surname: form.author_surname.trim() || null,
-        author_email: form.author_email,
-        body: form.body,
-        status: "pending",
+      await submitComment({
+        data: {
+          articleId,
+          authorName: form.author_name,
+          authorSurname: form.author_surname,
+          authorEmail: form.author_email,
+          body: form.body,
+          website: form.website,
+        },
       });
-      if (error) throw new Error(error.message);
     },
     onSuccess: () => {
       toast.success("Thanks! Your comment is with our editors for review.");
-      setForm({ author_name: "", author_surname: "", author_email: "", body: "" });
-      onSubmitted();
+      setForm({ author_name: "", author_surname: "", author_email: "", body: "", website: "" });
     },
     onError: (error: Error) => toast.error(error.message),
   });
@@ -324,6 +308,19 @@ function Comments({ articleId, onSubmitted }: { articleId: string; onSubmitted: 
           }}
           className="border-2 border-ink bg-cream p-6 sm:p-8"
         >
+          <label className="absolute -left-[10000px] h-px w-px overflow-hidden" aria-hidden>
+            Website
+            <input
+              type="text"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              value={form.website}
+              onChange={(event) =>
+                setForm((previous) => ({ ...previous, website: event.target.value }))
+              }
+            />
+          </label>
           <h3 className="font-display text-2xl">Join the conversation</h3>
           <p className="mt-1 text-sm text-muted-foreground">
             Responses are reviewed before appearing publicly.
@@ -353,6 +350,7 @@ function Comments({ articleId, onSubmitted }: { articleId: string; onSubmitted: 
             Comment
             <textarea
               required
+              maxLength={5000}
               rows={5}
               value={form.body}
               onChange={(event) => setForm((prev) => ({ ...prev, body: event.target.value }))}

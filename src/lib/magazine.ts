@@ -34,28 +34,32 @@ export type Place = {
   updated_at: string;
 };
 
-export type Article = {
+export type ArticleSummary = {
   id: string;
   title: string;
   slug: string;
   excerpt: string | null;
-  body: string | null;
   cover_image_url: string | null;
-  image_credit: string | null;
   read_minutes: number;
   published_at: string | null;
   updated_at: string;
-  seo_title: string | null;
-  seo_description: string | null;
   is_editors_pick: boolean;
   is_featured: boolean;
   categories: Pick<Category, "id" | "name" | "slug"> | null;
+  contributors: Pick<Contributor, "id" | "name" | "slug" | "image_url"> | null;
+  author_name: string | null;
+  article_places: Array<{ places: Place | null }>;
+};
+
+export type Article = ArticleSummary & {
+  body: string | null;
+  image_credit: string | null;
+  seo_title: string | null;
+  seo_description: string | null;
   contributors: Pick<
     Contributor,
     "id" | "name" | "slug" | "role_title" | "bio" | "image_url" | "email"
   > | null;
-  author_name: string | null;
-  article_places: Array<{ places: Place | null }>;
 };
 
 /** Prefers a linked contributor's name, falling back to the free-text author name. */
@@ -67,7 +71,7 @@ export function byline(article: {
 }
 
 /** Returns the distinct public places attached to a piece. */
-export function placesForArticle(article: Pick<Article, "article_places">) {
+export function placesForArticle(article: Pick<ArticleSummary, "article_places">) {
   const seen = new Set<string>();
   return article.article_places
     .map((relation) => relation.places)
@@ -96,7 +100,23 @@ export type ApprovedComment = {
   created_at: string;
 };
 
-const ARTICLE_SELECT = `
+const ARTICLE_SUMMARY_SELECT = `
+  id, title, slug, excerpt, cover_image_url, read_minutes,
+  published_at, updated_at, is_editors_pick, is_featured, author_name,
+  categories:category_id ( id, name, slug ),
+  contributors:contributor_id ( id, name, slug, image_url ),
+  article_places ( places:place_id ( id, name, slug, updated_at ) )
+`;
+
+const PLACE_ARTICLE_SUMMARY_SELECT = `
+  id, title, slug, excerpt, cover_image_url, read_minutes,
+  published_at, updated_at, is_editors_pick, is_featured, author_name,
+  categories:category_id ( id, name, slug ),
+  contributors:contributor_id ( id, name, slug, image_url ),
+  article_places!inner ( place_id, places:place_id ( id, name, slug, updated_at ) )
+`;
+
+const ARTICLE_DETAIL_SELECT = `
   id, title, slug, excerpt, body, cover_image_url, image_credit, read_minutes,
   published_at, updated_at, seo_title, seo_description,
   is_editors_pick, is_featured, author_name,
@@ -105,26 +125,27 @@ const ARTICLE_SELECT = `
   article_places ( places:place_id ( id, name, slug, updated_at ) )
 `;
 
-export async function fetchArticles(options?: { categorySlug?: string; limit?: number }) {
+const PUBLIC_LIST_LIMIT = 1000;
+
+export async function fetchArticles(options?: { categoryId?: string; limit?: number }) {
   let query = supabase
     .from("articles")
-    .select(ARTICLE_SELECT)
+    .select(ARTICLE_SUMMARY_SELECT)
     .eq("is_published", true)
-    .order("published_at", { ascending: false });
+    .order("published_at", { ascending: false })
+    .limit(options?.limit ?? PUBLIC_LIST_LIMIT);
 
-  if (options?.limit) query = query.limit(options.limit);
+  if (options?.categoryId) query = query.eq("category_id", options.categoryId);
 
   const { data, error } = await query;
   if (error) throw new Error(error.message);
-  const rows = (data ?? []) as unknown as Article[];
-  if (!options?.categorySlug) return rows;
-  return rows.filter((a) => a.categories?.slug === options.categorySlug);
+  return (data ?? []) as unknown as ArticleSummary[];
 }
 
 export async function fetchArticle(slug: string) {
   const { data, error } = await supabase
     .from("articles")
-    .select(ARTICLE_SELECT)
+    .select(ARTICLE_DETAIL_SELECT)
     .eq("slug", slug)
     .eq("is_published", true)
     .maybeSingle();
@@ -144,7 +165,9 @@ export async function fetchCategories() {
 export async function fetchContributors(team: boolean) {
   const { data, error } = await supabase
     .from("contributors")
-    .select("*")
+    .select(
+      "id, name, slug, role_title, bio, image_url, facebook_url, instagram_url, tiktok_url, linkedin_url, youtube_url, email, is_team, is_published, sort_order",
+    )
     .eq("is_team", team)
     .eq("is_published", true)
     .order("sort_order");
@@ -155,7 +178,9 @@ export async function fetchContributors(team: boolean) {
 export async function fetchContributor(slug: string) {
   const { data, error } = await supabase
     .from("contributors")
-    .select("*")
+    .select(
+      "id, name, slug, role_title, bio, image_url, facebook_url, instagram_url, tiktok_url, linkedin_url, youtube_url, email, is_team, is_published, sort_order",
+    )
     .eq("slug", slug)
     .eq("is_published", true)
     .maybeSingle();
@@ -166,12 +191,13 @@ export async function fetchContributor(slug: string) {
 export async function fetchContributorArticles(contributorId: string) {
   const { data, error } = await supabase
     .from("articles")
-    .select(ARTICLE_SELECT)
+    .select(ARTICLE_SUMMARY_SELECT)
     .eq("is_published", true)
     .eq("contributor_id", contributorId)
-    .order("published_at", { ascending: false });
+    .order("published_at", { ascending: false })
+    .limit(PUBLIC_LIST_LIMIT);
   if (error) throw new Error(error.message);
-  return (data ?? []) as unknown as Article[];
+  return (data ?? []) as unknown as ArticleSummary[];
 }
 
 export async function fetchPlaces() {
@@ -194,10 +220,15 @@ export async function fetchPlace(slug: string) {
 }
 
 export async function fetchPlaceArticles(placeId: string) {
-  const articles = await fetchArticles();
-  return articles.filter((article) =>
-    placesForArticle(article).some((place) => place.id === placeId),
-  );
+  const { data, error } = await supabase
+    .from("articles")
+    .select(PLACE_ARTICLE_SUMMARY_SELECT)
+    .eq("is_published", true)
+    .eq("article_places.place_id", placeId)
+    .order("published_at", { ascending: false })
+    .limit(PUBLIC_LIST_LIMIT);
+  if (error) throw new Error(error.message);
+  return (data ?? []) as unknown as ArticleSummary[];
 }
 
 export async function fetchPhotographs() {
@@ -231,75 +262,98 @@ export async function fetchArticleViews(articleId: string) {
   return Number((data as { views: number } | null)?.views ?? 0);
 }
 
-export async function registerArticleView(articleId: string) {
-  const { data, error } = await supabase.rpc("increment_article_view", {
-    _article_id: articleId,
-  });
-  if (error) throw new Error(error.message);
-  return Number(data ?? 0);
-}
-
 export async function fetchApprovedComments(articleId: string) {
   const { data, error } = await supabase
     .from("approved_comments")
     .select("id, author_name, author_surname, body, created_at")
     .eq("article_id", articleId)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .limit(100);
   if (error) throw new Error(error.message);
   return (data ?? []) as ApprovedComment[];
 }
 
-export const articlesQuery = (options?: { categorySlug?: string; limit?: number }) =>
+export const articlesQuery = (options?: { categoryId?: string; limit?: number }) =>
   queryOptions({
-    queryKey: ["articles", options?.categorySlug ?? "all", options?.limit ?? 0],
+    queryKey: ["articles", options?.categoryId ?? "all", options?.limit ?? 0],
     queryFn: () => fetchArticles(options),
+    staleTime: 2 * 60 * 1000,
   });
 
 export const articleQuery = (slug: string) =>
-  queryOptions({ queryKey: ["article", slug], queryFn: () => fetchArticle(slug) });
+  queryOptions({
+    queryKey: ["article", slug],
+    queryFn: () => fetchArticle(slug),
+    staleTime: 5 * 60 * 1000,
+  });
 
 export const categoriesQuery = () =>
-  queryOptions({ queryKey: ["categories"], queryFn: fetchCategories });
+  queryOptions({ queryKey: ["categories"], queryFn: fetchCategories, staleTime: 10 * 60 * 1000 });
 
 export const contributorsQuery = (team: boolean) =>
-  queryOptions({ queryKey: ["contributors", team], queryFn: () => fetchContributors(team) });
+  queryOptions({
+    queryKey: ["contributors", team],
+    queryFn: () => fetchContributors(team),
+    staleTime: 10 * 60 * 1000,
+  });
 
 export const contributorQuery = (slug: string) =>
-  queryOptions({ queryKey: ["contributor", slug], queryFn: () => fetchContributor(slug) });
+  queryOptions({
+    queryKey: ["contributor", slug],
+    queryFn: () => fetchContributor(slug),
+    staleTime: 10 * 60 * 1000,
+  });
 
 export const contributorArticlesQuery = (contributorId: string) =>
   queryOptions({
     queryKey: ["contributor-articles", contributorId],
     queryFn: () => fetchContributorArticles(contributorId),
+    staleTime: 2 * 60 * 1000,
   });
 
-export const placesQuery = () => queryOptions({ queryKey: ["places"], queryFn: fetchPlaces });
+export const placesQuery = () =>
+  queryOptions({ queryKey: ["places"], queryFn: fetchPlaces, staleTime: 10 * 60 * 1000 });
 
 export const placeQuery = (slug: string) =>
-  queryOptions({ queryKey: ["place", slug], queryFn: () => fetchPlace(slug) });
+  queryOptions({
+    queryKey: ["place", slug],
+    queryFn: () => fetchPlace(slug),
+    staleTime: 10 * 60 * 1000,
+  });
 
 export const placeArticlesQuery = (placeId: string) =>
   queryOptions({
     queryKey: ["place-articles", placeId],
     queryFn: () => fetchPlaceArticles(placeId),
+    staleTime: 2 * 60 * 1000,
   });
 
 export const photographsQuery = () =>
-  queryOptions({ queryKey: ["photographs"], queryFn: fetchPhotographs });
+  queryOptions({
+    queryKey: ["photographs"],
+    queryFn: fetchPhotographs,
+    staleTime: 5 * 60 * 1000,
+  });
 
 export const photographQuery = (id: string) =>
-  queryOptions({ queryKey: ["photograph", id], queryFn: () => fetchPhotograph(id) });
+  queryOptions({
+    queryKey: ["photograph", id],
+    queryFn: () => fetchPhotograph(id),
+    staleTime: 5 * 60 * 1000,
+  });
 
 export const articleViewsQuery = (articleId: string) =>
   queryOptions({
     queryKey: ["article-views", articleId],
     queryFn: () => fetchArticleViews(articleId),
+    staleTime: 30 * 1000,
   });
 
 export const commentsQuery = (articleId: string) =>
   queryOptions({
     queryKey: ["comments", articleId],
     queryFn: () => fetchApprovedComments(articleId),
+    staleTime: 60 * 1000,
   });
 
 export function formatDate(value: string | null) {

@@ -18,7 +18,7 @@ export const Route = createFileRoute("/content/$slug")({
     const categories = await context.queryClient.ensureQueryData(categoriesQuery());
     const category = categories.find((item) => item.slug === params.slug);
     if (category) {
-      await context.queryClient.ensureQueryData(articlesQuery());
+      await context.queryClient.ensureQueryData(articlesQuery({ categoryId: category.id }));
       return { kind: "category" as const, category };
     }
 
@@ -72,8 +72,7 @@ function ContentSlugPage() {
 }
 
 function CategoryPage({ category }: { category: Category }) {
-  const { data: articles } = useSuspenseQuery(articlesQuery());
-  const items = articles.filter((article) => article.categories?.slug === category.slug);
+  const { data: items } = useSuspenseQuery(articlesQuery({ categoryId: category.id }));
   const lead = items[0]!;
   const rest = items.slice(1);
 

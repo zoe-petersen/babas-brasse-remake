@@ -1,11 +1,13 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { publicRequestKey } from "@/lib/request-protection.server";
 
 const submissionSchema = z.object({
   name: z.string().trim().min(1).max(120),
   email: z.string().trim().email().max(200),
   subject: z.string().trim().min(1).max(120),
   message: z.string().trim().min(1).max(20000),
+  website: z.string().max(200).optional().default(""),
 });
 
 const ADMIN_EMAIL = "submissions@babasandbrasse.co.za";
@@ -55,12 +57,23 @@ const shell = (inner: string) => `
   </div>`;
 
 export const submitContactForm = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => submissionSchema.parse(data))
+  .validator((data: unknown) => submissionSchema.parse(data))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (data.website) return { ok: true };
 
-    const { error } = await supabaseAdmin.from("contact_submissions").insert(data);
-    if (error) throw new Error(error.message);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const requestKey = await publicRequestKey();
+    const { error } = await supabaseAdmin.rpc("submit_public_contact", {
+      _name: data.name,
+      _email: data.email,
+      _subject: data.subject,
+      _message: data.message,
+      _request_key: requestKey,
+    });
+    if (error) {
+      if (/too many/i.test(error.message)) throw new Error(error.message);
+      throw new Error("We could not send that submission. Please try again shortly.");
+    }
 
     const safe = {
       name: escapeHtml(data.name),

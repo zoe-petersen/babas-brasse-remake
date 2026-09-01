@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { byline, type Article, formatDate } from "@/lib/magazine";
+import { byline, type ArticleSummary, formatDate } from "@/lib/magazine";
 import { cn } from "@/lib/utils";
 
 export function ArticleCard({
@@ -7,7 +7,7 @@ export function ArticleCard({
   accent = "magenta",
   className,
 }: {
-  article: Article;
+  article: ArticleSummary;
   accent?: "magenta" | "forest";
   className?: string;
 }) {
